@@ -1,0 +1,9 @@
+[
+    {
+        "img":"images/stack-tecnologico/python.svg",
+        "name":"Python"
+    },{
+        "img":"images/stack-tecnologico/kubernets.svg",
+        "name":"Kubernets"
+    }
+]

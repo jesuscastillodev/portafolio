@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@keyframes colorCycle {
+    0%, 100% {
+      filter: grayscale(100%); /* Imagen completamente en escala de grises */
+    }
+    50% {
+      filter: grayscale(0); /* Imagen en color completo */
+    }
+  }
+  
+  .image-color-cycle {
+    animation: colorCycle 3s infinite; /* Ajusta el tiempo según tus necesidades */
+  }
