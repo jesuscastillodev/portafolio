@@ -4,7 +4,7 @@ const AboutMe = () => {
     <div className="flex p-4 py-8 gap-8 w-full flex-col lg:flex-row">
       <div className="lg:w-2/3 md:w-full sm bg-white dark:bg-[#081540] rounded-lg p-12 flex items-center flex-row gap-4 animate__animated animate__fadeInBottomLeft">
         <img
-          className="h-56 transform transition duration-500 hover:scale-110"
+          className="h-56 transform transition duration-500 hover:scale-110 aspect-square"
           src={foto}
           alt="foto perfil"
         />

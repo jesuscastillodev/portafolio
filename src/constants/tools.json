@@ -1,0 +1,33 @@
+[
+    {
+        "img":"images/stack-tecnologico/docker.svg",
+        "name":"Docker"
+    },
+    {
+        "img":"images/stack-tecnologico/git.svg",
+        "name":"Git"
+    },
+    {
+        "img":"images/stack-tecnologico/terminal.svg",
+        "name":"Terminal"
+    },
+    {
+        "img":"images/stack-tecnologico/jira-3.svg",
+        "name":"Jira"
+    }
+    
+    ,
+    {
+        "img":"images/stack-tecnologico/visual-studio-code-1.svg",
+        "name":"VScode"
+    },
+    {
+        "img":"images/stack-tecnologico/postman.svg",
+        "name":"Postman"
+    },
+    {
+        "img":"images/stack-tecnologico/kubernets.svg",
+        "name":"Kubernets",
+        "learning":true
+    }
+]

@@ -1,0 +1,30 @@
+[
+    {
+        "img":"images/stack-tecnologico/react.svg",
+        "name":"React"
+    },
+    {
+        "img":"images/stack-tecnologico/tailwind.svg",
+        "name":"Tailwind"
+    },
+    {
+        "img":"images/stack-tecnologico/js.svg",
+        "name":"JS"
+    },
+    {
+        "img":"images/stack-tecnologico/html5-icon.svg",
+        "name":"HTML"
+    },
+    {
+        "img":"images/stack-tecnologico/CSS3_logo.svg",
+        "name":"CSS"
+    },
+    {
+        "img":"images/stack-tecnologico/jquery-vertical.svg",
+        "name":"JQuery"
+    },
+    {
+        "img":"images/stack-tecnologico/bootstrap-4.svg",
+        "name":"Bootstrap"
+    }
+]
