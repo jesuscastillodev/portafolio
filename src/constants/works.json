@@ -1,0 +1,26 @@
+[
+    {
+      "title": "UmbralWeb",
+      "description": "Liderar y supervisar el desarrollo de páginas web personalizadas. Implementar y personalizar CMS, WordPress y PrestaShop. Programación avanzada en PHP para aplicaciones web.",
+      "technologies": ["PHP", "Codeigniter", "WordPress", "Prestashop", "CSS3", "bootstrap", "Jquery"],
+      "role": "Programador y Encargado de Desarrollo Web",
+      "img": "images/works/coding.webp"
+    },
+    {
+      "title": "GestionaEduca",
+      "description": "Diseñé un módulo para la generación y firma digital de contratos y contribuí en un sistema de remuneraciones y becas, mejorando procesos administrativos y financieros. Desarrollé APIs en Laravel y una aplicación móvil en React Native para optimizar la comunicación estudiantil.",
+      "technologies": ["CakePHP", "Laravel", "React Native"],
+      "role": "Desarrollador Backend y Móvil",
+      "img": "images/works/gestionaeduca.webp",
+      "display": "rtl"
+    },
+    {
+      "title": "Stockonline",
+      "description": "Desarrollé una aplicación web en Laravel para gestionar y automatizar el stock y procesos en plataformas como Shopify, Bsale y MercadoLibre, incluyendo actualizaciones de precios centralizadas, generación automática de boletas y facturas, y sincronización de stock en tiempo real.",
+      "technologies": ["Laravel", "Livewire", "Docker"],
+      "role": "Desarrollador Full Stack",
+      "img": "images/works/stockonline.webp",
+      "imgLight": "images/works/stockonline-light.webp"
+    }
+  ]
+  

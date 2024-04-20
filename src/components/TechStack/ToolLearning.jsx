@@ -7,7 +7,7 @@ const Tool = ({ img, name }) => {
         src={img}
         alt={name}
       />
-      <p className="text-xs text-slate-800/50 dark:text-white/50">Aprendiendo</p>
+      <p className="text-xs text-slate-800/50 dark:text-slate-200/50">Aprendiendo</p>
     </div>
   );
 };

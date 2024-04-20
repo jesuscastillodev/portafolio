@@ -9,7 +9,3 @@
       filter: grayscale(0); /* Imagen en color completo */
     }
   }
-  
-  .image-color-cycle {
-    animation: colorCycle 3s infinite; /* Ajusta el tiempo según tus necesidades */
-  }

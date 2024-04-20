@@ -44,7 +44,7 @@ const Footer = () => {
     />
     <p className="text-stone-500 dark:text-gray-300 text-center p-4 text-md">
       Creado por{" "}
-      <span className="text-stone-900 dark:text-white">Jcastillo.dev</span>
+      <span className="text-stone-900 dark:text-slate-200">Jcastillo.dev</span>
     </p>
   </footer>
 )};
