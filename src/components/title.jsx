@@ -3,7 +3,7 @@ import React from 'react';
 const Title = ({ title }) => {
   const textElements = title.split(" ").map((word, index) => {
     if (index === 0) {
-      return <span key={index} className='text-blue-600'>{word}</span>;
+      return <span key={index} className='text-blue-600 dark:text-[#00b7f2]'>{word}</span>;
     }
     return word;
   }).map((element, index) => (

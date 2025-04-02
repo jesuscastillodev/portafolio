@@ -3,8 +3,9 @@ import Footer from "./components/Footer";
 import { useTheme } from "./context/ThemeContext";
 import AboutMe from "./components/AboutMe";
 import TechStack from "./components/TechStack";
+import Galery from "./components/Galery";
 import "animate.css";
-import Works from "./components/Works";
+import Experience from "./components/Experience";
 function App() {
   const { darkMode } = useTheme();
   return (
@@ -17,8 +18,9 @@ function App() {
             <Header />
             <div className="flex flex-col w-full">
                 <AboutMe />
+                <Experience />
+                <Galery />
                 <TechStack />
-                <Works />
             </div>
             <Footer />
           </div>

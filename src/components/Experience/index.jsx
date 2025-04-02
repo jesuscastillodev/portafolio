@@ -4,7 +4,7 @@ import Title from "/src/components/title.jsx";
 const Works = () => {
   return (
     <section className="flex flex-col p-4 py-8 gap-8 w-full justify-center items-center">
-      <Title title="Trabajos Realizados" ></Title>
+      <Title title="Experiencia Laboral" ></Title>
       {workData.map((work, index) => (
         <WorkItem key={index} work={work} />
       ))}
