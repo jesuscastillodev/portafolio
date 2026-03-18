@@ -1,0 +1,68 @@
+---
+import TechContainer from './TechContainer.astro';
+import type { TechStackGrouped } from '../types/portfolio';
+
+interface Props {
+  data?: TechStackGrouped | null;
+}
+
+const defaultFrontend = [
+  { name: "React", iconSlug: "react" },
+  { name: "Tailwind", iconSlug: "tailwindcss" },
+  { name: "JavaScript", iconSlug: "javascript" },
+  { name: "HTML5", iconSlug: "html5" },
+  { name: "CSS3", iconSlug: "css" },
+  { name: "jQuery", iconSlug: "jquery" },
+  { name: "Bootstrap", iconSlug: "bootstrap" },
+];
+
+const defaultBackend = [
+  { name: "Laravel", iconSlug: "laravel" },
+  { name: "Node.js", iconSlug: "nodedotjs" },
+  { name: "MySQL", iconSlug: "mysql" },
+  { name: "MongoDB", iconSlug: "mongodb" },
+  { name: "Apache", iconSlug: "apache" },
+  { name: "Nginx", iconSlug: "nginx" },
+  { name: "CakePHP", iconSlug: "cakephp" },
+  { name: "PHP", iconSlug: "php" },
+  { name: "Python", iconSlug: "python", learning: true },
+];
+
+const defaultTools = [
+  { name: "Docker", iconSlug: "docker" },
+  { name: "Git", iconSlug: "git" },
+  { name: "Terminal", iconSlug: "gnometerminal" },
+  { name: "Jira", iconSlug: "jira" },
+  { name: "VS Code", iconSlug: "vscode" },
+  { name: "Postman", iconSlug: "postman" },
+  { name: "Kubernetes", iconSlug: "kubernetes", learning: true },
+];
+
+const { data: apiData } = Astro.props;
+
+const mapItems = (items: any[]) => items.map(i => ({
+  name: i.name,
+  iconSlug: i.icon_slug || i.iconSlug,
+  learning: i.is_learning || i.learning || false,
+}));
+
+const frontendTools = apiData ? mapItems(apiData.frontend) : defaultFrontend;
+const backendTools = apiData ? mapItems(apiData.backend) : defaultBackend;
+const devTools = apiData ? mapItems(apiData.tools) : defaultTools;
+---
+
+<section class="py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16" data-animate="fadeInUp">
+      <p class="text-sm font-medium text-primary tracking-widest uppercase mb-3">Tech Stack</p>
+      <h2 class="text-3xl lg:text-4xl font-bold">Habilidades y Herramientas</h2>
+      <p class="text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">Tecnologías que domino y uso en el día a día para construir productos de calidad.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 grid-cols-1 gap-6">
+      <TechContainer title="Frontend" icon="Monitor" tools={frontendTools} />
+      <TechContainer title="Backend" icon="Server" tools={backendTools} />
+      <TechContainer title="DevOps & Tools" icon="Wrench" tools={devTools} />
+    </div>
+  </div>
+</section>

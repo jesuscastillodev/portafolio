@@ -1,0 +1,47 @@
+---
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+  strokeWidth?: number;
+}
+
+import * as icons from 'lucide';
+
+const { name, size = 24, class: className = '', strokeWidth = 2 } = Astro.props;
+
+const iconData = (icons as Record<string, any>)[name];
+if (!iconData) {
+  throw new Error(`Lucide icon "${name}" not found`);
+}
+
+// iconData is an array of [tag, attrs] pairs
+const svgChildren = iconData.map((child: any) => ({
+  tag: child[0] as string,
+  attrs: child[1] as Record<string, string>,
+}));
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+>
+  {svgChildren.map((child) => {
+    if (child.tag === 'path') return <path {...child.attrs} />;
+    if (child.tag === 'circle') return <circle {...child.attrs} />;
+    if (child.tag === 'line') return <line {...child.attrs} />;
+    if (child.tag === 'polyline') return <polyline {...child.attrs} />;
+    if (child.tag === 'polygon') return <polygon {...child.attrs} />;
+    if (child.tag === 'rect') return <rect {...child.attrs} />;
+    if (child.tag === 'ellipse') return <ellipse {...child.attrs} />;
+    return null;
+  })}
+</svg>

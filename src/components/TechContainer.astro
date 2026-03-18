@@ -1,0 +1,40 @@
+---
+import Tool from './Tool.astro';
+import ToolLearning from './ToolLearning.astro';
+import LucideIcon from './LucideIcon.astro';
+
+interface ToolData {
+  name: string;
+  iconSlug: string;
+  learning?: boolean;
+}
+
+interface Props {
+  title: string;
+  icon: string;
+  tools: ToolData[];
+}
+
+const { title, icon, tools } = Astro.props;
+---
+
+<div
+  class="glass rounded-2xl p-6 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
+  data-animate="fadeInUp"
+>
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+      <LucideIcon name={icon} size={20} class="text-primary" />
+    </div>
+    <h3 class="text-lg font-bold">{title}</h3>
+  </div>
+  <div class="grid grid-cols-3 gap-3" data-animate-stagger>
+    {tools.map((tool) =>
+      tool.learning ? (
+        <ToolLearning name={tool.name} iconSlug={tool.iconSlug} />
+      ) : (
+        <Tool name={tool.name} iconSlug={tool.iconSlug} />
+      )
+    )}
+  </div>
+</div>

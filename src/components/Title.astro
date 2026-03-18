@@ -1,0 +1,16 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const words = title.split(' ');
+const firstWord = words[0];
+const rest = words.slice(1).join(' ');
+---
+
+<div class="text-center">
+  <h2 class="text-4xl font-bold">
+    <span class="text-blue-600 dark:text-[#00b7f2]">{firstWord}</span>{rest ? ` ${rest}` : ''}
+  </h2>
+</div>

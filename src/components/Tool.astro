@@ -1,0 +1,19 @@
+---
+import SimpleIcon from './SimpleIcon.astro';
+
+interface Props {
+  name: string;
+  iconSlug: string;
+}
+
+const { name, iconSlug } = Astro.props;
+---
+
+<div class="flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 group cursor-default">
+  <SimpleIcon
+    slug={iconSlug}
+    size={28}
+    class="text-slate-600 dark:text-slate-400 transition-all duration-300 group-hover:text-primary group-hover:scale-110"
+  />
+  <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{name}</p>
+</div>

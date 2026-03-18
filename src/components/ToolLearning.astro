@@ -1,0 +1,19 @@
+---
+import SimpleIcon from './SimpleIcon.astro';
+
+interface Props {
+  name: string;
+  iconSlug: string;
+}
+
+const { name, iconSlug } = Astro.props;
+---
+
+<div class="relative flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 group cursor-default">
+  <SimpleIcon
+    slug={iconSlug}
+    size={28}
+    class="text-slate-400 dark:text-slate-600 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110"
+  />
+  <span class="text-[10px] font-medium text-primary/70 bg-primary/10 rounded-full px-2 py-0.5">Aprendiendo</span>
+</div>

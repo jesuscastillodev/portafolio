@@ -1,0 +1,69 @@
+---
+interface Props {
+  slug: string;
+  size?: number;
+  class?: string;
+}
+
+const { slug, size = 40, class: className = '' } = Astro.props;
+
+// Custom icons not available in simple-icons (e.g. removed by trademark)
+const customIcons: Record<string, { paths: string[]; title: string; viewBox?: string }> = {
+  vscode: {
+    title: 'Visual Studio Code',
+    viewBox: '-0.55 0 235.1 235.1',
+    paths: [
+      'M83.3 143.9l-58 45.2L0 176.5V58.7L25.2 46l57.6 45.3L174 0l60 23.9v186.9l-59.7 24.3-91-91.2zm88.9 15.9V75.3l-54.6 42.3 54.6 42.2zM27.3 144.6L56 118.5 27.3 89.9v54.7z',
+    ],
+  },
+};
+
+let svgPaths: string[] = [];
+let title = '';
+let viewBox = '0 0 24 24';
+
+// Check custom icons first
+if (customIcons[slug]) {
+  svgPaths = customIcons[slug].paths;
+  title = customIcons[slug].title;
+  viewBox = customIcons[slug].viewBox || '0 0 24 24';
+} else {
+  try {
+    const allIcons = await import('simple-icons');
+    const exactKey = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1);
+    const icon = (allIcons as Record<string, any>)[exactKey];
+
+    if (icon) {
+      svgPaths = [icon.path];
+      title = icon.title;
+    } else {
+      const entry = Object.values(allIcons).find(
+        (v: any) => v && typeof v === 'object' && v.slug === slug
+      ) as any;
+      if (entry) {
+        svgPaths = [entry.path];
+        title = entry.title;
+      }
+    }
+  } catch {
+    // Icon not found
+  }
+}
+---
+
+{svgPaths.length > 0 ? (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox={viewBox}
+    fill="currentColor"
+    class={className}
+    role="img"
+    aria-label={title}
+  >
+    {svgPaths.map((d) => <path d={d} />)}
+  </svg>
+) : (
+  <span class={className} title={`Icon: ${slug}`}>?</span>
+)}

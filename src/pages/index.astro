@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import AboutMe from '../components/AboutMe.astro';
+import Experience from '../components/Experience.astro';
+import Gallery from '../components/Gallery.astro';
+import TechStack from '../components/TechStack.astro';
+import Footer from '../components/Footer.astro';
+import { getWorks, getProjects, getTechStack, getAbout, getSocials, getSettings } from '../lib/api';
+
+// Fetch data from API at build time (returns null if API not configured)
+const apiWorks = await getWorks();
+const apiProjects = await getProjects();
+const apiTechStack = await getTechStack();
+const apiAbout = await getAbout();
+const apiSocials = await getSocials();
+const apiSettings = await getSettings();
+
+const title = apiSettings?.site_title || 'Jesus Castillo - Desarrollador de Software';
+const description = apiSettings?.site_description || 'Portfolio de Jesus Castillo, desarrollador de software con +8 años de experiencia.';
+---
+
+<Layout title={title} description={description}>
+  <Header ctaText={apiSettings?.cta_text} ctaUrl={apiSettings?.cta_url} />
+  <main class="flex flex-col w-full">
+    <AboutMe data={apiAbout} />
+    <Experience works={apiWorks} />
+    <Gallery projects={apiProjects} />
+    <TechStack data={apiTechStack} />
+  </main>
+  <Footer socials={apiSocials} />
+</Layout>

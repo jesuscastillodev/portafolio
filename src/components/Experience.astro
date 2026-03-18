@@ -1,0 +1,60 @@
+---
+import WorkItem from './WorkItem.astro';
+import type { Work } from '../types/portfolio';
+
+interface Props {
+  works?: Work[] | null;
+}
+
+const defaultWorks = [
+  {
+    title: "UmbralWeb",
+    description: "Liderazgo del equipo de desarrollo web. Implementación de CMS personalizados con WordPress y PrestaShop. Desarrollo avanzado de soluciones en PHP para clientes corporativos.",
+    role: "Lead Developer",
+    img: "/images/works/coding.webp"
+  },
+  {
+    title: "GestionaEduca",
+    description: "Diseño de módulos de firma digital de contratos y sistema de remuneraciones. Desarrollo de APIs REST con Laravel y app móvil en React Native para comunicación estudiantil.",
+    role: "Backend & Mobile Dev",
+    img: "/images/works/gestionaeduca.webp",
+    display: "rtl"
+  },
+  {
+    title: "Stockonline",
+    description: "Arquitectura e implementación de plataforma de gestión de stock multicanal. Integración con Shopify, Bsale y MercadoLibre. Automatización de facturación y sincronización en tiempo real.",
+    role: "Full Stack Developer",
+    img: "/images/works/stockonline.webp",
+    imgLight: "/images/works/stockonline-light.webp"
+  }
+];
+
+const { works: apiWorks } = Astro.props;
+
+const workItems = apiWorks
+  ? apiWorks.map(w => ({
+      title: w.title,
+      description: w.description,
+      role: w.role,
+      img: w.img,
+      imgLight: w.img_light,
+      display: w.display_direction,
+    }))
+  : defaultWorks;
+---
+
+<section class="py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16" data-animate="fadeInUp">
+      <p class="text-sm font-medium text-primary tracking-widest uppercase mb-3">Trayectoria</p>
+      <h2 class="text-3xl lg:text-4xl font-bold">Experiencia Profesional</h2>
+      <p class="text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">Empresas donde he contribuido al desarrollo de productos digitales de alto impacto.</p>
+    </div>
+
+    <div class="space-y-6">
+      {workItems.map((work, i) => (
+        <WorkItem {...work} index={i} />
+      ))}
+    </div>
+  </div>
+</section>

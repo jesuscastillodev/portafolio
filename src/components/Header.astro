@@ -1,0 +1,56 @@
+---
+import LucideIcon from './LucideIcon.astro';
+
+interface Props {
+  ctaText?: string;
+  ctaUrl?: string;
+}
+
+const { ctaText = 'Hablemos', ctaUrl = 'https://t.me/Jcastillo_dev' } = Astro.props;
+---
+
+<header class="sticky top-0 z-50 w-full">
+  <div class="glass mx-auto">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 group">
+        <img
+          class="h-9 transition-transform duration-300 group-hover:scale-105 block dark:hidden"
+          src="/images/logo-jcastillo.webp"
+          alt="Jcastillo.dev"
+        />
+        <img
+          class="h-9 transition-transform duration-300 group-hover:scale-105 hidden dark:block"
+          src="/images/logo-jcastillo-white.webp"
+          alt="Jcastillo.dev"
+        />
+      </a>
+
+      <div class="flex items-center gap-3">
+        <button
+          id="theme-toggle"
+          class="relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+          aria-label="Cambiar tema"
+        >
+          <LucideIcon name="Sun" size={18} class="text-slate-600 block dark:hidden transition-transform duration-300 hover:rotate-90" />
+          <LucideIcon name="Moon" size={18} class="text-slate-400 hidden dark:block transition-transform duration-300 hover:-rotate-12" />
+        </button>
+        <a
+          target="_blank"
+          href={ctaUrl}
+          class="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+        >
+          <LucideIcon name="MessageCircle" size={16} class="text-white/80" />
+          {ctaText}
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('theme-toggle');
+  toggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('darkMode', String(isDark));
+  });
+</script>
