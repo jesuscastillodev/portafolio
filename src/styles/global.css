@@ -241,7 +241,12 @@ body {
   background: rgba(99, 102, 241, 0.4);
 }
 
+/* ===== HEADING FONT ===== */
+h1, h2, h3 {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
+
 /* ===== CODE FONT ===== */
 .font-mono {
-  font-family: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
