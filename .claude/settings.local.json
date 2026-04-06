@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"C:\\\\Users\\\\jcastillo.dev\\\\.claude\\\\projects\\\\C--Users-jcastillo-dev-proyects-portafolio\\\\memory\"\" 2>/dev/null || echo \"Directory does not exist \")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls node_modules/.bin/vite*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Read(//c/Users/jcastillo.dev/proyects/**)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx astro:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(mkdir -p public/images/works public/images/design)",
+      "Bash(cp /c/Users/jcastillo.dev/proyects/portafolio/public/images/foto.webp public/images/)",
+      "Bash(cp /c/Users/jcastillo.dev/proyects/portafolio/public/images/logo-jcastillo.webp public/images/)",
+      "Bash(cp /c/Users/jcastillo.dev/proyects/portafolio/public/images/logo-jcastillo-white.webp public/images/)",
+      "Bash(cp /c/Users/jcastillo.dev/proyects/portafolio/public/images/works/* public/images/works/)",
+      "Bash(cp /c/Users/jcastillo.dev/proyects/portafolio/public/images/design/* public/images/design/)",
+      "Bash(ls /c/Users/jcastillo.dev/proyects/portafolio-astro/node_modules/.bin/astro*)",
+      "Bash(node -e \"const icons = require\\(''lucide''\\); const sun = icons[''Sun'']; console.log\\(typeof sun\\); console.log\\(JSON.stringify\\(sun\\).slice\\(0,500\\)\\);\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const dir=fs.readdirSync\\(''node_modules/simple-icons/icons''\\); const vsc=dir.filter\\(f=>f.includes\\(''visual''\\)||f.includes\\(''vscode''\\)\\); console.log\\(vsc\\);\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const dir=fs.readdirSync\\(''node_modules/simple-icons/icons''\\); const vsc=dir.filter\\(f=>f.includes\\(''studio''\\)\\); console.log\\(vsc\\);\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const dir=fs.readdirSync\\(''node_modules/simple-icons/icons''\\); const vsc=dir.filter\\(f=>f.includes\\(''vsc''\\)||f.includes\\(''code''\\)\\); console.log\\(vsc\\);\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const dir=fs.readdirSync\\(''node_modules/simple-icons/icons''\\); const t=dir.filter\\(f=>f.includes\\(''terminal''\\)||f.includes\\(''gnome''\\)||f.includes\\(''hyper''\\)||f.includes\\(''warp''\\)||f.includes\\(''iterm''\\)||f.includes\\(''windows''\\)\\); console.log\\(t\\);\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const dir=fs.readdirSync\\(''node_modules/simple-icons/icons''\\); const c=dir.filter\\(f=>f.includes\\(''css''\\)\\); console.log\\(c\\);\")",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const dir=fs.readdirSync\\(''node_modules/simple-icons/icons''\\); [''html5'',''css3'',''javascript'',''jquery'',''bootstrap'',''cakephp'',''nodedotjs'',''apache''].forEach\\(s => console.log\\(s, dir.includes\\(s+''.svg''\\)\\)\\);\")",
+      "Bash(node -e \":*)",
+      "Bash(node -e \"const pkg = require\\(''simple-icons/package.json''\\); console.log\\(''version:'', pkg.version\\);\")",
+      "WebSearch",
+      "WebFetch(domain:code.visualstudio.com)",
+      "Bash(git checkout:*)",
+      "Bash(cp -r /c/Users/jcastillo.dev/proyects/portafolio-astro/src .)",
+      "Bash(cp -r /c/Users/jcastillo.dev/proyects/portafolio-astro/public .)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git merge:*)"
+    ]
+  }
+}
