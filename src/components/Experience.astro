@@ -11,21 +11,24 @@ const defaultWorks = [
     title: "UmbralWeb",
     description: "Liderazgo del equipo de desarrollo web. Implementacion de CMS personalizados con WordPress y PrestaShop. Desarrollo avanzado de soluciones en PHP para clientes corporativos.",
     role: "Lead Developer",
-    img: "/images/works/coding.webp"
+    img: "/images/works/coding.webp",
+    technologies: ["PHP", "WordPress", "PrestaShop", "MySQL", "jQuery", "CSS3"]
   },
   {
     title: "GestionaEduca",
     description: "Diseno de modulos de firma digital de contratos y sistema de remuneraciones. Desarrollo de APIs REST con Laravel y app movil en React Native para comunicacion estudiantil.",
     role: "Backend & Mobile Dev",
     img: "/images/works/gestionaeduca.webp",
-    display: "rtl"
+    display: "rtl",
+    technologies: ["Laravel", "React Native", "MySQL", "REST API", "Docker", "Git"]
   },
   {
     title: "Stockonline",
     description: "Arquitectura e implementacion de plataforma de gestion de stock multicanal. Integracion con Shopify, Bsale y MercadoLibre. Automatizacion de facturacion y sincronizacion en tiempo real.",
     role: "Full Stack Developer",
     img: "/images/works/stockonline.webp",
-    imgLight: "/images/works/stockonline-light.webp"
+    imgLight: "/images/works/stockonline-light.webp",
+    technologies: ["React", "Node.js", "Laravel", "MongoDB", "Shopify API", "Docker"]
   }
 ];
 
@@ -39,6 +42,7 @@ const workItems = apiWorks
       img: w.img,
       imgLight: w.img_light,
       display: w.display_direction,
+      technologies: w.technologies || [],
     }))
   : defaultWorks;
 ---

@@ -9,9 +9,10 @@ interface Props {
   imgLight?: string;
   display?: string;
   index?: number;
+  technologies?: string[];
 }
 
-const { title, description, role, img, imgLight, display = 'ltr', index = 0 } = Astro.props;
+const { title, description, role, img, imgLight, display = 'ltr', index = 0, technologies = [] } = Astro.props;
 const isRtl = display === 'rtl';
 ---
 
@@ -45,6 +46,17 @@ const isRtl = display === 'rtl';
         <p class="text-sm font-semibold text-primary">{role}</p>
       </div>
     </div>
-    <p class="text-gray-500 dark:text-gray-400 leading-relaxed">{description}</p>
+
+    <p class="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">{description}</p>
+
+    {technologies.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {technologies.map((tech) => (
+          <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-primary/[0.06] dark:bg-primary/10 text-primary/80 dark:text-primary-light/80 border border-primary/10 dark:border-primary/15 tracking-wide">
+            {tech}
+          </span>
+        ))}
+      </div>
+    )}
   </div>
 </div>

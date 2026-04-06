@@ -1,6 +1,7 @@
 ---
 import type { About } from '../types/portfolio';
 import LucideIcon from './LucideIcon.astro';
+import Terminal from './Terminal.astro';
 
 interface Props {
   data?: About | null;
@@ -13,38 +14,40 @@ const yearsExp = new Date().getFullYear() - 2014;
 ---
 
 <section class="relative min-h-[90vh] flex items-center py-32 px-6 overflow-hidden mesh-gradient">
-  <!-- Subtle dot pattern -->
   <div class="absolute inset-0 dot-pattern opacity-30"></div>
 
   <div class="relative max-w-6xl mx-auto w-full">
     <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20" data-animate="fadeInUp">
-      <!-- Photo with premium treatment -->
-      <div class="relative flex-shrink-0 group">
-        <!-- Glow behind photo -->
-        <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-purple-500/10 to-accent/20 blur-2xl scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      <!-- Left column: Photo + Terminal -->
+      <div class="relative flex-shrink-0 flex flex-col items-center gap-8">
+        <!-- Photo -->
+        <div class="relative group">
+          <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-purple-500/10 to-accent/20 blur-2xl scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-        <div class="relative w-48 h-48 lg:w-64 lg:h-64 rounded-3xl overflow-hidden ring-1 ring-white/20 dark:ring-white/10 shadow-2xl shadow-primary/10 transition-all duration-700 group-hover:shadow-primary/20 group-hover:scale-[1.02]">
-          <img
-            src={photo}
-            alt="Jesus Castillo"
-            class="w-full h-full object-cover"
-            loading="eager"
-          />
+          <div class="relative w-48 h-48 lg:w-56 lg:h-56 rounded-3xl overflow-hidden ring-1 ring-white/20 dark:ring-white/10 shadow-2xl shadow-primary/10 transition-all duration-700 group-hover:shadow-primary/20 group-hover:scale-[1.02]">
+            <img
+              src={photo}
+              alt="Jesus Castillo"
+              class="w-full h-full object-cover"
+              loading="eager"
+            />
+          </div>
+
+          <button
+            id="builder-badge"
+            class="absolute -bottom-3 -right-3 glass rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2.5 cursor-pointer hover:scale-105 transition-all duration-300 border-0 bg-transparent"
+          >
+            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span id="builder-text" class="text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide">Disponible</span>
+          </button>
         </div>
 
-        <!-- Floating badge -->
-        <button
-          id="builder-badge"
-          class="absolute -bottom-3 -right-3 glass rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2.5 cursor-pointer hover:scale-105 transition-all duration-300 border-0 bg-transparent"
-        >
-          <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-          <span id="builder-text" class="text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide">Disponible</span>
-        </button>
+        <!-- Terminal -->
+        <Terminal class="w-full max-w-sm hidden lg:block" />
       </div>
 
       <!-- Content -->
       <div class="flex-1 text-center lg:text-left">
-        <!-- Eyebrow -->
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-6">
           <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
           <span class="text-xs font-semibold text-primary tracking-wider uppercase">Software Developer</span>
@@ -59,7 +62,7 @@ const yearsExp = new Date().getFullYear() - 2014;
           Creo soluciones digitales robustas y escalables. Desde APIs de alto rendimiento hasta interfaces intuitivas que generan impacto real.
         </p>
 
-        <!-- Stats - minimal Apple style -->
+        <!-- Stats -->
         <div class="flex flex-wrap gap-10 justify-center lg:justify-start mb-10">
           <div>
             <p class="text-4xl font-black tracking-tight gradient-text">{yearsExp}+</p>
@@ -92,6 +95,11 @@ const yearsExp = new Date().getFullYear() - 2014;
             <LucideIcon name="Github" size={16} class="transition-transform duration-300 group-hover/btn:scale-110" />
             GitHub
           </a>
+        </div>
+
+        <!-- Mobile terminal -->
+        <div class="lg:hidden mt-12">
+          <Terminal class="w-full max-w-sm mx-auto" />
         </div>
       </div>
     </div>
