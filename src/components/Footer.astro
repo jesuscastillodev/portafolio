@@ -18,28 +18,33 @@ const socialItems = apiSocials || defaultSocials;
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-slate-200 dark:border-slate-800 py-12 px-6">
+<footer class="relative border-t border-gray-100 dark:border-white/5 py-16 px-6">
   <div class="max-w-6xl mx-auto">
     <div class="flex flex-col md:flex-row items-center justify-between gap-8">
       <!-- Social links -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5">
         {socialItems.map((social) => (
           <a
             href={social.url}
             target={social.url.startsWith('mailto') ? undefined : '_blank'}
             rel={social.url.startsWith('mailto') ? 'noopener nofollow' : undefined}
-            class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all duration-300"
+            class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300"
             aria-label={social.label}
           >
-            <LucideIcon name={social.icon_slug} size={20} />
+            <LucideIcon name={social.icon_slug} size={18} />
           </a>
         ))}
       </div>
 
-      <!-- Copyright -->
-      <p class="text-sm text-slate-400 dark:text-slate-500">
-        &copy; {year} Jcastillo.dev
-      </p>
+      <!-- Branding -->
+      <div class="flex flex-col items-center md:items-end gap-1">
+        <p class="text-sm font-medium text-gray-400 dark:text-gray-500">
+          &copy; {year} Jcastillo.dev
+        </p>
+        <p class="text-xs text-gray-300 dark:text-gray-600">
+          Crafted with precision
+        </p>
+      </div>
     </div>
   </div>
 </footer>

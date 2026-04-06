@@ -9,20 +9,20 @@ interface Props {
 const defaultWorks = [
   {
     title: "UmbralWeb",
-    description: "Liderazgo del equipo de desarrollo web. Implementación de CMS personalizados con WordPress y PrestaShop. Desarrollo avanzado de soluciones en PHP para clientes corporativos.",
+    description: "Liderazgo del equipo de desarrollo web. Implementacion de CMS personalizados con WordPress y PrestaShop. Desarrollo avanzado de soluciones en PHP para clientes corporativos.",
     role: "Lead Developer",
     img: "/images/works/coding.webp"
   },
   {
     title: "GestionaEduca",
-    description: "Diseño de módulos de firma digital de contratos y sistema de remuneraciones. Desarrollo de APIs REST con Laravel y app móvil en React Native para comunicación estudiantil.",
+    description: "Diseno de modulos de firma digital de contratos y sistema de remuneraciones. Desarrollo de APIs REST con Laravel y app movil en React Native para comunicacion estudiantil.",
     role: "Backend & Mobile Dev",
     img: "/images/works/gestionaeduca.webp",
     display: "rtl"
   },
   {
     title: "Stockonline",
-    description: "Arquitectura e implementación de plataforma de gestión de stock multicanal. Integración con Shopify, Bsale y MercadoLibre. Automatización de facturación y sincronización en tiempo real.",
+    description: "Arquitectura e implementacion de plataforma de gestion de stock multicanal. Integracion con Shopify, Bsale y MercadoLibre. Automatizacion de facturacion y sincronizacion en tiempo real.",
     role: "Full Stack Developer",
     img: "/images/works/stockonline.webp",
     imgLight: "/images/works/stockonline-light.webp"
@@ -43,15 +43,20 @@ const workItems = apiWorks
   : defaultWorks;
 ---
 
-<section class="py-20 px-6">
+<section id="experiencia" class="py-24 lg:py-28 px-6 relative">
   <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-16" data-animate="fadeInUp">
-      <p class="text-sm font-medium text-primary tracking-widest uppercase mb-3">Trayectoria</p>
-      <h2 class="text-3xl lg:text-4xl font-bold">Experiencia Profesional</h2>
-      <p class="text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">Empresas donde he contribuido al desarrollo de productos digitales de alto impacto.</p>
+    <!-- Section header -->
+    <div class="text-center mb-20" data-animate="fadeInUp">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-5">
+        <span class="text-xs font-semibold text-primary tracking-wider uppercase">Trayectoria</span>
+      </div>
+      <h2 class="text-4xl lg:text-5xl font-black tracking-tight">Experiencia Profesional</h2>
+      <p class="text-gray-500 dark:text-gray-400 mt-4 max-w-lg mx-auto leading-relaxed">
+        Empresas donde he contribuido al desarrollo de productos digitales de alto impacto.
+      </p>
     </div>
 
-    <div class="space-y-6">
+    <div class="space-y-8">
       {workItems.map((work, i) => (
         <WorkItem {...work} index={i} />
       ))}
