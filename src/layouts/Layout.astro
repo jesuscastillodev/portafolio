@@ -4,9 +4,12 @@ interface Props {
   description?: string;
 }
 
+const siteUrl = 'https://jcastillo.dev';
+const ogImage = `${siteUrl}/og-image.png`;
+
 const {
-  title = "Jesús Castillo - Desarrollador de Software",
-  description = "Portfolio de Jesús Castillo, desarrollador de software con +8 años de experiencia. Especializado en React, Laravel, Node.js y soluciones tecnológicas innovadoras."
+  title = "Jesús Castillo — Software Developer",
+  description = "Portfolio de Jesús Castillo, desarrollador de software con +10 años de experiencia. Especializado en React, Laravel, Node.js y arquitectura de soluciones escalables."
 } = Astro.props;
 ---
 
@@ -17,42 +20,107 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="author" content="Jesús Castillo" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href={siteUrl} />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
+    <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
     <meta property="og:locale" content="es_ES" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Jcastillo.dev" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>{title}</title>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Jesús Castillo",
+      "url": siteUrl,
+      "image": `${siteUrl}/images/foto.webp`,
+      "jobTitle": "Software Developer",
+      "description": description,
+      "knowsAbout": ["React", "Laravel", "Node.js", "Docker", "TypeScript", "PHP", "MySQL", "MongoDB"],
+      "sameAs": [
+        "https://github.com/jesuscastillodev",
+        "https://t.me/Jcastillo_dev"
+      ]
+    })} />
   </head>
-  <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-500">
-    <div class="relative w-full overflow-hidden min-h-screen">
+  <body class="bg-white text-[#0f0f1a] dark:bg-[#0a0a0f] dark:text-[#f0f0f5] transition-colors duration-700">
+    <div class="relative w-full overflow-x-hidden min-h-screen">
+      <!-- Ambient background blobs -->
+      <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-primary/[0.03] dark:bg-primary/[0.06] blur-[120px] animate-[morphBlob_20s_ease-in-out_infinite]"></div>
+        <div class="absolute -bottom-[30%] -right-[20%] w-[60%] h-[60%] rounded-full bg-accent/[0.03] dark:bg-accent/[0.05] blur-[120px] animate-[morphBlob_25s_ease-in-out_infinite_reverse]"></div>
+      </div>
+
       <slot />
     </div>
 
+    <!-- Cursor glow -->
+    <div id="cursor-glow" class="fixed pointer-events-none -z-0 w-[300px] h-[300px] rounded-full opacity-0 transition-opacity duration-500 hidden lg:block" style="background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%); transform: translate(-50%, -50%);"></div>
+
     <script is:inline>
       (function() {
-        var s = localStorage.getItem('darkMode');
-        if (s === 'true') document.documentElement.classList.add('dark');
+        var g = document.getElementById('cursor-glow');
+        if (g && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.innerWidth > 1024) {
+          var visible = false;
+          document.addEventListener('mousemove', function(e) {
+            if (!visible) { g.style.opacity = '1'; visible = true; }
+            g.style.left = e.clientX + 'px';
+            g.style.top = e.clientY + 'px';
+          }, { passive: true });
+          document.addEventListener('mouseleave', function() {
+            g.style.opacity = '0'; visible = false;
+          });
+        }
       })();
     </script>
 
     <script is:inline>
       (function() {
+        var s = localStorage.getItem('darkMode');
+        if (s === 'true' || (!s && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
+    <script is:inline>
+      (function() {
+        var els;
         var o = new IntersectionObserver(function(entries) {
           entries.forEach(function(e) {
             if (e.isIntersecting) { e.target.classList.add('is-visible'); o.unobserve(e.target); }
           });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.05, rootMargin: '50px 0px -20px 0px' });
         function init() {
-          document.querySelectorAll('[data-animate],[data-animate-stagger]').forEach(function(el) { o.observe(el); });
+          els = document.querySelectorAll('[data-animate],[data-animate-stagger]');
+          els.forEach(function(el) { o.observe(el); });
+          setTimeout(function() {
+            els.forEach(function(el) { el.classList.add('is-visible'); });
+          }, 3000);
         }
         document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
       })();

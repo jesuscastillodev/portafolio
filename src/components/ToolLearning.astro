@@ -9,11 +9,12 @@ interface Props {
 const { name, iconSlug } = Astro.props;
 ---
 
-<div class="relative flex flex-col items-center justify-center gap-2 p-3 rounded-xl transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 group cursor-default">
+<div class="relative flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all duration-300 hover:bg-primary/[0.03] dark:hover:bg-primary/[0.06] group cursor-default">
   <SimpleIcon
     slug={iconSlug}
-    size={28}
-    class="text-slate-400 dark:text-slate-600 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110"
+    size={26}
+    class="text-gray-300 dark:text-gray-600 opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110"
   />
-  <span class="text-[10px] font-medium text-primary/70 bg-primary/10 rounded-full px-2 py-0.5">Aprendiendo</span>
+  <p class="text-[11px] font-medium text-gray-400 dark:text-gray-500">{name}</p>
+  <span class="text-[9px] font-semibold text-primary/70 bg-primary/[0.06] dark:bg-primary/10 rounded-full px-2 py-0.5 tracking-wider uppercase">Aprendiendo</span>
 </div>

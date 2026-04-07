@@ -14,6 +14,7 @@ const defaultFrontend = [
   { name: "CSS3", iconSlug: "css" },
   { name: "jQuery", iconSlug: "jquery" },
   { name: "Bootstrap", iconSlug: "bootstrap" },
+  { name: "Astro", iconSlug: "astro", learning: true },
 ];
 
 const defaultBackend = [
@@ -35,6 +36,7 @@ const defaultTools = [
   { name: "Jira", iconSlug: "jira" },
   { name: "VS Code", iconSlug: "vscode" },
   { name: "Postman", iconSlug: "postman" },
+  { name: "Jenkins", iconSlug: "jenkins" },
   { name: "Kubernetes", iconSlug: "kubernetes", learning: true },
 ];
 
@@ -51,15 +53,19 @@ const backendTools = apiData ? mapItems(apiData.backend) : defaultBackend;
 const devTools = apiData ? mapItems(apiData.tools) : defaultTools;
 ---
 
-<section class="py-20 px-6">
+<section id="stack" class="py-24 lg:py-28 px-6 relative">
   <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-16" data-animate="fadeInUp">
-      <p class="text-sm font-medium text-primary tracking-widest uppercase mb-3">Tech Stack</p>
-      <h2 class="text-3xl lg:text-4xl font-bold">Habilidades y Herramientas</h2>
-      <p class="text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">Tecnologías que domino y uso en el día a día para construir productos de calidad.</p>
+    <div class="text-center mb-20" data-animate="fadeInUp">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-5">
+        <span class="text-xs font-semibold text-primary tracking-wider uppercase">Tech Stack</span>
+      </div>
+      <h2 class="text-4xl lg:text-5xl font-black tracking-tight">Habilidades y Herramientas</h2>
+      <p class="text-gray-500 dark:text-gray-400 mt-4 max-w-lg mx-auto leading-relaxed">
+        Tecnologías que domino y uso en el día a día para construir productos de calidad.
+      </p>
     </div>
 
-    <div class="grid lg:grid-cols-3 grid-cols-1 gap-6">
+    <div class="grid lg:grid-cols-3 grid-cols-1 gap-8">
       <TechContainer title="Frontend" icon="Monitor" tools={frontendTools} />
       <TechContainer title="Backend" icon="Server" tools={backendTools} />
       <TechContainer title="DevOps & Tools" icon="Wrench" tools={devTools} />

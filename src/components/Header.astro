@@ -9,40 +9,63 @@ interface Props {
 const { ctaText = 'Hablemos', ctaUrl = 'https://t.me/Jcastillo_dev' } = Astro.props;
 ---
 
-<header class="sticky top-0 z-50 w-full">
-  <div class="glass mx-auto">
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-shadow duration-300">
+  <div class="glass">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 group">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group relative" aria-label="Inicio">
         <img
-          class="h-9 transition-transform duration-300 group-hover:scale-105 block dark:hidden"
+          class="h-8 object-contain transition-all duration-500 group-hover:scale-105 group-hover:brightness-110 block dark:hidden"
           src="/images/logo-jcastillo.webp"
-          alt="Jcastillo.dev"
+          alt="Jcastillo.dev — Ir al inicio"
+          width="120"
+          height="32"
         />
         <img
-          class="h-9 transition-transform duration-300 group-hover:scale-105 hidden dark:block"
+          class="h-8 object-contain transition-all duration-500 group-hover:scale-105 group-hover:brightness-110 hidden dark:block"
           src="/images/logo-jcastillo-white.webp"
-          alt="Jcastillo.dev"
+          alt="Jcastillo.dev — Ir al inicio"
+          width="120"
+          height="32"
         />
       </a>
 
-      <div class="flex items-center gap-3">
+      <!-- Nav links + CTA -->
+      <nav class="flex items-center gap-1" aria-label="Navegación principal">
+        <a href="#experiencia" class="hidden md:inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-300 rounded-lg">
+          Experiencia
+        </a>
+        <a href="#proyectos" class="hidden md:inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-300 rounded-lg">
+          Proyectos
+        </a>
+        <a href="#stack" class="hidden md:inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-300 rounded-lg">
+          Stack
+        </a>
+
+        <div class="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-2 hidden md:block" aria-hidden="true"></div>
+
+        <!-- Theme toggle -->
         <button
           id="theme-toggle"
-          class="relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-          aria-label="Cambiar tema"
+          class="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
+          aria-label="Cambiar entre modo claro y oscuro"
         >
-          <LucideIcon name="Sun" size={18} class="text-slate-600 block dark:hidden transition-transform duration-300 hover:rotate-90" />
-          <LucideIcon name="Moon" size={18} class="text-slate-400 hidden dark:block transition-transform duration-300 hover:-rotate-12" />
+          <LucideIcon name="Sun" size={16} class="text-gray-500 block dark:hidden transition-transform duration-500 hover:rotate-180" />
+          <LucideIcon name="Moon" size={16} class="text-gray-400 hidden dark:block transition-transform duration-500 hover:-rotate-12" />
         </button>
+
+        <!-- CTA -->
         <a
           target="_blank"
+          rel="noopener noreferrer"
           href={ctaUrl}
-          class="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-xl px-5 py-2.5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+          class="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl px-5 py-2 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 ml-1"
+          aria-label={`${ctaText} — Abrir Telegram`}
         >
-          <LucideIcon name="MessageCircle" size={16} class="text-white/80" />
-          {ctaText}
+          <LucideIcon name="MessageCircle" size={14} class="text-white/80" />
+          <span class="hidden sm:inline">{ctaText}</span>
         </a>
-      </div>
+      </nav>
     </div>
   </div>
 </header>
@@ -53,4 +76,16 @@ const { ctaText = 'Hablemos', ctaUrl = 'https://t.me/Jcastillo_dev' } = Astro.pr
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('darkMode', String(isDark));
   });
+
+  // Header shadow on scroll
+  const header = document.getElementById('site-header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        header.classList.add('shadow-sm');
+      } else {
+        header.classList.remove('shadow-sm');
+      }
+    }, { passive: true });
+  }
 </script>

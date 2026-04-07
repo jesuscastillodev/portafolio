@@ -16,25 +16,156 @@ interface Props {
 }
 
 const { title, icon, tools } = Astro.props;
+
+const toolNames = tools.filter(t => !t.learning).map(t => `"${t.name}"`).join(', ');
+const learningNames = tools.filter(t => t.learning).map(t => `"${t.name}"`).join(', ');
+const titleLower = title.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-');
 ---
 
 <div
-  class="glass rounded-2xl p-6 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
+  class="flip-card cursor-pointer"
   data-animate="fadeInUp"
+  data-flipped="false"
 >
-  <div class="flex items-center gap-3 mb-6">
-    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-      <LucideIcon name={icon} size={20} class="text-primary" />
+  <div class="flip-card-inner">
+    <!-- FRONT: Icons grid -->
+    <div class="flip-card-front glow-card glass rounded-3xl p-7">
+      <div class="flex items-center justify-between mb-7">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-primary/5 dark:bg-primary/10 flex items-center justify-center border border-primary/10 dark:border-primary/20">
+            <LucideIcon name={icon} size={18} class="text-primary" />
+          </div>
+          <h3 class="text-lg font-bold tracking-tight">{title}</h3>
+        </div>
+        <div class="flex items-center gap-1.5 text-[10px] font-medium text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+          <LucideIcon name="RotateCcw" size={12} class="text-gray-400 dark:text-gray-500" />
+          <span class="hidden sm:inline">Click para terminal</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2" data-animate-stagger>
+        {tools.map((tool) =>
+          tool.learning ? (
+            <ToolLearning name={tool.name} iconSlug={tool.iconSlug} />
+          ) : (
+            <Tool name={tool.name} iconSlug={tool.iconSlug} />
+          )
+        )}
+      </div>
     </div>
-    <h3 class="text-lg font-bold">{title}</h3>
-  </div>
-  <div class="grid grid-cols-3 gap-3" data-animate-stagger>
-    {tools.map((tool) =>
-      tool.learning ? (
-        <ToolLearning name={tool.name} iconSlug={tool.iconSlug} />
-      ) : (
-        <Tool name={tool.name} iconSlug={tool.iconSlug} />
-      )
-    )}
+
+    <!-- BACK: Terminal -->
+    <div class="flip-card-back glass rounded-3xl overflow-hidden">
+      <!-- Terminal title bar -->
+      <div class="flex items-center gap-2 px-4 py-3 bg-gray-100/80 dark:bg-white/[0.04] border-b border-gray-200/50 dark:border-white/5">
+        <div class="flex gap-1.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-400/80"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></div>
+        </div>
+        <span class="text-[10px] font-mono font-medium text-gray-400 dark:text-gray-500 ml-1.5">~/{titleLower}</span>
+        <div class="ml-auto flex items-center gap-1.5 text-[10px] font-medium text-gray-400 dark:text-gray-500">
+          <LucideIcon name="RotateCcw" size={10} class="text-gray-400 dark:text-gray-500" />
+          <span class="hidden sm:inline">Volver</span>
+        </div>
+      </div>
+
+      <!-- Terminal content -->
+      <div class="p-5 font-mono text-[12px] leading-relaxed space-y-1.5 bg-gray-50/50 dark:bg-[#0d0d14] h-full">
+        <div class="flex gap-2">
+          <span class="text-emerald-500 dark:text-emerald-400 select-none">$</span>
+          <span class="text-gray-700 dark:text-gray-300">ls {titleLower}/</span>
+        </div>
+        <div class="pl-4 text-amber-600 dark:text-amber-400">
+          {tools.filter(t => !t.learning).map(t => t.name).join('  ')}
+        </div>
+
+        {learningNames && (
+          <>
+            <div class="flex gap-2 mt-2">
+              <span class="text-emerald-500 dark:text-emerald-400 select-none">$</span>
+              <span class="text-gray-700 dark:text-gray-300">cat learning.txt</span>
+            </div>
+            <div class="pl-4 text-purple-500 dark:text-purple-400 italic">
+              {tools.filter(t => t.learning).map(t => t.name).join(', ')}
+            </div>
+          </>
+        )}
+
+        <div class="flex gap-2 mt-2">
+          <span class="text-emerald-500 dark:text-emerald-400 select-none">$</span>
+          <span class="text-gray-700 dark:text-gray-300">cat stack.json</span>
+        </div>
+        <div class="pl-4 space-y-0.5">
+          <span class="text-gray-400 dark:text-gray-500">{"{"}</span>
+          <div class="pl-3">
+            <span class="text-purple-500 dark:text-purple-400">"category"</span><span class="text-gray-400">:</span>
+            <span class="text-amber-600 dark:text-amber-400"> "{title}"</span><span class="text-gray-400">,</span>
+          </div>
+          <div class="pl-3">
+            <span class="text-purple-500 dark:text-purple-400">"count"</span><span class="text-gray-400">:</span>
+            <span class="text-cyan-600 dark:text-cyan-400"> {tools.length}</span><span class="text-gray-400">,</span>
+          </div>
+          <div class="pl-3">
+            <span class="text-purple-500 dark:text-purple-400">"tools"</span><span class="text-gray-400">:</span>
+            <span class="text-amber-600 dark:text-amber-400"> [{toolNames}]</span>
+          </div>
+          <span class="text-gray-400 dark:text-gray-500">{"}"}</span>
+        </div>
+
+        <div class="flex gap-2 mt-2">
+          <span class="text-emerald-500 dark:text-emerald-400 select-none">$</span>
+          <span class="text-gray-400 dark:text-gray-600 animate-pulse">_</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<style>
+  .flip-card {
+    perspective: 1200px;
+  }
+
+  .flip-card-inner {
+    position: relative;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
+  }
+
+  .flip-card[data-flipped="true"] .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .flip-card-front {
+    position: relative;
+    z-index: 2;
+  }
+
+  .flip-card-back {
+    position: absolute;
+    inset: 0;
+    transform: rotateY(180deg);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flip-card-back > div:last-child {
+    flex: 1;
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.flip-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const current = card.getAttribute('data-flipped');
+      card.setAttribute('data-flipped', current === 'true' ? 'false' : 'true');
+    });
+  });
+</script>

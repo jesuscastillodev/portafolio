@@ -9,42 +9,54 @@ interface Props {
   imgLight?: string;
   display?: string;
   index?: number;
+  technologies?: string[];
 }
 
-const { title, description, role, img, imgLight, display = 'ltr', index = 0 } = Astro.props;
+const { title, description, role, img, imgLight, display = 'ltr', index = 0, technologies = [] } = Astro.props;
 const isRtl = display === 'rtl';
 ---
 
 <div
   class:list={[
-    "glass rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 flex flex-col lg:flex-row items-stretch",
+    "group glow-card glass rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1 flex flex-col lg:flex-row items-stretch",
     isRtl && "lg:flex-row-reverse"
   ]}
   data-animate={isRtl ? "fadeInLeft" : "fadeInRight"}
 >
   <!-- Image -->
-  <div class="lg:w-2/5 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center p-8">
+  <div class="lg:w-2/5 bg-gray-50 dark:bg-white/[0.03] flex items-center justify-center p-10">
     {imgLight ? (
       <>
-        <img src={img} class="max-h-32 w-auto object-contain block dark:hidden" alt={title} loading="lazy" />
-        <img src={imgLight} class="max-h-32 w-auto object-contain hidden dark:block" alt={title} loading="lazy" />
+        <img src={img} class="max-h-36 w-auto object-contain block dark:hidden transition-transform duration-500 group-hover:scale-105" alt={title} loading="lazy" />
+        <img src={imgLight} class="max-h-36 w-auto object-contain hidden dark:block transition-transform duration-500 group-hover:scale-105" alt={title} loading="lazy" />
       </>
     ) : (
-      <img src={img} class="max-h-32 w-auto object-contain" alt={title} loading="lazy" />
+      <img src={img} class="max-h-36 w-auto object-contain transition-transform duration-500 group-hover:scale-105" alt={title} loading="lazy" />
     )}
   </div>
 
   <!-- Content -->
-  <div class="lg:w-3/5 p-8 flex flex-col justify-center">
-    <div class="flex items-center gap-3 mb-3">
-      <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+  <div class="lg:w-3/5 p-8 lg:p-10 flex flex-col justify-center">
+    <div class="flex items-center gap-4 mb-4">
+      <div class="w-11 h-11 rounded-2xl bg-primary/5 dark:bg-primary/10 flex items-center justify-center border border-primary/10 dark:border-primary/20">
         <LucideIcon name="Building2" size={20} class="text-primary" />
       </div>
       <div>
-        <h3 class="text-xl font-bold">{title}</h3>
-        <p class="text-sm font-medium text-primary">{role}</p>
+        <h3 class="text-xl font-bold tracking-tight">{title}</h3>
+        <p class="text-sm font-semibold text-primary">{role}</p>
       </div>
     </div>
-    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">{description}</p>
+
+    <p class="text-gray-500 dark:text-gray-400 leading-relaxed mb-4">{description}</p>
+
+    {technologies.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {technologies.map((tech) => (
+          <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-primary/[0.06] dark:bg-primary/10 text-primary/80 dark:text-primary-light/80 border border-primary/10 dark:border-primary/15 tracking-wide">
+            {tech}
+          </span>
+        ))}
+      </div>
+    )}
   </div>
 </div>

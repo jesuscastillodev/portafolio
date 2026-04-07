@@ -1,7 +1,6 @@
 ---
 import type { About } from '../types/portfolio';
 import LucideIcon from './LucideIcon.astro';
-
 interface Props {
   data?: About | null;
 }
@@ -10,64 +9,56 @@ const { data } = Astro.props;
 
 const photo = data?.photo || '/images/foto.webp';
 const yearsExp = new Date().getFullYear() - 2014;
-const paragraphs = data?.paragraphs || [
-  `+${yearsExp} años de experiencia construyendo productos digitales.`,
-  'Especializado en arquitectura backend, APIs escalables y experiencias frontend modernas.',
-  'Apasionado por el código limpio, la automatización y los nuevos retos tecnológicos.',
-];
 ---
 
-<section class="relative py-24 px-6 overflow-hidden">
-  <!-- Background pattern -->
-  <div class="absolute inset-0 dot-pattern opacity-50"></div>
+<section class="relative min-h-[90vh] flex items-center py-20 lg:py-24 px-6 overflow-hidden mesh-gradient">
+  <div class="absolute inset-0 dot-pattern opacity-40"></div>
 
-  <div class="relative max-w-6xl mx-auto">
-    <div class="flex flex-col lg:flex-row items-center gap-16" data-animate="fadeInUp">
+  <div class="relative max-w-6xl mx-auto w-full">
+    <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20" data-animate="fadeInUp">
       <!-- Photo -->
       <div class="relative flex-shrink-0">
-        <div class="w-56 h-56 lg:w-72 lg:h-72 rounded-3xl overflow-hidden ring-4 ring-primary/20 shadow-2xl shadow-primary/10 transition-transform duration-500 hover:scale-[1.02]">
-          <img
-            src={photo}
-            alt="Jesús Castillo"
-            class="w-full h-full object-cover"
-            loading="eager"
-          />
-        </div>
-        <!-- Floating badge -->
-        <button
-          id="builder-badge"
-          class="absolute -bottom-4 -right-4 glass rounded-2xl px-4 py-2 shadow-lg flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300 border-0 bg-transparent"
-        >
-          <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse"></div>
-          <span id="builder-text" class="text-sm font-medium text-slate-700 dark:text-slate-300">Modo builder</span>
-        </button>
+        <!-- Photo -->
+        <div class="relative group">
+          <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-purple-500/10 to-accent/20 blur-2xl scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+          <div class="relative w-48 h-48 lg:w-56 lg:h-56 rounded-3xl overflow-hidden ring-1 ring-white/20 dark:ring-white/10 shadow-2xl shadow-primary/10 transition-all duration-700 group-hover:shadow-primary/20 group-hover:scale-[1.02]">
+            <img
+              src={photo}
+              alt="Jesús Castillo — Software Developer"
+              class="w-full h-full object-cover"
+              loading="eager"
+            />
+          </div>
+
+          </div>
+
       </div>
 
       <!-- Content -->
       <div class="flex-1 text-center lg:text-left">
-        <p class="text-sm font-medium text-primary tracking-widest uppercase mb-3">Desarrollador de Software</p>
-        <h1 class="text-4xl lg:text-6xl font-extrabold tracking-tight mb-4">
-          Hola, soy <span class="gradient-text">Jesús Castillo</span>
+        <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6">
+          Hola, soy<br>
+          <span class="gradient-text">Jesús Castillo</span>
         </h1>
-        <p class="text-lg lg:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-8 leading-relaxed">
-          Creo soluciones digitales robustas y escalables. Desde APIs de alto rendimiento hasta interfaces intuitivas, transformo ideas en productos que generan impacto.
+
+        <p class="text-lg lg:text-xl text-gray-500 dark:text-gray-400 max-w-xl mb-10 leading-relaxed font-light">
+          Creo soluciones digitales robustas y escalables. Desde APIs de alto rendimiento hasta interfaces intuitivas que generan impacto real.
         </p>
 
         <!-- Stats -->
-        <div class="flex flex-wrap gap-8 justify-center lg:justify-start mb-8">
+        <div class="flex flex-wrap gap-10 justify-center lg:justify-start mb-10">
           <div>
-            <p class="text-3xl font-bold gradient-text">+{yearsExp}</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Años de experiencia</p>
+            <p class="text-4xl font-black tracking-tight gradient-text">{yearsExp}+</p>
+            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Años</p>
           </div>
-          <div class="w-px bg-slate-200 dark:bg-slate-700"></div>
           <div>
-            <p class="text-3xl font-bold gradient-text">Full Stack</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Backend & Frontend</p>
+            <p class="text-4xl font-black tracking-tight gradient-text">Full Stack</p>
+            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Especialidad</p>
           </div>
-          <div class="w-px bg-slate-200 dark:bg-slate-700"></div>
           <div>
-            <p class="text-3xl font-bold gradient-text">3+</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Empresas</p>
+            <p class="text-4xl font-black tracking-tight gradient-text">3+</p>
+            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Empresas</p>
           </div>
         </div>
 
@@ -75,72 +66,22 @@ const paragraphs = data?.paragraphs || [
         <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
           <a
             href="mailto:contacto@jcastillo.dev"
-            class="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-xl px-6 py-3 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+            class="group/btn inline-flex items-center gap-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-2xl px-7 py-3.5 transition-all duration-300 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5"
           >
-            <LucideIcon name="Mail" size={18} class="text-white/80" />
+            <LucideIcon name="Mail" size={16} class="text-white/80 transition-transform duration-300 group-hover/btn:-rotate-6" />
             Contactar
           </a>
           <a
             href="https://github.com/jesuscastillodev"
             target="_blank"
-            class="inline-flex items-center gap-2 border border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary text-slate-700 dark:text-slate-300 font-medium rounded-xl px-6 py-3 transition-all duration-300 hover:-translate-y-0.5"
+            class="group/btn inline-flex items-center gap-2.5 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-semibold rounded-2xl px-7 py-3.5 transition-all duration-300 hover:-translate-y-0.5"
           >
-            <LucideIcon name="Github" size={18} />
+            <LucideIcon name="Github" size={16} class="transition-transform duration-300 group-hover/btn:scale-110" />
             GitHub
           </a>
         </div>
+
       </div>
     </div>
   </div>
 </section>
-
-<script>
-  const badge = document.getElementById('builder-badge');
-  const text = document.getElementById('builder-text');
-  const dot = badge?.querySelector('div');
-
-  if (badge && text && dot) {
-    const states = [
-      { text: '> compiling...', dot: 'bg-amber-400' },
-      { text: '> deploying...', dot: 'bg-blue-400' },
-      { text: '> tests passing', dot: 'bg-cyan-400' },
-      { text: '> git push ok', dot: 'bg-purple-400' },
-      { text: '> build success!', dot: 'bg-emerald-400' },
-    ];
-
-    let running = false;
-
-    badge.addEventListener('click', async () => {
-      if (running) return;
-      running = true;
-      badge.classList.add('font-mono');
-
-      for (const state of states) {
-        dot.className = `w-2.5 h-2.5 rounded-full animate-pulse ${state.dot}`;
-        text.textContent = state.text;
-        text.style.opacity = '0';
-        text.style.transform = 'translateY(4px)';
-        await new Promise(r => setTimeout(r, 50));
-        text.style.transition = 'all 0.3s ease';
-        text.style.opacity = '1';
-        text.style.transform = 'translateY(0)';
-        await new Promise(r => setTimeout(r, 800));
-      }
-
-      // Pause on build success, then fade back smoothly
-      await new Promise(r => setTimeout(r, 1000));
-      text.style.transition = 'opacity 0.4s ease';
-      text.style.opacity = '0';
-      await new Promise(r => setTimeout(r, 400));
-      badge.classList.remove('font-mono');
-      text.textContent = 'Modo builder';
-      dot.className = 'w-2.5 h-2.5 rounded-full animate-pulse bg-emerald-400';
-      text.style.transition = 'opacity 0.5s ease';
-      text.style.opacity = '1';
-      await new Promise(r => setTimeout(r, 500));
-      text.style.transition = '';
-      text.style.transform = '';
-      running = false;
-    });
-  }
-</script>
