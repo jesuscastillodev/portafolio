@@ -13,6 +13,8 @@ const yearsExp = new Date().getFullYear() - 2014;
 
 <section class="relative min-h-[90vh] flex items-center py-32 px-6 overflow-hidden mesh-gradient">
   <div class="absolute inset-0 dot-pattern opacity-30"></div>
+  <!-- Floating stars background -->
+  <canvas id="hero-stars" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 0;"></canvas>
 
   <div class="relative max-w-6xl mx-auto w-full">
     <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20" data-animate="fadeInUp">
@@ -145,5 +147,58 @@ const yearsExp = new Date().getFullYear() - 2014;
       text.style.transform = '';
       running = false;
     });
+  }
+
+  // === Hero floating stars ===
+  const starCanvas = document.getElementById('hero-stars') as HTMLCanvasElement;
+  if (starCanvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const sCtx = starCanvas.getContext('2d');
+    let stars: { x: number; y: number; r: number; o: number; speed: number; twinkle: number }[] = [];
+    let sW = 0, sH = 0;
+
+    function resizeStars() {
+      sW = starCanvas.width = starCanvas.offsetWidth;
+      sH = starCanvas.height = starCanvas.offsetHeight;
+    }
+
+    function initStars() {
+      resizeStars();
+      const count = Math.min(Math.floor(sW * sH / 8000), 80);
+      stars = [];
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * sW,
+          y: Math.random() * sH,
+          r: Math.random() * 1.2 + 0.3,
+          o: Math.random() * 0.4 + 0.1,
+          speed: Math.random() * 0.15 + 0.02,
+          twinkle: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function drawStars() {
+      if (!sCtx) return;
+      sCtx.clearRect(0, 0, sW, sH);
+      const isDark = document.documentElement.classList.contains('dark');
+
+      for (const s of stars) {
+        s.twinkle += 0.008;
+        s.y -= s.speed;
+        if (s.y < -5) { s.y = sH + 5; s.x = Math.random() * sW; }
+        const flicker = s.o * (0.6 + 0.4 * Math.sin(s.twinkle));
+        sCtx.beginPath();
+        sCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        sCtx.fillStyle = isDark
+          ? `rgba(139, 92, 246, ${flicker})`
+          : `rgba(99, 102, 241, ${flicker * 0.5})`;
+        sCtx.fill();
+      }
+      requestAnimationFrame(drawStars);
+    }
+
+    initStars();
+    drawStars();
+    window.addEventListener('resize', initStars, { passive: true });
   }
 </script>

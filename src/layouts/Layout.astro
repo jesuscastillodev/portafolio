@@ -78,6 +78,26 @@ const {
       <slot />
     </div>
 
+    <!-- Cursor glow -->
+    <div id="cursor-glow" class="fixed pointer-events-none -z-0 w-[300px] h-[300px] rounded-full opacity-0 transition-opacity duration-500 hidden lg:block" style="background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%); transform: translate(-50%, -50%);"></div>
+
+    <script is:inline>
+      (function() {
+        var g = document.getElementById('cursor-glow');
+        if (g && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.innerWidth > 1024) {
+          var visible = false;
+          document.addEventListener('mousemove', function(e) {
+            if (!visible) { g.style.opacity = '1'; visible = true; }
+            g.style.left = e.clientX + 'px';
+            g.style.top = e.clientY + 'px';
+          }, { passive: true });
+          document.addEventListener('mouseleave', function() {
+            g.style.opacity = '0'; visible = false;
+          });
+        }
+      })();
+    </script>
+
     <script is:inline>
       (function() {
         var s = localStorage.getItem('darkMode');
