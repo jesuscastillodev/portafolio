@@ -119,13 +119,13 @@ body {
 
 /* ===== DOT PATTERN ===== */
 .dot-pattern {
-  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.12) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.10) 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
 }
 
 .dark .dot-pattern {
-  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.15) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
 }
 
 /* ===== ANIMATIONS ===== */
