@@ -1,8 +1,6 @@
 ---
 import type { About } from '../types/portfolio';
 import LucideIcon from './LucideIcon.astro';
-import Terminal from './Terminal.astro';
-
 interface Props {
   data?: About | null;
 }
@@ -42,8 +40,6 @@ const yearsExp = new Date().getFullYear() - 2014;
           </button>
         </div>
 
-        <!-- Terminal -->
-        <Terminal class="w-full max-w-sm hidden lg:block" />
       </div>
 
       <!-- Content -->
@@ -97,10 +93,6 @@ const yearsExp = new Date().getFullYear() - 2014;
           </a>
         </div>
 
-        <!-- Mobile terminal -->
-        <div class="lg:hidden mt-12">
-          <Terminal class="w-full max-w-sm mx-auto" />
-        </div>
       </div>
     </div>
   </div>
