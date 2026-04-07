@@ -6,7 +6,6 @@ import Experience from '../components/Experience.astro';
 import Gallery from '../components/Gallery.astro';
 import TechStack from '../components/TechStack.astro';
 import Footer from '../components/Footer.astro';
-import AISection from '../components/AISection.astro';
 import { getWorks, getProjects, getTechStack, getAbout, getSocials, getSettings } from '../lib/api';
 
 // Fetch data from API at build time (returns null if API not configured)
@@ -28,7 +27,6 @@ const description = apiSettings?.site_description || 'Portfolio de Jesús Castil
     <Experience works={apiWorks} />
     <Gallery projects={apiProjects} />
     <TechStack data={apiTechStack} />
-    <AISection />
   </main>
   <Footer socials={apiSocials} />
 </Layout>
