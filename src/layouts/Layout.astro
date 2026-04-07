@@ -4,9 +4,12 @@ interface Props {
   description?: string;
 }
 
+const siteUrl = 'https://jcastillo.dev';
+const ogImage = `${siteUrl}/og-image.png`;
+
 const {
-  title = "Jesus Castillo - Software Developer",
-  description = "Portfolio de Jesus Castillo, desarrollador de software con +10 anos de experiencia. Especializado en React, Laravel, Node.js y soluciones tecnologicas innovadoras."
+  title = "Jesús Castillo — Software Developer",
+  description = "Portfolio de Jesús Castillo, desarrollador de software con +10 años de experiencia. Especializado en React, Laravel, Node.js y arquitectura de soluciones escalables."
 } = Astro.props;
 ---
 
@@ -16,25 +19,53 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="author" content="Jesus Castillo" />
-    <meta name="theme-color" content="#6366f1" />
+    <meta name="author" content="Jesús Castillo" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href={siteUrl} />
 
-    <!-- Fonts: Inter for body, Space Grotesk for headings (geometric, modern, premium) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- OG -->
+    <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
     <meta property="og:locale" content="es_ES" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Jcastillo.dev" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>{title}</title>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Jesús Castillo",
+      "url": siteUrl,
+      "image": `${siteUrl}/images/foto.webp`,
+      "jobTitle": "Software Developer",
+      "description": description,
+      "knowsAbout": ["React", "Laravel", "Node.js", "Docker", "TypeScript", "PHP", "MySQL", "MongoDB"],
+      "sameAs": [
+        "https://github.com/jesuscastillodev",
+        "https://t.me/Jcastillo_dev"
+      ]
+    })} />
   </head>
   <body class="bg-white text-[#0f0f1a] dark:bg-[#0a0a0f] dark:text-[#f0f0f5] transition-colors duration-700">
     <div class="relative w-full overflow-hidden min-h-screen">
@@ -67,7 +98,6 @@ const {
         function init() {
           els = document.querySelectorAll('[data-animate],[data-animate-stagger]');
           els.forEach(function(el) { o.observe(el); });
-          // Fallback: reveal all after 3s
           setTimeout(function() {
             els.forEach(function(el) { el.classList.add('is-visible'); });
           }, 3000);

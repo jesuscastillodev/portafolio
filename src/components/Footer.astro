@@ -27,7 +27,7 @@ const year = new Date().getFullYear();
           <a
             href={social.url}
             target={social.url.startsWith('mailto') ? undefined : '_blank'}
-            rel={social.url.startsWith('mailto') ? 'noopener nofollow' : undefined}
+            rel={social.url.startsWith('mailto') ? undefined : 'noopener noreferrer'}
             class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300"
             aria-label={social.label}
           >
