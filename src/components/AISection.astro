@@ -1,0 +1,140 @@
+---
+import LucideIcon from './LucideIcon.astro';
+
+const yearsExp = new Date().getFullYear() - 2014;
+---
+
+<section class="relative py-24 lg:py-32 px-6 overflow-hidden bg-[#0a0a0f]">
+  <!-- Dark gradient top fade -->
+  <div class="absolute inset-x-0 -top-32 h-32 bg-gradient-to-b from-transparent to-[#0a0a0f]"></div>
+
+  <!-- Particle canvas -->
+  <canvas id="ai-canvas" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;"></canvas>
+
+  <div class="relative z-10 max-w-4xl mx-auto text-center" data-animate="fadeInUp">
+    <!-- AI Icon -->
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-violet-500/20 mb-8 animate-[pulseGlow_3s_ease-in-out_infinite]">
+      <LucideIcon name="Sparkles" size={28} class="text-violet-400" />
+    </div>
+
+    <!-- Headline -->
+    <h2 class="text-4xl lg:text-6xl font-black tracking-tight text-white leading-[1.1] mb-6">
+      +{yearsExp} años de experiencia<br>
+      <span class="bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">potenciados por IA</span>
+    </h2>
+
+    <!-- Description -->
+    <p class="text-lg lg:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+      La inteligencia artificial no reemplaza la experiencia — la <strong class="text-gray-200 font-medium">multiplica</strong>.
+      Cada línea de arquitectura, cada decisión técnica, cada solución que construyo está respaldada por años de conocimiento real, ahora amplificado con las herramientas más avanzadas.
+    </p>
+
+    <!-- Visual formula -->
+    <div class="inline-flex items-center justify-center gap-3 lg:gap-5 mb-10 flex-wrap">
+      <div class="rounded-2xl px-4 py-2.5 border border-white/10 bg-white/5">
+        <p class="text-xs lg:text-sm font-semibold text-gray-300 whitespace-nowrap">
+          <LucideIcon name="Brain" size={14} class="text-violet-400 inline -mt-0.5 mr-1" />
+          Experiencia
+        </p>
+      </div>
+
+      <span class="text-xl font-black text-violet-400">×</span>
+
+      <div class="rounded-2xl px-4 py-2.5 border border-white/10 bg-white/5">
+        <p class="text-xs lg:text-sm font-semibold text-gray-300 whitespace-nowrap">
+          <LucideIcon name="Sparkles" size={14} class="text-cyan-400 inline -mt-0.5 mr-1" />
+          IA
+        </p>
+      </div>
+
+      <span class="text-xl font-black text-cyan-400">=</span>
+
+      <div class="rounded-2xl px-4 py-2.5 border border-violet-500/30 bg-gradient-to-r from-violet-500/10 to-cyan-500/10">
+        <p class="text-xs lg:text-sm font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent whitespace-nowrap">
+          <LucideIcon name="Zap" size={14} class="text-amber-400 inline -mt-0.5 mr-1" />
+          Impacto exponencial
+        </p>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <p class="text-sm text-gray-500 italic max-w-lg mx-auto">
+      "Dirijo la IA, no al revés. El criterio de +{yearsExp} años es lo que convierte una sugerencia en una solución real."
+    </p>
+  </div>
+</section>
+
+<script>
+  const canvas = document.getElementById('ai-canvas') as HTMLCanvasElement;
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let particles: { x: number; y: number; vx: number; vy: number; r: number; o: number }[] = [];
+    let w = 0, h = 0;
+
+    function resize() {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    }
+
+    function init() {
+      resize();
+      const count = Math.min(Math.floor(w * h / 15000), 60);
+      particles = [];
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 1.5 + 0.5,
+          o: Math.random() * 0.5 + 0.2,
+        });
+      }
+    }
+
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            const alpha = (1 - dist / 120) * 0.15;
+            ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(139, 92, 246, ${p.o})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    // Respect reduced motion
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      init();
+      draw();
+      window.addEventListener('resize', init, { passive: true });
+    }
+  }
+</script>
