@@ -1,0 +1,510 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Ruleta de Sorteos — Sortea ganadores desde Excel, JSON o lista | Jcastillo.dev';
+const description = 'Herramienta gratuita de sorteos al azar: carga participantes desde Excel, CSV, JSON o pegando una lista (nombres o RUN), elige la cantidad de ganadores, asigna premios y gira una ruleta animada con efectos. Justo y transparente.';
+const canonical = 'https://jcastillo.dev/sorteos';
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-6xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-5">
+          <LucideIcon name="Sparkles" size={14} class="text-primary" />
+          <span class="text-xs font-semibold text-primary tracking-wider uppercase">Sorteo justo y al azar</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Ruleta de<br><span class="gradient-text">Sorteos</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Carga tus participantes desde <strong class="font-semibold text-gray-600 dark:text-gray-300">Excel, CSV, JSON</strong> o pegando una lista, elige cuántos ganadores quieres, asigna premios y gira la ruleta. Todo ocurre en tu navegador —tus datos no salen de tu equipo.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== APP ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-6xl mx-auto grid lg:grid-cols-[420px_1fr] gap-6 items-start">
+
+        <!-- ===== PANEL CONFIG ===== -->
+        <div class="flex flex-col gap-6" data-animate="fadeInLeft">
+
+          <!-- Participantes -->
+          <div class="glass rounded-3xl p-6">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-9 h-9 rounded-xl flex items-center justify-center text-primary bg-primary/10"><LucideIcon name="Users" size={18} /></span>
+              <h2 class="text-lg font-bold tracking-tight">Participantes</h2>
+              <span id="count-badge" class="ml-auto text-xs font-bold font-mono px-2.5 py-1 rounded-full bg-primary/10 text-primary">0</span>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-white/5 mb-4" id="tabs">
+              <button data-tab="manual" class="tab flex-1 text-sm font-semibold py-2 rounded-lg transition-all">Manual</button>
+              <button data-tab="paste" class="tab flex-1 text-sm font-semibold py-2 rounded-lg transition-all">Pegar</button>
+              <button data-tab="file" class="tab flex-1 text-sm font-semibold py-2 rounded-lg transition-all">Archivo</button>
+            </div>
+
+            <!-- Manual (uno a uno) -->
+            <div data-panel="manual">
+              <div class="flex items-center gap-2">
+                <input id="manual-input" type="text" autocomplete="off" placeholder="Nombre o RUN…"
+                  class="flex-1 px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all" />
+                <button id="manual-add" aria-label="Agregar participante"
+                  class="w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center bg-primary hover:bg-primary-dark text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 active:scale-95 cursor-pointer">
+                  <LucideIcon name="Plus" size={20} />
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-gray-400 flex items-center gap-1.5">
+                <kbd class="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/10 font-mono text-[10px] font-semibold">Enter</kbd>
+                para agregar rápido y seguir escribiendo
+              </p>
+            </div>
+
+            <!-- Paste -->
+            <div data-panel="paste" class="hidden">
+              <textarea id="paste-input" rows="6" placeholder="Un participante por línea&#10;Juan Pérez&#10;12.345.678-9&#10;María González"
+                class="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all resize-none"></textarea>
+              <button id="paste-load" class="mt-3 w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl py-2.5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 cursor-pointer">
+                <LucideIcon name="Plus" size={15} /> Cargar lista
+              </button>
+            </div>
+
+            <!-- File -->
+            <div data-panel="file" class="hidden">
+              <label id="dropzone" for="file-input"
+                class="flex flex-col items-center justify-center gap-2 py-8 px-4 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 cursor-pointer hover:border-primary/50 hover:bg-primary/[0.03] transition-all text-center">
+                <LucideIcon name="UploadCloud" size={28} class="text-gray-400" />
+                <span class="text-sm font-semibold">Arrastra o haz clic para subir</span>
+                <span class="text-xs text-gray-400">Excel (.xlsx, .xls), CSV o JSON</span>
+                <input id="file-input" type="file" accept=".xlsx,.xls,.csv,.json,application/json" class="hidden" />
+              </label>
+              <p id="file-status" class="mt-3 text-xs text-gray-400 font-mono"></p>
+            </div>
+
+            <!-- Chips -->
+            <div id="chips" class="mt-4 flex flex-wrap gap-1.5 max-h-32 overflow-y-auto"></div>
+            <button id="clear-all" class="hidden mt-3 text-xs font-semibold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer">Limpiar todo</button>
+          </div>
+
+          <!-- Ganadores -->
+          <div class="glass rounded-3xl p-6">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-9 h-9 rounded-xl flex items-center justify-center text-amber-500 bg-amber-500/10"><LucideIcon name="Trophy" size={18} /></span>
+              <h2 class="text-lg font-bold tracking-tight">Ganadores</h2>
+            </div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cantidad a sortear</label>
+            <div class="flex items-center gap-3">
+              <button id="win-minus" class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all cursor-pointer text-lg font-bold">−</button>
+              <input id="win-count" type="number" min="1" value="1" class="flex-1 text-center py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono text-xl font-black focus:outline-none focus:ring-2 focus:ring-primary/40" />
+              <button id="win-plus" class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all cursor-pointer text-lg font-bold">+</button>
+            </div>
+            <label class="flex items-center gap-2 mt-4 text-sm text-gray-500 dark:text-gray-400 cursor-pointer select-none">
+              <input id="unique-toggle" type="checkbox" checked class="w-4 h-4 rounded accent-[#6366f1] cursor-pointer" />
+              No repetir ganadores
+            </label>
+          </div>
+
+          <!-- Premios -->
+          <div class="glass rounded-3xl p-6">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-9 h-9 rounded-xl flex items-center justify-center text-violet-500 bg-violet-500/10"><LucideIcon name="Gift" size={18} /></span>
+              <h2 class="text-lg font-bold tracking-tight">Premios <span class="text-xs font-normal text-gray-400">(opcional)</span></h2>
+            </div>
+            <div id="prizes" class="flex flex-col gap-2"></div>
+            <button id="add-prize" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-dark transition-colors cursor-pointer">
+              <LucideIcon name="Plus" size={14} /> Agregar premio
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== ESCENARIO RULETA ===== -->
+        <div class="glass glow-card rounded-3xl p-6 lg:p-10 flex flex-col items-center" data-animate="fadeInRight">
+          <!-- progreso -->
+          <div id="round-label" class="hidden mb-4 text-sm font-semibold text-gray-400 font-mono"></div>
+
+          <!-- Wheel -->
+          <div id="wheel-wrap" class="relative w-full max-w-[460px] aspect-square">
+            <!-- pointer -->
+            <div class="absolute top-1/2 -right-1 -translate-y-1/2 z-20 drop-shadow-lg" style="filter: drop-shadow(0 2px 6px rgba(99,102,241,.4));">
+              <svg width="44" height="40" viewBox="0 0 44 40"><path d="M44 20 L8 2 Q0 6 4 20 Q0 34 8 38 Z" fill="#6366f1"/></svg>
+            </div>
+            <canvas id="wheel" class="w-full h-full"></canvas>
+            <!-- centro -->
+            <button id="spin-btn" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-24 h-24 lg:w-28 lg:h-28 rounded-full bg-white dark:bg-surface-dark-elevated shadow-2xl flex flex-col items-center justify-center font-black text-primary border-4 border-primary/20 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100">
+              <LucideIcon name="Play" size={22} class="fill-primary" />
+              <span class="text-xs mt-1 tracking-wide">GIRAR</span>
+            </button>
+            <!-- empty state -->
+            <div id="wheel-empty" class="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-400 px-8 pointer-events-none">
+              <LucideIcon name="ListChecks" size={40} class="mb-3 opacity-40" />
+              <p class="text-sm">Agrega participantes para armar la ruleta</p>
+            </div>
+          </div>
+
+          <!-- Ganadores reveal -->
+          <div id="winners" class="w-full mt-8 hidden">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-bold tracking-tight flex items-center gap-2"><LucideIcon name="PartyPopper" size={18} class="text-amber-500" /> Ganadores</h3>
+              <div class="flex gap-2">
+                <button id="copy-winners" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all cursor-pointer inline-flex items-center gap-1.5"><LucideIcon name="Copy" size={13} /> Copiar</button>
+                <button id="reset-btn" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all cursor-pointer inline-flex items-center gap-1.5"><LucideIcon name="RotateCcw" size={13} /> Reiniciar</button>
+              </div>
+            </div>
+            <div id="winners-list" class="grid sm:grid-cols-2 gap-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .tab { color: var(--color-text-muted); }
+  :global(.dark) .tab { color: #9ca3af; }
+  .tab.active { background: #fff; color: var(--color-primary); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  :global(.dark) .tab.active { background: rgba(255,255,255,.08); color: #fff; }
+  .chip-item {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; padding: 3px 8px; border-radius: 8px;
+    background: rgba(99,102,241,.08); color: var(--color-text-muted);
+    font-family: 'JetBrains Mono', monospace; max-width: 100%;
+  }
+  :global(.dark) .chip-item { color: #cbd5e1; }
+  .chip-item button { color: #9ca3af; line-height: 1; }
+  .chip-item button:hover { color: #f43f5e; }
+  @keyframes popIn { 0% { opacity:0; transform: scale(.8) translateY(10px);} 60%{transform:scale(1.04);} 100%{opacity:1; transform:scale(1) translateY(0);} }
+  .winner-card { animation: popIn .5s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes glowPulse { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.4);} 50%{box-shadow:0 0 0 8px rgba(245,158,11,0);} }
+</style>
+
+<script>
+  import confetti from 'canvas-confetti';
+
+  // ====== Estado ======
+  let participants: string[] = [];
+  let prizes: string[] = [];
+  let spinning = false;
+  let rotation = 0;          // radianes
+  let pool: string[] = [];   // copia de trabajo
+  let winners: string[] = [];
+  let targetWinners = 1;
+  let roundsDone = 0;
+
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+  const palette = ['#6366f1','#8b5cf6','#06b6d4','#f59e0b','#ec4899','#10b981','#3b82f6','#f43f5e','#a855f7','#14b8a6'];
+
+  // ====== Tabs ======
+  document.querySelectorAll('#tabs .tab').forEach((b) => b.addEventListener('click', () => {
+    const t = (b as HTMLElement).dataset.tab;
+    document.querySelectorAll('#tabs .tab').forEach((x) => x.classList.toggle('active', x === b));
+    document.querySelectorAll('[data-panel]').forEach((p) => (p as HTMLElement).classList.toggle('hidden', (p as HTMLElement).dataset.panel !== t));
+    if (t === 'manual') setTimeout(() => ($('#manual-input') as HTMLInputElement)?.focus(), 50);
+  }));
+  ($('#tabs .tab') as HTMLElement).classList.add('active');
+
+  // ====== Parsers ======
+  function cleanList(arr: any[]): string[] {
+    return arr.map((x) => String(x ?? '').trim()).filter((x) => x.length > 0);
+  }
+  function fromText(text: string): string[] {
+    return cleanList(text.split(/[\n,;]+/));
+  }
+  function fromJSON(text: string): string[] {
+    const data = JSON.parse(text);
+    if (Array.isArray(data)) {
+      return cleanList(data.map((it) => {
+        if (typeof it === 'string' || typeof it === 'number') return it;
+        if (it && typeof it === 'object') return it.nombre ?? it.name ?? it.run ?? it.rut ?? it.participante ?? Object.values(it)[0];
+        return '';
+      }));
+    }
+    if (data && typeof data === 'object') return cleanList(Object.values(data).flat());
+    return [];
+  }
+
+  function addParticipants(list: string[]) {
+    const unique = ($('#unique-toggle') as HTMLInputElement).checked;
+    for (const name of list) {
+      if (unique && participants.includes(name)) continue;
+      participants.push(name);
+    }
+    renderParticipants();
+  }
+
+  function renderParticipants() {
+    const chips = $('#chips');
+    chips.innerHTML = participants.map((p, i) =>
+      `<span class="chip-item" title="${escapeHtml(p)}"><span class="truncate">${escapeHtml(p)}</span><button data-rm="${i}" aria-label="Quitar">✕</button></span>`
+    ).join('');
+    $('#count-badge').textContent = String(participants.length);
+    ($('#clear-all') as HTMLElement).classList.toggle('hidden', participants.length === 0);
+    chips.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => {
+      participants.splice(parseInt((b as HTMLElement).dataset.rm!), 1);
+      renderParticipants();
+    }));
+    clampWinners();
+    resetDraw();
+    drawWheel();
+  }
+  function escapeHtml(s: string) { return s.replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]!)); }
+
+  // ====== Eventos carga ======
+  // Manual (uno a uno)
+  const manualInput = $('#manual-input') as HTMLInputElement;
+  function manualAdd() {
+    const val = manualInput.value.trim();
+    if (!val) { manualInput.focus(); return; }
+    const before = participants.length;
+    addParticipants([val]);
+    if (participants.length === before) {
+      // duplicado bloqueado: feedback breve
+      manualInput.classList.add('ring-2', 'ring-rose-400');
+      setTimeout(() => manualInput.classList.remove('ring-2', 'ring-rose-400'), 600);
+    }
+    manualInput.value = '';
+    manualInput.focus();
+  }
+  $('#manual-add').addEventListener('click', manualAdd);
+  manualInput.addEventListener('keydown', (e: KeyboardEvent) => { if (e.key === 'Enter') { e.preventDefault(); manualAdd(); } });
+
+  $('#paste-load').addEventListener('click', () => {
+    const ta = $('#paste-input') as HTMLTextAreaElement;
+    addParticipants(fromText(ta.value));
+    ta.value = '';
+  });
+
+  const fileInput = $('#file-input') as HTMLInputElement;
+  fileInput.addEventListener('change', () => { if (fileInput.files?.[0]) handleFile(fileInput.files[0]); });
+  const dz = $('#dropzone');
+  ['dragover','dragenter'].forEach((e) => dz.addEventListener(e, (ev) => { ev.preventDefault(); dz.classList.add('border-primary','bg-primary/5'); }));
+  ['dragleave','drop'].forEach((e) => dz.addEventListener(e, (ev) => { ev.preventDefault(); dz.classList.remove('border-primary','bg-primary/5'); }));
+  dz.addEventListener('drop', (ev: DragEvent) => { if (ev.dataTransfer?.files?.[0]) handleFile(ev.dataTransfer.files[0]); });
+
+  async function handleFile(file: File) {
+    const status = $('#file-status');
+    status.textContent = `Leyendo ${file.name}…`;
+    try {
+      const ext = file.name.split('.').pop()?.toLowerCase();
+      let list: string[] = [];
+      if (ext === 'json') {
+        list = fromJSON(await file.text());
+      } else if (ext === 'csv') {
+        list = cleanList((await file.text()).split(/\r?\n/).map((row) => row.split(/[,;]/)[0]));
+      } else {
+        // Excel: import dinámico de SheetJS (solo cuando se necesita)
+        const XLSX = await import('xlsx');
+        const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1 });
+        list = cleanList(rows.map((r) => Array.isArray(r) ? r[0] : r));
+      }
+      // descarta una posible cabecera tipo "nombre"/"run"
+      if (list.length && /^(nombre|name|run|rut|participante|email|correo)s?$/i.test(list[0])) list.shift();
+      addParticipants(list);
+      status.textContent = `✓ ${list.length} participantes desde ${file.name}`;
+    } catch (err) {
+      console.error(err);
+      status.textContent = '⚠ No se pudo leer el archivo. Verifica el formato.';
+    }
+    fileInput.value = '';
+  }
+
+  $('#clear-all').addEventListener('click', () => { participants = []; renderParticipants(); });
+
+  // ====== Ganadores ======
+  function clampWinners() {
+    const inp = $('#win-count') as HTMLInputElement;
+    const max = Math.max(1, participants.length);
+    let v = parseInt(inp.value) || 1;
+    v = Math.min(Math.max(1, v), max);
+    inp.value = String(v);
+    inp.max = String(max);
+    targetWinners = v;
+  }
+  $('#win-count').addEventListener('input', clampWinners);
+  $('#win-minus').addEventListener('click', () => { const i = $('#win-count') as HTMLInputElement; i.value = String((parseInt(i.value)||1) - 1); clampWinners(); });
+  $('#win-plus').addEventListener('click', () => { const i = $('#win-count') as HTMLInputElement; i.value = String((parseInt(i.value)||1) + 1); clampWinners(); });
+  $('#unique-toggle').addEventListener('change', () => { participants = [...new Set(participants)]; renderParticipants(); });
+
+  // ====== Premios ======
+  function renderPrizes() {
+    const wrap = $('#prizes');
+    wrap.innerHTML = prizes.map((p, i) =>
+      `<div class="flex items-center gap-2">
+        <span class="w-6 h-6 shrink-0 rounded-lg bg-violet-500/10 text-violet-500 text-xs font-bold flex items-center justify-center">${i+1}</span>
+        <input data-prize="${i}" value="${escapeHtml(p)}" placeholder="Premio ${i+1}" class="flex-1 px-3 py-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+        <button data-rmprize="${i}" class="w-8 h-8 shrink-0 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all cursor-pointer flex items-center justify-center">✕</button>
+      </div>`
+    ).join('');
+    wrap.querySelectorAll('[data-prize]').forEach((el) => el.addEventListener('input', () => { prizes[parseInt((el as HTMLElement).dataset.prize!)] = (el as HTMLInputElement).value; }));
+    wrap.querySelectorAll('[data-rmprize]').forEach((el) => el.addEventListener('click', () => { prizes.splice(parseInt((el as HTMLElement).dataset.rmprize!), 1); renderPrizes(); }));
+  }
+  $('#add-prize').addEventListener('click', () => { prizes.push(''); renderPrizes(); });
+
+  // ====== Ruleta (canvas) ======
+  const canvas = $('#wheel') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  function sizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawWheel();
+  }
+
+  function drawWheel() {
+    const rect = canvas.getBoundingClientRect();
+    const W = rect.width, H = rect.height;
+    ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2, r = Math.min(W, H) / 2 - 4;
+    const n = pool.length;
+    ($('#wheel-empty') as HTMLElement).style.display = n === 0 ? 'flex' : 'none';
+    ($('#spin-btn') as HTMLButtonElement).disabled = n === 0 || spinning;
+    if (n === 0) return;
+    const seg = (Math.PI * 2) / n;
+    const isDark = document.documentElement.classList.contains('dark');
+
+    for (let i = 0; i < n; i++) {
+      const a0 = i * seg + rotation, a1 = a0 + seg;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, a0, a1);
+      ctx.closePath();
+      ctx.fillStyle = palette[i % palette.length];
+      ctx.fill();
+      ctx.strokeStyle = isDark ? 'rgba(10,10,15,.6)' : 'rgba(255,255,255,.7)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // label
+      if (n <= 60) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(a0 + seg / 2);
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#fff';
+        ctx.font = `600 ${Math.max(9, Math.min(15, 320 / n))}px Inter, sans-serif`;
+        const label = pool[i].length > 18 ? pool[i].slice(0, 17) + '…' : pool[i];
+        ctx.fillText(label, r - 14, 0);
+        ctx.restore();
+      }
+    }
+    // borde
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = isDark ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.08)';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  }
+
+  const easeOut = (t: number) => 1 - Math.pow(1 - t, 4);
+  const POINTER = 0; // puntero a la derecha (este = ángulo 0)
+
+  function spin() {
+    if (spinning || pool.length === 0) return;
+    spinning = true;
+    ($('#spin-btn') as HTMLButtonElement).disabled = true;
+
+    const TAU = Math.PI * 2;
+    const norm = (x: number) => ((x % TAU) + TAU) % TAU;
+    const n = pool.length;
+    const seg = TAU / n;
+    const k = Math.floor(Math.random() * n);              // ganador uniforme
+    const jitter = (Math.random() - 0.5) * seg * 0.7;     // dentro del segmento k
+    const spins = 6 + Math.floor(Math.random() * 3);
+    // queremos rotación final Rf tal que el centro del segmento k quede bajo el puntero (ángulo POINTER)
+    const want = norm(POINTER - (k + 0.5) * seg);
+    const targetRot = rotation + norm(want - norm(rotation)) + TAU * spins + jitter;
+    const start = rotation, delta = targetRot - start, dur = 4200 + Math.random() * 800;
+    const t0 = performance.now();
+
+    function frame(now: number) {
+      const t = Math.min(1, (now - t0) / dur);
+      rotation = start + delta * easeOut(t);
+      drawWheel();
+      if (t < 1) { requestAnimationFrame(frame); }
+      else { spinning = false; onWinner(pool[k], k); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function onWinner(name: string, idx: number) {
+    winners.push(name);
+    roundsDone++;
+    burstConfetti();
+    // quitar del pool si no se repite
+    if (($('#unique-toggle') as HTMLInputElement).checked) { pool.splice(idx, 1); }
+    renderWinners();
+    drawWheel();
+
+    if (roundsDone < targetWinners && pool.length > 0) {
+      ($('#round-label') as HTMLElement).classList.remove('hidden');
+      $('#round-label').textContent = `Ganador ${roundsDone + 1} de ${targetWinners} — ¡gira de nuevo!`;
+      ($('#spin-btn') as HTMLButtonElement).disabled = false;
+    } else {
+      $('#round-label').textContent = `¡Sorteo completo! ${winners.length} ganador(es)`;
+      finale();
+    }
+  }
+
+  function renderWinners() {
+    ($('#winners') as HTMLElement).classList.remove('hidden');
+    const list = $('#winners-list');
+    list.innerHTML = winners.map((w, i) => {
+      const prize = prizes[i]?.trim();
+      return `<div class="winner-card flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-br from-amber-500/10 to-primary/5 border border-amber-500/20" style="animation-delay:${i*0.05}s">
+        <span class="w-10 h-10 shrink-0 rounded-xl bg-amber-500/15 text-amber-500 font-black flex items-center justify-center">${i+1}</span>
+        <div class="min-w-0">
+          <p class="font-bold tracking-tight truncate">${escapeHtml(w)}</p>
+          ${prize ? `<p class="text-xs text-violet-500 font-semibold truncate flex items-center gap-1">🎁 ${escapeHtml(prize)}</p>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ====== Confetti ======
+  function burstConfetti() {
+    confetti({ particleCount: 90, spread: 70, origin: { y: 0.5 }, colors: palette, scalar: 0.9, disableForReducedMotion: true });
+  }
+  function finale() {
+    const end = performance.now() + 1200;
+    (function rain() {
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: palette, disableForReducedMotion: true });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: palette, disableForReducedMotion: true });
+      if (performance.now() < end) requestAnimationFrame(rain);
+    })();
+  }
+
+  // ====== Reset / draw cycle ======
+  function resetDraw() {
+    pool = [...participants];
+    winners = [];
+    roundsDone = 0;
+    ($('#winners') as HTMLElement).classList.add('hidden');
+    ($('#round-label') as HTMLElement).classList.add('hidden');
+  }
+  $('#reset-btn').addEventListener('click', () => { resetDraw(); drawWheel(); ($('#spin-btn') as HTMLButtonElement).disabled = participants.length === 0; });
+  $('#copy-winners').addEventListener('click', async () => {
+    const txt = winners.map((w, i) => `${i+1}. ${w}${prizes[i]?.trim() ? ` — ${prizes[i].trim()}` : ''}`).join('\n');
+    try { await navigator.clipboard.writeText(txt); const b = $('#copy-winners'); const o = b.innerHTML; b.textContent = '¡Copiado!'; setTimeout(() => b.innerHTML = o, 1500); } catch {}
+  });
+
+  $('#spin-btn').addEventListener('click', spin);
+
+  // ====== Init ======
+  window.addEventListener('resize', sizeCanvas);
+  sizeCanvas();
+  renderPrizes();
+</script>

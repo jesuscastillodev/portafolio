@@ -7,7 +7,6 @@ interface Props {
 
 const { data } = Astro.props;
 
-const photo = data?.photo || '/images/foto.webp';
 const yearsExp = new Date().getFullYear() - 2014;
 ---
 
@@ -15,28 +14,7 @@ const yearsExp = new Date().getFullYear() - 2014;
   <div class="absolute inset-0 dot-pattern opacity-40"></div>
 
   <div class="relative max-w-6xl mx-auto w-full">
-    <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20" data-animate="fadeInUp">
-      <!-- Photo -->
-      <div class="relative flex-shrink-0">
-        <!-- Photo -->
-        <div class="relative group">
-          <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-purple-500/10 to-accent/20 blur-2xl scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-          <div class="relative w-48 h-48 lg:w-56 lg:h-56 rounded-3xl overflow-hidden ring-1 ring-white/20 dark:ring-white/10 shadow-2xl shadow-primary/10 transition-all duration-700 group-hover:shadow-primary/20 group-hover:scale-[1.02]">
-            <img
-              src={photo}
-              alt="Jesús Castillo — Programador y Desarrollador Full Stack"
-              class="w-full h-full object-cover"
-              width="256"
-              height="256"
-              loading="eager"
-            />
-          </div>
-
-          </div>
-
-      </div>
-
+    <div class="flex flex-col items-center" data-animate="fadeInUp">
       <!-- Content -->
       <div class="flex-1 text-center lg:text-left">
         <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6">

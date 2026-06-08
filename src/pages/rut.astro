@@ -1,0 +1,343 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Validador y Formateador de RUT chileno — Dígito verificador, formatos y más | Jcastillo.dev';
+const description = 'Valida y formatea RUT/RUN chileno al instante: calcula el dígito verificador (módulo 11), muestra todos los formatos (con puntos, sin puntos, con guión), detecta si es persona o empresa, valida por lote y genera RUTs válidos. Todo en tu navegador.';
+const canonical = 'https://jcastillo.dev/rut';
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-5">
+          <LucideIcon name="Fingerprint" size={14} class="text-primary" />
+          <span class="text-xs font-semibold text-primary tracking-wider uppercase">RUT / RUN chileno</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Validador y formateador<br><span class="gradient-text">de RUT</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Limpia, valida y formatea cualquier RUT/RUN. Calcula el dígito verificador, te muestra todos los formatos listos para copiar y detecta si corresponde a una persona o una empresa. Privado: nada sale de tu navegador.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== VALIDADOR PRINCIPAL ===== -->
+    <section class="px-6 pb-6">
+      <div class="max-w-4xl mx-auto glass glow-card rounded-3xl p-6 lg:p-10" data-animate="fadeInUp">
+        <label for="rut-input" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Ingresa un RUT o RUN</label>
+        <input id="rut-input" type="text" autocomplete="off" placeholder="Ej: 23.343.232 · 12345678-5 · 7.654.321-k"
+          class="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono text-2xl font-bold tracking-tight focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all" />
+
+        <label class="flex items-center gap-2 mt-3 text-sm text-gray-500 dark:text-gray-400 cursor-pointer select-none w-fit">
+          <input id="has-dv" type="checkbox" class="w-4 h-4 rounded accent-primary cursor-pointer" />
+          El último carácter es el dígito verificador (validar)
+        </label>
+
+        <!-- Resultado -->
+        <div id="result" class="mt-6 hidden">
+          <!-- Banner estado -->
+          <div id="status-banner" class="flex items-center gap-3 p-4 rounded-2xl mb-5"></div>
+
+          <!-- Tipo -->
+          <div id="type-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5"></div>
+
+          <!-- Formatos -->
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Formatos (clic para copiar)</p>
+          <div id="formats" class="grid sm:grid-cols-2 gap-3"></div>
+        </div>
+
+        <div id="empty-hint" class="mt-6 text-sm text-gray-400 flex items-center gap-2">
+          <LucideIcon name="Info" size={16} /> Escribe un RUT arriba para ver los resultados.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MÁS HERRAMIENTAS ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-4xl mx-auto grid lg:grid-cols-2 gap-6">
+
+        <!-- Validación por lote -->
+        <div class="glass rounded-3xl p-6 lg:p-7" data-animate="fadeInLeft">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="w-9 h-9 rounded-xl flex items-center justify-center text-primary bg-primary/10"><LucideIcon name="ListChecks" size={18} /></span>
+            <h2 class="text-lg font-bold tracking-tight">Validación por lote</h2>
+          </div>
+          <p class="text-sm text-gray-400 mb-3">Pega varios RUTs (uno por línea). Validamos cada uno y mostramos el dígito correcto.</p>
+          <textarea id="batch-input" rows="5" placeholder="12.345.678-5&#10;11111111-1&#10;7.654.321-0"
+            class="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all resize-none"></textarea>
+          <div class="flex gap-2 mt-3">
+            <button id="batch-run" class="flex-1 inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl py-2.5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 cursor-pointer">
+              <LucideIcon name="Check" size={15} /> Validar
+            </button>
+            <button id="batch-csv" class="hidden inline-flex items-center justify-center gap-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-sm font-semibold rounded-xl px-4 py-2.5 transition-all cursor-pointer">
+              <LucideIcon name="Download" size={15} /> CSV
+            </button>
+          </div>
+          <p id="batch-summary" class="mt-3 text-sm font-mono"></p>
+          <div id="batch-results" class="mt-3 flex flex-col gap-1.5 max-h-64 overflow-y-auto"></div>
+        </div>
+
+        <!-- Generador -->
+        <div class="glass rounded-3xl p-6 lg:p-7" data-animate="fadeInRight">
+          <div class="flex items-center gap-3 mb-5">
+            <span class="w-9 h-9 rounded-xl flex items-center justify-center text-violet-500 bg-violet-500/10"><LucideIcon name="Dices" size={18} /></span>
+            <h2 class="text-lg font-bold tracking-tight">Generador de RUT válido</h2>
+          </div>
+          <p class="text-sm text-gray-400 mb-4">Genera RUTs válidos para pruebas y QA (datos ficticios).</p>
+          <div class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-white/5 mb-4" id="gen-type">
+            <button data-gt="persona" class="gt flex-1 text-sm font-semibold py-2 rounded-lg transition-all">Persona</button>
+            <button data-gt="empresa" class="gt flex-1 text-sm font-semibold py-2 rounded-lg transition-all">Empresa</button>
+          </div>
+          <div class="flex items-center gap-3 mb-4">
+            <label class="text-sm text-gray-400">Cantidad</label>
+            <input id="gen-qty" type="number" min="1" max="50" value="5" class="w-20 text-center py-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-primary/40" />
+            <button id="gen-run" class="ml-auto inline-flex items-center gap-2 bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold rounded-xl px-5 py-2 transition-all hover:-translate-y-0.5 cursor-pointer">
+              <LucideIcon name="Sparkles" size={15} /> Generar
+            </button>
+          </div>
+          <div id="gen-results" class="flex flex-col gap-1.5 max-h-64 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- Datos públicos / consultas oficiales -->
+      <div class="max-w-4xl mx-auto mt-6 glass rounded-3xl p-6 lg:p-8" data-animate="fadeInUp">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-9 h-9 rounded-xl flex items-center justify-center text-emerald-500 bg-emerald-500/10"><LucideIcon name="ShieldCheck" size={18} /></span>
+          <h2 class="text-lg font-bold tracking-tight">Datos públicos y consultas oficiales</h2>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-5">
+          Los datos personales de una persona <strong class="text-gray-600 dark:text-gray-300">no son públicos</strong> por RUT (Ley 19.628 de protección de datos): esta herramienta no consulta ni expone información privada. En cambio, los RUT de <strong class="text-gray-600 dark:text-gray-300">empresas</strong> sí tienen información tributaria y legal pública. Estos son los canales oficiales:
+        </p>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <a href="https://zeus.sii.cl/cvc/stc/stc.html" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/5 border border-gray-100 dark:border-white/5 transition-all">
+            <LucideIcon name="Building2" size={18} class="text-primary shrink-0" />
+            <div class="min-w-0"><p class="font-semibold text-sm">SII — Situación tributaria</p><p class="text-xs text-gray-400 truncate">Estado y actividad de empresas</p></div>
+            <LucideIcon name="ExternalLink" size={14} class="ml-auto text-gray-300 group-hover:text-primary transition-colors" />
+          </a>
+          <a href="https://www.boletinconcursal.cl/" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/5 border border-gray-100 dark:border-white/5 transition-all">
+            <LucideIcon name="FileText" size={18} class="text-primary shrink-0" />
+            <div class="min-w-0"><p class="font-semibold text-sm">Boletín Concursal</p><p class="text-xs text-gray-400 truncate">Quiebras e insolvencias</p></div>
+            <LucideIcon name="ExternalLink" size={14} class="ml-auto text-gray-300 group-hover:text-primary transition-colors" />
+          </a>
+          <a href="https://www.registrocivil.cl/" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/5 border border-gray-100 dark:border-white/5 transition-all">
+            <LucideIcon name="IdCard" size={18} class="text-primary shrink-0" />
+            <div class="min-w-0"><p class="font-semibold text-sm">Registro Civil</p><p class="text-xs text-gray-400 truncate">Trámites de identidad (con tu clave)</p></div>
+            <LucideIcon name="ExternalLink" size={14} class="ml-auto text-gray-300 group-hover:text-primary transition-colors" />
+          </a>
+          <a href="https://www.mercadopublico.cl/" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/5 border border-gray-100 dark:border-white/5 transition-all">
+            <LucideIcon name="Briefcase" size={18} class="text-primary shrink-0" />
+            <div class="min-w-0"><p class="font-semibold text-sm">Mercado Público</p><p class="text-xs text-gray-400 truncate">Proveedores del Estado</p></div>
+            <LucideIcon name="ExternalLink" size={14} class="ml-auto text-gray-300 group-hover:text-primary transition-colors" />
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .fmt-card { cursor: pointer; }
+  .fmt-card:active { transform: scale(.98); }
+  .gt { color: var(--color-text-muted); }
+  :global(.dark) .gt { color: #9ca3af; }
+  .gt.active { background: #fff; color: var(--color-primary); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  :global(.dark) .gt.active { background: rgba(255,255,255,.08); color: #fff; }
+  .copy-row { font-family: 'JetBrains Mono', monospace; }
+</style>
+
+<script>
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+
+  // ====== Núcleo RUT ======
+  function computeDV(body: string): string {
+    let sum = 0, mul = 2;
+    for (let i = body.length - 1; i >= 0; i--) {
+      sum += parseInt(body[i], 10) * mul;
+      mul = mul === 7 ? 2 : mul + 1;
+    }
+    const res = 11 - (sum % 11);
+    if (res === 11) return '0';
+    if (res === 10) return 'K';
+    return String(res);
+  }
+  const clean = (raw: string) => raw.replace(/[^0-9kK]/g, '').toUpperCase();
+  const withDots = (body: string) => body.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  type Parsed = { ok: boolean; body: string; dvGiven: string | null; dvCorrect: string; valid: boolean; error?: string };
+
+  function parse(raw: string, hasDV: boolean): Parsed {
+    let c = clean(raw);
+    if (!c) return { ok: false, body: '', dvGiven: null, dvCorrect: '', valid: false, error: 'vacío' };
+    let body: string, dvGiven: string | null = null;
+    if (hasDV && c.length >= 2) { body = c.slice(0, -1); dvGiven = c.slice(-1); }
+    else { body = c; }
+    // body debe ser solo dígitos (la K solo es válida como DV)
+    if (!/^\d+$/.test(body)) return { ok: false, body, dvGiven, dvCorrect: '', valid: false, error: 'caracteres inválidos en el cuerpo' };
+    if (body.length > 9) return { ok: false, body, dvGiven, dvCorrect: '', valid: false, error: 'número demasiado largo' };
+    const dvCorrect = computeDV(body);
+    const valid = dvGiven !== null ? dvGiven === dvCorrect : true;
+    return { ok: true, body, dvGiven, dvCorrect, valid };
+  }
+
+  function tipoRUT(body: string): { label: string; cls: string; icon: string } {
+    const n = parseInt(body, 10);
+    if (n >= 50000000 && n <= 99999999) return { label: 'Empresa (persona jurídica)', cls: 'bg-violet-500/10 text-violet-500', icon: '🏢' };
+    if (n >= 1000000 && n < 50000000) return { label: 'Persona natural', cls: 'bg-emerald-500/10 text-emerald-500', icon: '👤' };
+    if (n >= 100000000) return { label: 'Fuera de rango válido', cls: 'bg-rose-500/10 text-rose-500', icon: '⚠️' };
+    return { label: 'Persona natural (rango bajo/antiguo)', cls: 'bg-amber-500/10 text-amber-500', icon: '👤' };
+  }
+
+  // ====== Validador principal ======
+  const input = $('#rut-input') as HTMLInputElement;
+  const hasDvBox = $('#has-dv') as HTMLInputElement;
+
+  function autodetect(raw: string) {
+    const c = clean(raw);
+    // si hay guión, o termina en K, o (con puntos) parece cuerpo+dv → asumir que incluye DV
+    if (raw.includes('-') || /[kK]$/.test(c)) { hasDvBox.checked = true; }
+  }
+
+  function render() {
+    const raw = input.value;
+    const res = $('#result');
+    const hint = $('#empty-hint');
+    if (!clean(raw)) { res.classList.add('hidden'); hint.classList.remove('hidden'); return; }
+    hint.classList.add('hidden');
+    res.classList.remove('hidden');
+
+    const p = parse(raw, hasDvBox.checked);
+    const banner = $('#status-banner');
+    const typeBadge = $('#type-badge');
+    const formats = $('#formats');
+
+    if (!p.ok) {
+      banner.className = 'flex items-center gap-3 p-4 rounded-2xl mb-5 bg-rose-500/10 text-rose-500';
+      banner.innerHTML = `<span class="text-2xl">⚠️</span><div><p class="font-bold">No se puede procesar</p><p class="text-sm opacity-80">${p.error}</p></div>`;
+      typeBadge.className = 'hidden';
+      formats.innerHTML = '';
+      return;
+    }
+
+    // Banner
+    if (p.dvGiven !== null) {
+      if (p.valid) {
+        banner.className = 'flex items-center gap-3 p-4 rounded-2xl mb-5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+        banner.innerHTML = `<span class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-black shrink-0">✓</span><div><p class="font-bold">RUT válido</p><p class="text-sm opacity-80">El dígito verificador <b>${p.dvGiven}</b> es correcto.</p></div>`;
+      } else {
+        banner.className = 'flex items-center gap-3 p-4 rounded-2xl mb-5 bg-rose-500/10 text-rose-600 dark:text-rose-400';
+        banner.innerHTML = `<span class="w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center font-black shrink-0">✕</span><div><p class="font-bold">RUT inválido</p><p class="text-sm opacity-80">Ingresaste <b>-${p.dvGiven}</b>, pero el dígito correcto es <b>-${p.dvCorrect}</b>.</p></div>`;
+      }
+    } else {
+      banner.className = 'flex items-center gap-3 p-4 rounded-2xl mb-5 bg-primary/10 text-primary';
+      banner.innerHTML = `<span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-black shrink-0">#</span><div><p class="font-bold">Dígito verificador: <b>${p.dvCorrect}</b></p><p class="text-sm opacity-80">Calculado para el cuerpo ingresado.</p></div>`;
+    }
+
+    // Tipo
+    const t = tipoRUT(p.body);
+    typeBadge.className = `inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5 ${t.cls}`;
+    typeBadge.innerHTML = `<span>${t.icon}</span> ${t.label}`;
+
+    // Formatos (usa el DV correcto)
+    const dv = p.dvCorrect;
+    const opts = [
+      { label: 'Con puntos y guión', value: `${withDots(p.body)}-${dv}` },
+      { label: 'Sin puntos, con guión', value: `${p.body}-${dv}` },
+      { label: 'Sin puntos ni guión', value: `${p.body}${dv}` },
+      { label: 'Solo cuerpo (con puntos)', value: withDots(p.body) },
+      { label: 'Dígito verificador', value: dv },
+    ];
+    formats.innerHTML = opts.map((o) =>
+      `<button class="fmt-card flex items-center justify-between gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-primary/5 border border-gray-100 dark:border-white/5 transition-all text-left" data-copy="${o.value}">
+        <div class="min-w-0"><p class="text-xs text-gray-400 mb-0.5">${o.label}</p><p class="copy-row font-bold tracking-tight truncate">${o.value}</p></div>
+        <span class="copy-ico text-gray-300 shrink-0">⧉</span>
+      </button>`
+    ).join('');
+    formats.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText((b as HTMLElement).dataset.copy!);
+        const ico = b.querySelector('.copy-ico')!;
+        const o = ico.textContent; ico.textContent = '✓'; (ico as HTMLElement).style.color = '#10b981';
+        setTimeout(() => { ico.textContent = o; (ico as HTMLElement).style.color = ''; }, 1200);
+      } catch {}
+    }));
+  }
+
+  input.addEventListener('input', () => { autodetect(input.value); render(); });
+  hasDvBox.addEventListener('change', render);
+
+  // ====== Validación por lote ======
+  $('#batch-run').addEventListener('click', () => {
+    const lines = ($('#batch-input') as HTMLTextAreaElement).value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const out = $('#batch-results');
+    let ok = 0, bad = 0;
+    const rows: string[] = [];
+    out.innerHTML = lines.map((line) => {
+      const p = parse(line, true);
+      if (!p.ok) { bad++; rows.push(`${line};;;ERROR`); return rowHtml(line, '—', false, 'formato inválido'); }
+      const formatted = `${withDots(p.body)}-${p.dvCorrect}`;
+      if (p.valid) { ok++; rows.push(`${line};${formatted};${p.dvCorrect};válido`); return rowHtml(line, formatted, true, ''); }
+      bad++; rows.push(`${line};${formatted};${p.dvCorrect};inválido (DV correcto ${p.dvCorrect})`);
+      return rowHtml(line, formatted, false, `DV correcto: ${p.dvCorrect}`);
+    }).join('');
+    $('#batch-summary').innerHTML = `<span class="text-emerald-500 font-bold">${ok} válidos</span> · <span class="text-rose-500 font-bold">${bad} inválidos</span> · ${lines.length} total`;
+    const csvBtn = $('#batch-csv') as HTMLButtonElement;
+    csvBtn.classList.toggle('hidden', lines.length === 0);
+    csvBtn.onclick = () => downloadCSV('original;formateado;dv;estado\n' + rows.join('\n'));
+  });
+  function rowHtml(orig: string, fmt: string, valid: boolean, note: string) {
+    return `<div class="flex items-center gap-2 p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-sm">
+      <span class="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ${valid ? 'bg-emerald-500' : 'bg-rose-500'}">${valid ? '✓' : '✕'}</span>
+      <span class="copy-row truncate flex-1">${fmt}</span>
+      ${note ? `<span class="text-xs text-rose-500 shrink-0">${note}</span>` : ''}
+    </div>`;
+  }
+  function downloadCSV(content: string) {
+    const blob = new Blob(['﻿' + content], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'ruts-validados.csv'; a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // ====== Generador ======
+  let genType = 'persona';
+  document.querySelectorAll('#gen-type .gt').forEach((b) => b.addEventListener('click', () => {
+    genType = (b as HTMLElement).dataset.gt!;
+    document.querySelectorAll('#gen-type .gt').forEach((x) => x.classList.toggle('active', x === b));
+  }));
+  ($('#gen-type .gt') as HTMLElement).classList.add('active');
+
+  $('#gen-run').addEventListener('click', () => {
+    const qty = Math.min(50, Math.max(1, parseInt(($('#gen-qty') as HTMLInputElement).value) || 1));
+    const out = $('#gen-results');
+    const items: string[] = [];
+    for (let i = 0; i < qty; i++) {
+      const n = genType === 'empresa'
+        ? 50000000 + Math.floor(Math.random() * 49000000)
+        : 4000000 + Math.floor(Math.random() * 22000000);
+      const body = String(n);
+      items.push(`${withDots(body)}-${computeDV(body)}`);
+    }
+    out.innerHTML = items.map((r) =>
+      `<button class="fmt-card flex items-center justify-between gap-2 p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-violet-500/5 transition-all text-left" data-copy="${r}">
+        <span class="copy-row font-semibold truncate">${r}</span><span class="copy-ico text-gray-300 shrink-0 text-xs">⧉</span>
+      </button>`).join('');
+    out.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText((b as HTMLElement).dataset.copy!);
+        const ico = b.querySelector('.copy-ico')!; ico.textContent = '✓'; (ico as HTMLElement).style.color = '#10b981';
+        setTimeout(() => { ico.textContent = '⧉'; (ico as HTMLElement).style.color = ''; }, 1200);
+      } catch {}
+    }));
+  });
+</script>

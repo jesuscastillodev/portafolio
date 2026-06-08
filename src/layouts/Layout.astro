@@ -2,6 +2,7 @@
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
 }
 
 const siteUrl = 'https://jcastillo.dev';
@@ -9,7 +10,8 @@ const ogImage = `${siteUrl}/og-image.png`;
 
 const {
   title = "Jesús Castillo — Programador Full Stack | Desarrollador de Software",
-  description = "Jesús Castillo, programador y desarrollador de software full stack con +10 años de experiencia. Especializado en React, Laravel, Node.js, Docker y arquitectura de soluciones escalables. Portfolio profesional."
+  description = "Jesús Castillo, programador y desarrollador de software full stack con +10 años de experiencia. Especializado en React, Laravel, Node.js, Docker y arquitectura de soluciones escalables. Portfolio profesional.",
+  canonical = siteUrl
 } = Astro.props;
 
 const keywords = "programador, desarrollador de software, full stack, developer, React, Laravel, Node.js, Docker, PHP, JavaScript, TypeScript, portfolio, Jesús Castillo, jcastillo, programador web, desarrollador web, backend, frontend, API, arquitectura de software";
@@ -27,9 +29,9 @@ const keywords = "programador, desarrollador de software, full stack, developer,
     <meta name="googlebot" content="index, follow" />
     <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
-    <link rel="canonical" href={siteUrl} />
-    <link rel="alternate" hreflang="es" href={siteUrl} />
-    <link rel="alternate" hreflang="x-default" href={siteUrl} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
     <link rel="sitemap" href="/sitemap.xml" />
 
     <!-- Fonts -->
@@ -41,7 +43,7 @@ const keywords = "programador, desarrollador de software, full stack, developer,
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={siteUrl} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
@@ -69,7 +71,6 @@ const keywords = "programador, desarrollador de software, full stack, developer,
       "name": "Jesús Castillo",
       "alternateName": "jcastillo.dev",
       "url": siteUrl,
-      "image": `${siteUrl}/images/foto.webp`,
       "jobTitle": "Programador Full Stack",
       "description": "Programador y desarrollador de software full stack con más de 10 años de experiencia en React, Laravel, Node.js y Docker.",
       "knowsAbout": ["React", "Laravel", "Node.js", "Docker", "TypeScript", "PHP", "MySQL", "MongoDB", "Git", "Kubernetes", "JavaScript", "Tailwind CSS", "REST API"],

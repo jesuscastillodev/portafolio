@@ -1,0 +1,500 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Conversor de Unidades — longitud, peso, temperatura y más | Jcastillo.dev';
+const description = 'Convierte unidades al instante: longitud, masa, temperatura, volumen, área, velocidad, tiempo y datos digitales. Rápido, preciso y gratis.';
+const canonical = 'https://jcastillo.dev/conversor-unidades';
+
+const categories = [
+  { id: 'longitud',  label: 'Longitud',  icon: 'Ruler' },
+  { id: 'masa',      label: 'Masa',      icon: 'Weight' },
+  { id: 'temperatura', label: 'Temperatura', icon: 'Thermometer' },
+  { id: 'volumen',   label: 'Volumen',   icon: 'Wrench' },
+  { id: 'area',      label: 'Área',      icon: 'Hash' },
+  { id: 'velocidad', label: 'Velocidad', icon: 'Gauge' },
+  { id: 'tiempo',    label: 'Tiempo',    icon: 'Timer' },
+  { id: 'datos',     label: 'Datos digitales', icon: 'Binary' },
+];
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full uc-root">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full uc-badge mb-5">
+          <LucideIcon name="ArrowRightLeft" size={14} class="uc-accent-text" />
+          <span class="text-xs font-semibold uc-accent-text tracking-wider uppercase">Conversor de unidades</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Convierte cualquier<br><span class="uc-gradient-text">unidad al instante</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Longitud, masa, temperatura, volumen, área, velocidad, tiempo y datos digitales. Conversión bidireccional en vivo, con formato chileno y precisión cuidada. Privado: todo el cálculo ocurre en tu navegador.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== CATEGORÍAS ===== -->
+    <section class="px-6 pb-4">
+      <div class="max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div role="tablist" aria-label="Categorías de unidades" id="cats" class="flex flex-wrap gap-2">
+          {categories.map((c) => (
+            <button
+              role="tab"
+              data-cat={c.id}
+              aria-selected="false"
+              class="uc-pill inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold border transition-all cursor-pointer"
+            >
+              <LucideIcon name={c.icon} size={15} />
+              {c.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONVERSOR PRINCIPAL ===== -->
+    <section class="px-6 pb-6">
+      <div class="max-w-4xl mx-auto glass glow-card rounded-3xl p-6 lg:p-10" data-animate="fadeInUp">
+        <div class="flex items-center gap-3 mb-6">
+          <span id="cat-icon" class="w-10 h-10 rounded-xl flex items-center justify-center uc-accent-text uc-accent-bg"></span>
+          <div>
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Convirtiendo</p>
+            <h2 id="cat-title" class="text-lg font-bold tracking-tight">Longitud</h2>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-[1fr_auto_1fr] gap-4 items-end">
+          <!-- DESDE -->
+          <div>
+            <label for="from-val" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Desde</label>
+            <input id="from-val" type="text" inputmode="decimal" autocomplete="off" value="1"
+              aria-label="Valor a convertir"
+              class="uc-input w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono text-2xl font-bold tracking-tight focus:outline-none transition-all" />
+            <select id="from-unit" aria-label="Unidad de origen"
+              class="uc-select mt-2 w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-semibold focus:outline-none transition-all cursor-pointer"></select>
+          </div>
+
+          <!-- SWAP -->
+          <div class="flex lg:flex-col items-center justify-center gap-1 pb-2">
+            <button id="swap" aria-label="Intercambiar unidades"
+              class="uc-swap w-11 h-11 rounded-2xl flex items-center justify-center text-white transition-all hover:-translate-y-0.5 cursor-pointer shadow-lg">
+              <LucideIcon name="ArrowRightLeft" size={18} />
+            </button>
+          </div>
+
+          <!-- HACIA -->
+          <div>
+            <label for="to-val" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Hacia</label>
+            <input id="to-val" type="text" inputmode="decimal" autocomplete="off" value="100"
+              aria-label="Resultado de la conversión"
+              class="uc-input uc-result w-full px-5 py-4 rounded-2xl border font-mono text-2xl font-black tracking-tight focus:outline-none transition-all" />
+            <select id="to-unit" aria-label="Unidad de destino"
+              class="uc-select mt-2 w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-semibold focus:outline-none transition-all cursor-pointer"></select>
+          </div>
+        </div>
+
+        <!-- READOUT GRANDE -->
+        <div id="readout" class="mt-6 p-5 rounded-2xl uc-readout text-center"></div>
+      </div>
+    </section>
+
+    <!-- ===== CONVERSIONES COMUNES ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-4xl mx-auto glass rounded-3xl p-6 lg:p-8" data-animate="fadeInUp">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="w-9 h-9 rounded-xl flex items-center justify-center uc-accent-text uc-accent-bg"><LucideIcon name="Calculator" size={18} /></span>
+          <h2 class="text-lg font-bold tracking-tight">Conversiones comunes</h2>
+        </div>
+        <div id="common" class="grid sm:grid-cols-2 gap-2.5"></div>
+        <p class="mt-5 text-xs text-gray-400 flex items-center gap-2">
+          <LucideIcon name="Info" size={14} /> Toca cualquier fila para cargarla en el conversor.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ===== Tema "instrumento cálido": ámbar + naranja ===== */
+  .uc-root { --uc-1: #f59e0b; --uc-2: #fb923c; }
+
+  .uc-badge {
+    background: color-mix(in srgb, var(--uc-1) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--uc-1) 20%, transparent);
+  }
+  .uc-accent-text { color: var(--uc-1); }
+  :global(.dark) .uc-accent-text { color: var(--uc-2); }
+  .uc-accent-bg { background: color-mix(in srgb, var(--uc-1) 12%, transparent); }
+
+  .uc-gradient-text {
+    background: linear-gradient(135deg, var(--uc-1), var(--uc-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .uc-swap { background: linear-gradient(135deg, var(--uc-1), var(--uc-2)); }
+  .uc-swap:hover { box-shadow: 0 8px 24px color-mix(in srgb, var(--uc-1) 35%, transparent); }
+
+  /* Pills */
+  .uc-pill {
+    color: var(--color-text-muted, #6b7280);
+    background: transparent;
+    border-color: color-mix(in srgb, var(--uc-1) 18%, transparent);
+  }
+  :global(.dark) .uc-pill { color: #9ca3af; border-color: rgba(255,255,255,.1); }
+  .uc-pill:hover { background: color-mix(in srgb, var(--uc-1) 8%, transparent); }
+  .uc-pill.active {
+    background: linear-gradient(135deg, var(--uc-1), var(--uc-2));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--uc-1) 30%, transparent);
+  }
+
+  /* Inputs */
+  .uc-input:focus, .uc-select:focus {
+    border-color: var(--uc-1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--uc-1) 25%, transparent);
+  }
+  .uc-result {
+    background: color-mix(in srgb, var(--uc-1) 7%, transparent);
+    border-color: color-mix(in srgb, var(--uc-1) 25%, transparent);
+    color: var(--uc-1);
+  }
+  :global(.dark) .uc-result { color: var(--uc-2); background: color-mix(in srgb, var(--uc-2) 9%, transparent); }
+
+  /* Readout */
+  .uc-readout {
+    background: color-mix(in srgb, var(--uc-1) 6%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--uc-1) 25%, transparent);
+  }
+  .uc-readout .big { color: var(--uc-1); }
+  :global(.dark) .uc-readout .big { color: var(--uc-2); }
+
+  .uc-common-row { cursor: pointer; }
+  .uc-common-row:active { transform: scale(.985); }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+</style>
+
+<script>
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+
+  // ===== Definiciones de unidades =====
+  type Unit = { id: string; label: string; factor: number };
+  type Category = {
+    label: string;
+    icon: string;
+    base: string;
+    units: Unit[];
+    special?: boolean; // temperatura
+  };
+
+  const CATS: Record<string, Category> = {
+    longitud: {
+      label: 'Longitud', icon: 'Ruler', base: 'metro',
+      units: [
+        { id: 'mm', label: 'Milímetro (mm)', factor: 0.001 },
+        { id: 'cm', label: 'Centímetro (cm)', factor: 0.01 },
+        { id: 'm', label: 'Metro (m)', factor: 1 },
+        { id: 'km', label: 'Kilómetro (km)', factor: 1000 },
+        { id: 'in', label: 'Pulgada (in)', factor: 0.0254 },
+        { id: 'ft', label: 'Pie (ft)', factor: 0.3048 },
+        { id: 'yd', label: 'Yarda (yd)', factor: 0.9144 },
+        { id: 'mi', label: 'Milla (mi)', factor: 1609.344 },
+        { id: 'nmi', label: 'Milla náutica (nmi)', factor: 1852 },
+      ],
+    },
+    masa: {
+      label: 'Masa', icon: 'Weight', base: 'kilogramo',
+      units: [
+        { id: 'mg', label: 'Miligramo (mg)', factor: 0.000001 },
+        { id: 'g', label: 'Gramo (g)', factor: 0.001 },
+        { id: 'kg', label: 'Kilogramo (kg)', factor: 1 },
+        { id: 't', label: 'Tonelada (t)', factor: 1000 },
+        { id: 'lb', label: 'Libra (lb)', factor: 0.45359237 },
+        { id: 'oz', label: 'Onza (oz)', factor: 0.0283495 },
+      ],
+    },
+    temperatura: {
+      label: 'Temperatura', icon: 'Thermometer', base: 'celsius', special: true,
+      units: [
+        { id: 'C', label: 'Celsius (°C)', factor: 1 },
+        { id: 'F', label: 'Fahrenheit (°F)', factor: 1 },
+        { id: 'K', label: 'Kelvin (K)', factor: 1 },
+      ],
+    },
+    volumen: {
+      label: 'Volumen', icon: 'Wrench', base: 'litro',
+      units: [
+        { id: 'ml', label: 'Mililitro (ml)', factor: 0.001 },
+        { id: 'l', label: 'Litro (l)', factor: 1 },
+        { id: 'm3', label: 'Metro cúbico (m³)', factor: 1000 },
+        { id: 'tsp', label: 'Cucharadita', factor: 0.00492892 },
+        { id: 'cup', label: 'Taza', factor: 0.236588 },
+        { id: 'galUS', label: 'Galón US', factor: 3.785411784 },
+        { id: 'ptUS', label: 'Pinta US', factor: 0.473176 },
+      ],
+    },
+    area: {
+      label: 'Área', icon: 'Hash', base: 'metro cuadrado',
+      units: [
+        { id: 'cm2', label: 'Centímetro² (cm²)', factor: 0.0001 },
+        { id: 'm2', label: 'Metro² (m²)', factor: 1 },
+        { id: 'ha', label: 'Hectárea (ha)', factor: 10000 },
+        { id: 'km2', label: 'Kilómetro² (km²)', factor: 1e6 },
+        { id: 'acre', label: 'Acre', factor: 4046.8564224 },
+        { id: 'ft2', label: 'Pie² (ft²)', factor: 0.092903 },
+      ],
+    },
+    velocidad: {
+      label: 'Velocidad', icon: 'Gauge', base: 'metro/segundo',
+      units: [
+        { id: 'ms', label: 'Metro/segundo (m/s)', factor: 1 },
+        { id: 'kmh', label: 'Kilómetro/hora (km/h)', factor: 0.277778 },
+        { id: 'mph', label: 'Milla/hora (mph)', factor: 0.44704 },
+        { id: 'kn', label: 'Nudo (kn)', factor: 0.514444 },
+        { id: 'fts', label: 'Pie/segundo (ft/s)', factor: 0.3048 },
+      ],
+    },
+    tiempo: {
+      label: 'Tiempo', icon: 'Timer', base: 'segundo',
+      units: [
+        { id: 'ms', label: 'Milisegundo (ms)', factor: 0.001 },
+        { id: 's', label: 'Segundo (s)', factor: 1 },
+        { id: 'min', label: 'Minuto (min)', factor: 60 },
+        { id: 'h', label: 'Hora (h)', factor: 3600 },
+        { id: 'd', label: 'Día', factor: 86400 },
+        { id: 'wk', label: 'Semana', factor: 604800 },
+      ],
+    },
+    datos: {
+      label: 'Datos digitales', icon: 'Binary', base: 'byte',
+      units: [
+        { id: 'bit', label: 'Bit', factor: 0.125 },
+        { id: 'B', label: 'Byte (B)', factor: 1 },
+        { id: 'KB', label: 'Kilobyte (KB)', factor: 1024 },
+        { id: 'MB', label: 'Megabyte (MB)', factor: 1024 ** 2 },
+        { id: 'GB', label: 'Gigabyte (GB)', factor: 1024 ** 3 },
+        { id: 'TB', label: 'Terabyte (TB)', factor: 1024 ** 4 },
+      ],
+    },
+  };
+
+  // Conversiones comunes por categoría: [valor, unidadDesde, unidadHacia]
+  const COMMON: Record<string, [number, string, string][]> = {
+    longitud:    [[1, 'km', 'mi'], [1, 'm', 'ft'], [1, 'in', 'cm'], [1, 'mi', 'km']],
+    masa:        [[1, 'kg', 'lb'], [1, 'lb', 'g'], [1, 't', 'kg'], [1, 'oz', 'g']],
+    temperatura: [[0, 'C', 'F'], [100, 'C', 'F'], [98.6, 'F', 'C'], [0, 'C', 'K']],
+    volumen:     [[1, 'l', 'galUS'], [1, 'galUS', 'l'], [1, 'cup', 'ml'], [1, 'm3', 'l']],
+    area:        [[1, 'ha', 'm2'], [1, 'acre', 'm2'], [1, 'km2', 'ha'], [1, 'm2', 'ft2']],
+    velocidad:   [[1, 'kmh', 'ms'], [100, 'kmh', 'mph'], [1, 'kn', 'kmh'], [1, 'mph', 'kmh']],
+    tiempo:      [[1, 'h', 'min'], [1, 'd', 'h'], [1, 'wk', 'd'], [1, 'min', 's']],
+    datos:       [[1, 'GB', 'MB'], [1, 'MB', 'KB'], [1, 'TB', 'GB'], [1, 'B', 'bit']],
+  };
+
+  // ===== Conversión =====
+  function toBase(cat: Category, unit: string, v: number): number {
+    if (cat.special) {
+      // a Celsius
+      if (unit === 'C') return v;
+      if (unit === 'F') return (v - 32) * 5 / 9;
+      if (unit === 'K') return v - 273.15;
+    }
+    const u = cat.units.find((x) => x.id === unit)!;
+    return v * u.factor;
+  }
+  function fromBase(cat: Category, unit: string, base: number): number {
+    if (cat.special) {
+      // desde Celsius
+      if (unit === 'C') return base;
+      if (unit === 'F') return base * 9 / 5 + 32;
+      if (unit === 'K') return base + 273.15;
+    }
+    const u = cat.units.find((x) => x.id === unit)!;
+    return base / u.factor;
+  }
+  function convert(catId: string, from: string, to: string, v: number): number {
+    const cat = CATS[catId];
+    return fromBase(cat, to, toBase(cat, from, v));
+  }
+
+  // ===== Formato es-CL con recorte de ceros =====
+  function formatNumber(n: number): string {
+    if (!isFinite(n)) return '—';
+    if (n === 0) return '0';
+    const abs = Math.abs(n);
+    // Notación científica para magnitudes extremas
+    if (abs !== 0 && (abs < 1e-6 || abs >= 1e15)) {
+      return n.toExponential(4).replace('.', ',');
+    }
+    // Decimales según magnitud
+    let decimals = 6;
+    if (abs >= 1000) decimals = 2;
+    else if (abs >= 1) decimals = 4;
+    else decimals = 8;
+    const fixed = n.toFixed(decimals);
+    // Recortar ceros sobrantes
+    let trimmed = fixed.includes('.') ? fixed.replace(/0+$/, '').replace(/\.$/, '') : fixed;
+    const [intPart, decPart] = trimmed.split('.');
+    const intFmt = new Intl.NumberFormat('es-CL').format(BigInt(intPart.replace('-', ''))).toString();
+    const sign = intPart.startsWith('-') ? '-' : '';
+    return decPart ? `${sign}${intFmt},${decPart}` : `${sign}${intFmt}`;
+  }
+
+  // Parseo de entrada en formato es-CL o internacional
+  function parseInput(raw: string): number | null {
+    if (raw == null) return null;
+    let s = raw.trim();
+    if (s === '') return null;
+    // Quitar separadores de miles (puntos) y usar coma o punto como decimal
+    if (s.includes(',')) {
+      s = s.replace(/\./g, '').replace(',', '.');
+    } else {
+      // si hay múltiples puntos, tratarlos como miles
+      const parts = s.split('.');
+      if (parts.length > 2) s = parts.join('');
+    }
+    const n = parseFloat(s);
+    return isNaN(n) ? null : n;
+  }
+
+  // ===== Estado y elementos =====
+  let current = 'longitud';
+  let lastEdited: 'from' | 'to' = 'from';
+
+  const fromVal = $('#from-val') as HTMLInputElement;
+  const toVal = $('#to-val') as HTMLInputElement;
+  const fromUnit = $('#from-unit') as HTMLSelectElement;
+  const toUnit = $('#to-unit') as HTMLSelectElement;
+
+  function unitLabel(catId: string, id: string) {
+    return CATS[catId].units.find((u) => u.id === id)?.label ?? id;
+  }
+  function shortUnit(catId: string, id: string) {
+    const m = unitLabel(catId, id).match(/\(([^)]+)\)/);
+    return m ? m[1] : unitLabel(catId, id);
+  }
+
+  function fillUnits() {
+    const cat = CATS[current];
+    const opts = cat.units.map((u) => `<option value="${u.id}">${u.label}</option>`).join('');
+    fromUnit.innerHTML = opts;
+    toUnit.innerHTML = opts;
+    // defaults razonables: primero y segundo distinto
+    fromUnit.selectedIndex = 0;
+    toUnit.selectedIndex = Math.min(1, cat.units.length - 1);
+  }
+
+  function renderHeader() {
+    $('#cat-title').textContent = CATS[current].label;
+    // icono via lucide ya está en pills; aquí simple marca de color
+    $('#cat-icon').innerHTML = '';
+    const span = document.createElement('span');
+    span.className = 'font-black text-base';
+    span.textContent = CATS[current].label.charAt(0);
+    $('#cat-icon').appendChild(span);
+  }
+
+  function recompute() {
+    const cat = CATS[current];
+    if (lastEdited === 'from') {
+      const v = parseInput(fromVal.value);
+      if (v === null) { toVal.value = ''; renderReadout(null, null); return; }
+      const r = convert(current, fromUnit.value, toUnit.value, v);
+      toVal.value = formatNumber(r);
+      renderReadout(v, r);
+    } else {
+      const v = parseInput(toVal.value);
+      if (v === null) { fromVal.value = ''; renderReadout(null, null); return; }
+      const r = convert(current, toUnit.value, fromUnit.value, v);
+      fromVal.value = formatNumber(r);
+      renderReadout(r, v);
+    }
+  }
+
+  function renderReadout(fromN: number | null, toN: number | null) {
+    const el = $('#readout');
+    if (fromN === null || toN === null) {
+      el.innerHTML = `<p class="text-sm text-gray-400">Ingresa un valor numérico para convertir.</p>`;
+      return;
+    }
+    const fu = shortUnit(current, fromUnit.value);
+    const tu = shortUnit(current, toUnit.value);
+    el.innerHTML =
+      `<p class="text-sm text-gray-500 dark:text-gray-400 mb-1 mono">${formatNumber(fromN)} ${fu}</p>` +
+      `<p class="big text-3xl lg:text-4xl font-black tracking-tight mono">${formatNumber(toN)} <span class="text-xl font-bold">${tu}</span></p>`;
+  }
+
+  function renderCommon() {
+    const el = $('#common');
+    const rows = COMMON[current] || [];
+    el.innerHTML = rows.map(([v, f, t]) => {
+      const r = convert(current, f, t, v);
+      const fu = shortUnit(current, f);
+      const tu = shortUnit(current, t);
+      return `<button class="uc-common-row flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-amber-500/5 border border-gray-100 dark:border-white/5 transition-all text-left mono text-sm"
+        data-v="${v}" data-f="${f}" data-t="${t}">
+        <span class="font-semibold">${formatNumber(v)} ${fu}</span>
+        <span class="uc-accent-text font-bold">= ${formatNumber(r)} ${tu}</span>
+      </button>`;
+    }).join('');
+    el.querySelectorAll('[data-v]').forEach((b) => b.addEventListener('click', () => {
+      const d = (b as HTMLElement).dataset;
+      fromUnit.value = d.f!;
+      toUnit.value = d.t!;
+      fromVal.value = String(d.v).replace('.', ',');
+      lastEdited = 'from';
+      recompute();
+      $('#from-val').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }));
+  }
+
+  function selectCategory(id: string) {
+    current = id;
+    document.querySelectorAll('#cats [data-cat]').forEach((b) => {
+      const active = (b as HTMLElement).dataset.cat === id;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', String(active));
+    });
+    fillUnits();
+    renderHeader();
+    lastEdited = 'from';
+    fromVal.value = current === 'temperatura' ? '0' : '1';
+    recompute();
+    renderCommon();
+  }
+
+  // ===== Listeners =====
+  document.querySelectorAll('#cats [data-cat]').forEach((b) =>
+    b.addEventListener('click', () => selectCategory((b as HTMLElement).dataset.cat!)));
+
+  fromVal.addEventListener('input', () => { lastEdited = 'from'; recompute(); });
+  toVal.addEventListener('input', () => { lastEdited = 'to'; recompute(); });
+  fromUnit.addEventListener('change', () => { recompute(); renderCommon(); });
+  toUnit.addEventListener('change', () => { recompute(); renderCommon(); });
+
+  $('#swap').addEventListener('click', () => {
+    const fu = fromUnit.value;
+    fromUnit.value = toUnit.value;
+    toUnit.value = fu;
+    // mantener el valor del lado "desde", recalcular hacia
+    lastEdited = 'from';
+    recompute();
+    renderCommon();
+  });
+
+  // Init
+  selectCategory('longitud');
+</script>

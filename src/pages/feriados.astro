@@ -1,0 +1,530 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Feriados de Chile y Calculadora de Días Hábiles | Jcastillo.dev';
+const description = 'Lista de feriados de Chile y calculadora de días hábiles: cuenta los días hábiles entre dos fechas o suma N días hábiles excluyendo fines de semana y feriados.';
+const canonical = 'https://jcastillo.dev/feriados';
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full feriados-theme">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cl-blue/5 dark:bg-cl-blue/10 border border-cl-blue/15 dark:border-cl-blue/25 mb-5">
+          <LucideIcon name="CalendarDays" size={14} class="cl-blue-text" />
+          <span class="text-xs font-semibold cl-blue-text tracking-wider uppercase">Feriados de Chile · 2026</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Feriados y <br><span class="cl-gradient-text">días hábiles</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Consulta los feriados de Chile, descubre cuándo es el próximo y calcula días hábiles entre dos fechas o sumando días a partir de hoy. Todo en tu navegador, sin conexión.
+        </p>
+
+        <!-- Disclaimer + fuente oficial -->
+        <div class="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
+          <p class="flex items-start gap-2 text-sm text-gray-500 dark:text-gray-400 max-w-xl">
+            <LucideIcon name="Info" size={16} class="shrink-0 mt-0.5 cl-red-text" />
+            <span>Algunas fechas (especialmente movibles o de carácter regional) pueden cambiar por ley. Confirma siempre en la fuente oficial.</span>
+          </p>
+          <a href="https://www.feriados.cl" target="_blank" rel="noopener noreferrer"
+            class="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cl-blue text-white text-sm font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cl-blue/25 w-fit">
+            <LucideIcon name="Link" size={15} /> feriados.cl
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRÓXIMO FERIADO + ¿HOY ES HÁBIL? ===== -->
+    <section class="px-6 pb-6">
+      <div class="max-w-4xl mx-auto grid lg:grid-cols-3 gap-6">
+        <!-- Próximo feriado (destacado) -->
+        <div id="next-holiday" class="lg:col-span-2 relative glass glow-card rounded-3xl p-6 lg:p-8 overflow-hidden" data-animate="fadeInLeft">
+          <div class="cl-flag-stripe"></div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <LucideIcon name="Sparkles" size={14} class="cl-blue-text" /> Próximo feriado
+          </p>
+          <div id="next-holiday-body"></div>
+        </div>
+
+        <!-- ¿Hoy es hábil? -->
+        <div id="today-card" class="glass rounded-3xl p-6 lg:p-7 flex flex-col justify-center" data-animate="fadeInRight">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">¿Hoy es hábil?</p>
+          <div id="today-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CALCULADORA DE DÍAS HÁBILES ===== -->
+    <section class="px-6 pb-6">
+      <div class="max-w-4xl mx-auto glass glow-card rounded-3xl p-6 lg:p-10" data-animate="fadeInUp">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-10 h-10 rounded-xl flex items-center justify-center cl-blue-text bg-cl-blue/10"><LucideIcon name="Calculator" size={20} /></span>
+          <div>
+            <h2 class="text-xl font-bold tracking-tight">Calculadora de días hábiles</h2>
+            <p class="text-sm text-gray-400">Lunes a viernes, excluyendo feriados.</p>
+          </div>
+        </div>
+
+        <!-- Segmented tabs -->
+        <div class="flex gap-1 p-1 rounded-2xl bg-gray-100 dark:bg-white/5 mb-6" role="tablist" aria-label="Modo de cálculo">
+          <button id="tab-a" role="tab" aria-selected="true" aria-controls="mode-a" class="calc-tab flex-1 text-sm font-semibold py-2.5 rounded-xl transition-all">
+            Entre dos fechas
+          </button>
+          <button id="tab-b" role="tab" aria-selected="false" aria-controls="mode-b" class="calc-tab flex-1 text-sm font-semibold py-2.5 rounded-xl transition-all">
+            Sumar días hábiles
+          </button>
+        </div>
+
+        <!-- Modo A -->
+        <div id="mode-a" role="tabpanel" aria-labelledby="tab-a">
+          <div class="grid sm:grid-cols-2 gap-4 mb-5">
+            <div>
+              <label for="a-start" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Fecha de inicio</label>
+              <input id="a-start" type="date" class="cl-date w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-cl-blue/40 focus:border-cl-blue transition-all" />
+            </div>
+            <div>
+              <label for="a-end" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Fecha de fin</label>
+              <input id="a-end" type="date" class="cl-date w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-cl-blue/40 focus:border-cl-blue transition-all" />
+            </div>
+          </div>
+          <p id="a-error" class="is-hidden text-sm cl-red-text mb-4 flex items-center gap-2"><LucideIcon name="Info" size={15} /> <span></span></p>
+          <div id="a-results" class="is-hidden grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="stat-card"><p class="stat-num" id="a-total">0</p><p class="stat-label">Días totales</p></div>
+            <div class="stat-card stat-good"><p class="stat-num" id="a-habiles">0</p><p class="stat-label">Días hábiles</p></div>
+            <div class="stat-card"><p class="stat-num" id="a-finde">0</p><p class="stat-label">Fines de semana</p></div>
+            <div class="stat-card stat-bad"><p class="stat-num" id="a-feriados">0</p><p class="stat-label">Feriados</p></div>
+          </div>
+          <p id="a-hint" class="text-sm text-gray-400 flex items-center gap-2"><LucideIcon name="Info" size={15} /> Elige inicio y fin. El rango es inclusivo (cuenta ambos extremos).</p>
+        </div>
+
+        <!-- Modo B -->
+        <div id="mode-b" role="tabpanel" aria-labelledby="tab-b" class="hidden">
+          <div class="grid sm:grid-cols-2 gap-4 mb-5">
+            <div>
+              <label for="b-start" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Fecha de inicio</label>
+              <input id="b-start" type="date" class="cl-date w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-cl-blue/40 focus:border-cl-blue transition-all" />
+            </div>
+            <div>
+              <label for="b-days" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Días hábiles a sumar</label>
+              <input id="b-days" type="number" value="10" step="1" class="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-cl-blue/40 focus:border-cl-blue transition-all" />
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mb-4">Tip: usa un número negativo para retroceder días hábiles.</p>
+          <p id="b-error" class="is-hidden text-sm cl-red-text mb-4 flex items-center gap-2"><LucideIcon name="Info" size={15} /> <span></span></p>
+          <div id="b-results" class="is-hidden">
+            <div class="cl-result-card">
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Fecha resultante</p>
+              <p class="text-2xl lg:text-3xl font-black tracking-tight" id="b-date">—</p>
+              <p class="text-sm text-gray-400 mt-1" id="b-detail"></p>
+            </div>
+          </div>
+          <p id="b-hint" class="text-sm text-gray-400 flex items-center gap-2"><LucideIcon name="Info" size={15} /> Elige una fecha y cuántos días hábiles sumar (o restar).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LISTA DE FERIADOS 2026 ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center cl-red-text bg-cl-red/10"><LucideIcon name="Calendar" size={20} /></span>
+            <h2 class="text-xl font-bold tracking-tight">Feriados de Chile 2026</h2>
+          </div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cl-red/10 cl-red-text text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-cl-red"></span> Irrenunciable
+          </span>
+        </div>
+        <div id="holiday-list" class="grid sm:grid-cols-2 gap-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ====== Tema "Calendario / Bandera de Chile" — azul + rojo ====== */
+  .feriados-theme {
+    --cl-blue: #3b82f6;
+    --cl-blue-dark: #2563eb;
+    --cl-red: #ef4444;
+    --cl-red-dark: #dc2626;
+  }
+  .is-hidden { display: none !important; }
+  .cl-blue-text { color: var(--cl-blue); }
+  .cl-red-text { color: var(--cl-red); }
+  .bg-cl-blue { background-color: var(--cl-blue); }
+  .bg-cl-red { background-color: var(--cl-red); }
+
+  /* Tailwind v4 arbitrary-like helpers driven by the CSS vars above */
+  .bg-cl-blue\/5 { background-color: color-mix(in srgb, var(--cl-blue) 5%, transparent); }
+  .bg-cl-blue\/10 { background-color: color-mix(in srgb, var(--cl-blue) 10%, transparent); }
+  .bg-cl-blue\/25 { background-color: color-mix(in srgb, var(--cl-blue) 25%, transparent); }
+  .border-cl-blue\/15 { border-color: color-mix(in srgb, var(--cl-blue) 15%, transparent); }
+  .border-cl-blue\/25 { border-color: color-mix(in srgb, var(--cl-blue) 25%, transparent); }
+  .focus\:ring-cl-blue\/40:focus { --tw-ring-color: color-mix(in srgb, var(--cl-blue) 40%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--cl-blue) 40%, transparent); }
+  .focus\:border-cl-blue:focus { border-color: var(--cl-blue); }
+  .bg-cl-red\/10 { background-color: color-mix(in srgb, var(--cl-red) 10%, transparent); }
+  .hover\:shadow-cl-blue\/25:hover { box-shadow: 0 10px 25px -5px color-mix(in srgb, var(--cl-blue) 25%, transparent); }
+
+  .cl-gradient-text {
+    background: linear-gradient(120deg, var(--cl-blue) 0%, var(--cl-red) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Franja decorativa tipo bandera en la card destacada */
+  .cl-flag-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cl-blue) 0%, var(--cl-blue) 33%, #ffffff 33%, #ffffff 66%, var(--cl-red) 66%, var(--cl-red) 100%);
+    opacity: .9;
+  }
+  :global(.dark) .cl-flag-stripe {
+    background: linear-gradient(90deg, var(--cl-blue) 0%, var(--cl-blue) 33%, rgba(255,255,255,.7) 33%, rgba(255,255,255,.7) 66%, var(--cl-red) 66%, var(--cl-red) 100%);
+  }
+
+  /* Tabs */
+  .calc-tab { color: var(--color-text-muted); cursor: pointer; }
+  :global(.dark) .calc-tab { color: #9ca3af; }
+  .calc-tab[aria-selected="true"] {
+    background: #fff;
+    color: var(--cl-blue-dark);
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  :global(.dark) .calc-tab[aria-selected="true"] {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+  }
+
+  /* Stat cards (Modo A) */
+  .stat-card {
+    text-align: center;
+    padding: 1rem .75rem;
+    border-radius: 1rem;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6;
+  }
+  :global(.dark) .stat-card { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.06); }
+  .stat-num { font-size: 1.75rem; font-weight: 900; line-height: 1; letter-spacing: -.02em; }
+  .stat-label { font-size: .7rem; color: #9ca3af; margin-top: .4rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+  .stat-good { background: color-mix(in srgb, var(--cl-blue) 8%, transparent); border-color: color-mix(in srgb, var(--cl-blue) 18%, transparent); }
+  .stat-good .stat-num { color: var(--cl-blue-dark); }
+  :global(.dark) .stat-good .stat-num { color: var(--cl-blue); }
+  .stat-bad { background: color-mix(in srgb, var(--cl-red) 8%, transparent); border-color: color-mix(in srgb, var(--cl-red) 18%, transparent); }
+  .stat-bad .stat-num { color: var(--cl-red-dark); }
+  :global(.dark) .stat-bad .stat-num { color: var(--cl-red); }
+
+  /* Result card (Modo B) */
+  .cl-result-card {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--cl-blue) 8%, transparent), color-mix(in srgb, var(--cl-red) 6%, transparent));
+    border: 1px solid color-mix(in srgb, var(--cl-blue) 15%, transparent);
+  }
+
+  /* Date input icon tint */
+  .cl-date::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .6; }
+  :global(.dark) .cl-date::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .7; }
+
+  /* Holiday list rows */
+  .holiday-row { transition: transform .2s, background-color .2s; }
+  .holiday-row:hover { transform: translateY(-2px); }
+  .holiday-past { opacity: .5; }
+  .day-chip {
+    width: 2.75rem; height: 2.75rem; flex-shrink: 0;
+    border-radius: .75rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--cl-blue) 10%, transparent);
+    color: var(--cl-blue-dark);
+    line-height: 1;
+  }
+  :global(.dark) .day-chip { color: var(--cl-blue); }
+  .day-chip.irren { background: color-mix(in srgb, var(--cl-red) 10%, transparent); color: var(--cl-red-dark); }
+  :global(.dark) .day-chip.irren { color: var(--cl-red); }
+</style>
+
+<script>
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+
+  // ====== Datos: Feriados Chile 2026 ======
+  interface Feriado { fecha: string; nombre: string; irrenunciable: boolean; }
+  const FERIADOS: Feriado[] = [
+    { fecha: '2026-01-01', nombre: 'Año Nuevo', irrenunciable: true },
+    { fecha: '2026-04-03', nombre: 'Viernes Santo', irrenunciable: false },
+    { fecha: '2026-04-04', nombre: 'Sábado Santo', irrenunciable: false },
+    { fecha: '2026-05-01', nombre: 'Día del Trabajo', irrenunciable: true },
+    { fecha: '2026-05-21', nombre: 'Día de las Glorias Navales', irrenunciable: false },
+    { fecha: '2026-06-21', nombre: 'Día de los Pueblos Indígenas', irrenunciable: false },
+    { fecha: '2026-06-29', nombre: 'San Pedro y San Pablo', irrenunciable: false },
+    { fecha: '2026-07-16', nombre: 'Virgen del Carmen', irrenunciable: false },
+    { fecha: '2026-08-15', nombre: 'Asunción de la Virgen', irrenunciable: false },
+    { fecha: '2026-09-18', nombre: 'Independencia Nacional', irrenunciable: true },
+    { fecha: '2026-09-19', nombre: 'Día de las Glorias del Ejército', irrenunciable: true },
+    { fecha: '2026-10-12', nombre: 'Encuentro de Dos Mundos', irrenunciable: false },
+    { fecha: '2026-10-31', nombre: 'Día de las Iglesias Evangélicas', irrenunciable: false },
+    { fecha: '2026-11-01', nombre: 'Día de Todos los Santos', irrenunciable: false },
+    { fecha: '2026-12-08', nombre: 'Inmaculada Concepción', irrenunciable: false },
+    { fecha: '2026-12-25', nombre: 'Navidad', irrenunciable: true },
+  ];
+
+  // ====== Helpers de fecha (SIEMPRE en hora local) ======
+  // Construye un Date local a partir de un ISO 'YYYY-MM-DD' (evita el off-by-one de UTC).
+  function localDate(iso: string): Date {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  // Normaliza un Date a medianoche local.
+  function atMidnight(d: Date): Date {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  function today(): Date {
+    const n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  }
+  const MS_DAY = 86400000;
+  function daysBetween(a: Date, b: Date): number {
+    return Math.round((atMidnight(b).getTime() - atMidnight(a).getTime()) / MS_DAY);
+  }
+
+  // Set de feriados por clave 'YYYY-M-D' (local) para lookup rápido.
+  const HOLIDAY_KEYS = new Set(FERIADOS.map((f) => {
+    const d = localDate(f.fecha);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }));
+  function isHoliday(d: Date): boolean {
+    return HOLIDAY_KEYS.has(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+  }
+  function isWeekend(d: Date): boolean {
+    const w = d.getDay();
+    return w === 0 || w === 6;
+  }
+  function isBusinessDay(d: Date): boolean {
+    return !isWeekend(d) && !isHoliday(d);
+  }
+
+  const DOW = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const DOW_SHORT = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+  const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const MONTHS_SHORT = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+  function fmtLong(d: Date): string {
+    return `${DOW[d.getDay()]} ${d.getDate()} de ${MONTHS[d.getMonth()]} de ${d.getFullYear()}`;
+  }
+  function cap(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // ====== Próximo feriado ======
+  function renderNextHoliday() {
+    const t = today();
+    const upcoming = FERIADOS
+      .map((f) => ({ ...f, date: localDate(f.fecha) }))
+      .filter((f) => daysBetween(t, f.date) >= 0)
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+    const body = $('#next-holiday-body');
+    if (upcoming.length === 0) {
+      body.innerHTML = `<p class="text-lg font-bold">No quedan feriados registrados en 2026.</p>
+        <p class="text-sm text-gray-400 mt-1">Revisa <a href="https://www.feriados.cl" target="_blank" rel="noopener noreferrer" class="cl-blue-text font-semibold underline">feriados.cl</a> para el próximo año.</p>`;
+      return;
+    }
+    const next = upcoming[0];
+    const diff = daysBetween(t, next.date);
+    const countdownLabel = diff === 0 ? '¡Es hoy!' : diff === 1 ? 'Mañana' : `Faltan ${diff} días`;
+    const badge = next.irrenunciable
+      ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cl-red/10 cl-red-text text-xs font-semibold mt-2"><span class="w-1.5 h-1.5 rounded-full bg-cl-red"></span> Irrenunciable</span>`
+      : '';
+    body.innerHTML = `
+      <div class="flex flex-wrap items-end gap-x-6 gap-y-3">
+        <div class="min-w-0">
+          <p class="text-2xl lg:text-3xl font-black tracking-tight leading-tight">${next.nombre}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${cap(fmtLong(next.date))}</p>
+          ${badge}
+        </div>
+        <div class="ml-auto text-right">
+          <p class="text-4xl lg:text-5xl font-black cl-gradient-text leading-none">${diff === 0 ? '0' : diff}</p>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-1">${diff === 0 || diff === 1 ? '' : 'días'}</p>
+        </div>
+      </div>
+      <p class="mt-4 inline-flex items-center gap-2 text-sm font-semibold cl-blue-text">
+        ${countdownLabel}
+      </p>`;
+  }
+
+  // ====== ¿Hoy es hábil? ======
+  function renderToday() {
+    const t = today();
+    const body = $('#today-body');
+    const weekend = isWeekend(t);
+    const holiday = isHoliday(t);
+    const habil = !weekend && !holiday;
+    let reason = '';
+    if (holiday) reason = 'Hoy es feriado';
+    else if (weekend) reason = 'Hoy es fin de semana';
+    else reason = 'Día laboral';
+    const color = habil ? 'var(--cl-blue)' : 'var(--cl-red)';
+    body.innerHTML = `
+      <div class="flex items-center gap-3">
+        <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-2xl font-black shrink-0" style="background:${color}">
+          ${habil ? '✓' : '✕'}
+        </span>
+        <div>
+          <p class="text-xl font-black tracking-tight">${habil ? 'Sí' : 'No'}</p>
+          <p class="text-sm text-gray-400">${reason}</p>
+        </div>
+      </div>
+      <p class="text-xs text-gray-400 mt-3">${cap(fmtLong(t))}</p>`;
+  }
+
+  // ====== Lista de feriados ======
+  function renderList() {
+    const t = today();
+    const list = $('#holiday-list');
+    list.innerHTML = FERIADOS.map((f) => {
+      const d = localDate(f.fecha);
+      const past = daysBetween(t, d) < 0;
+      const irrenBadge = f.irrenunciable
+        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cl-red/10 cl-red-text text-[11px] font-semibold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-cl-red"></span>Irrenunciable</span>`
+        : '';
+      return `<div class="holiday-row flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 ${past ? 'holiday-past' : ''}">
+        <div class="day-chip ${f.irrenunciable ? 'irren' : ''}">
+          <span class="text-base font-black">${d.getDate()}</span>
+          <span class="text-[10px] font-bold tracking-wide">${MONTHS_SHORT[d.getMonth()]}</span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="font-bold tracking-tight truncate">${f.nombre}</p>
+          <p class="text-xs text-gray-400 mt-0.5">${cap(DOW[d.getDay()])}${past ? ' · ya pasó' : ''}</p>
+        </div>
+        ${irrenBadge}
+      </div>`;
+    }).join('');
+  }
+
+  // ====== Tabs ======
+  const tabA = $('#tab-a') as HTMLButtonElement;
+  const tabB = $('#tab-b') as HTMLButtonElement;
+  const modeA = $('#mode-a');
+  const modeB = $('#mode-b');
+  function selectTab(which: 'a' | 'b') {
+    const isA = which === 'a';
+    tabA.setAttribute('aria-selected', String(isA));
+    tabB.setAttribute('aria-selected', String(!isA));
+    modeA.classList.toggle('hidden', !isA);
+    modeB.classList.toggle('hidden', isA);
+  }
+  tabA.addEventListener('click', () => selectTab('a'));
+  tabB.addEventListener('click', () => selectTab('b'));
+
+  // ====== Modo A: días hábiles entre dos fechas (inclusive) ======
+  function calcA() {
+    const startVal = ($('#a-start') as HTMLInputElement).value;
+    const endVal = ($('#a-end') as HTMLInputElement).value;
+    const err = $('#a-error');
+    const results = $('#a-results');
+    const hint = $('#a-hint');
+
+    if (!startVal || !endVal) {
+      err.classList.add('is-hidden'); results.classList.add('is-hidden'); hint.classList.remove('is-hidden');
+      return;
+    }
+    let start = localDate(startVal);
+    let end = localDate(endVal);
+    if (start.getTime() > end.getTime()) { const tmp = start; start = end; end = tmp; }
+
+    const totalDays = daysBetween(start, end) + 1; // inclusivo
+    let habiles = 0, finde = 0, feriados = 0;
+    const cur = new Date(start.getTime());
+    for (let i = 0; i < totalDays; i++) {
+      const wknd = isWeekend(cur);
+      const hol = isHoliday(cur);
+      if (wknd) finde++;
+      if (hol && !wknd) feriados++; // feriado que cae en finde no se cuenta doble
+      if (!wknd && !hol) habiles++;
+      cur.setDate(cur.getDate() + 1);
+    }
+
+    err.classList.add('is-hidden');
+    hint.classList.add('is-hidden');
+    results.classList.remove('is-hidden');
+    $('#a-total').textContent = String(totalDays);
+    $('#a-habiles').textContent = String(habiles);
+    $('#a-finde').textContent = String(finde);
+    $('#a-feriados').textContent = String(feriados);
+  }
+  $('#a-start').addEventListener('change', calcA);
+  $('#a-end').addEventListener('change', calcA);
+
+  // ====== Modo B: sumar N días hábiles ======
+  function calcB() {
+    const startVal = ($('#b-start') as HTMLInputElement).value;
+    const daysVal = ($('#b-days') as HTMLInputElement).value;
+    const err = $('#b-error');
+    const errSpan = err.querySelector('span')!;
+    const results = $('#b-results');
+    const hint = $('#b-hint');
+
+    if (!startVal || daysVal === '') {
+      err.classList.add('is-hidden'); results.classList.add('is-hidden'); hint.classList.remove('is-hidden');
+      return;
+    }
+    const n = parseInt(daysVal, 10);
+    if (Number.isNaN(n)) {
+      errSpan.textContent = 'Ingresa un número válido de días.';
+      err.classList.remove('is-hidden'); results.classList.add('is-hidden'); hint.classList.add('is-hidden');
+      return;
+    }
+    if (Math.abs(n) > 5000) {
+      errSpan.textContent = 'Usa un número de días razonable (máximo 5000).';
+      err.classList.remove('is-hidden'); results.classList.add('is-hidden'); hint.classList.add('is-hidden');
+      return;
+    }
+
+    const start = localDate(startVal);
+    const cur = new Date(start.getTime());
+    const step = n >= 0 ? 1 : -1;
+    let remaining = Math.abs(n);
+    while (remaining > 0) {
+      cur.setDate(cur.getDate() + step);
+      if (isBusinessDay(cur)) remaining--;
+    }
+
+    err.classList.add('is-hidden');
+    hint.classList.add('is-hidden');
+    results.classList.remove('is-hidden');
+    $('#b-date').textContent = cap(fmtLong(cur));
+    const verb = n >= 0 ? 'sumar' : 'restar';
+    $('#b-detail').textContent = `Resultado de ${verb} ${Math.abs(n)} ${Math.abs(n) === 1 ? 'día hábil' : 'días hábiles'} a partir del ${start.getDate()} de ${MONTHS[start.getMonth()]} de ${start.getFullYear()}.`;
+  }
+  $('#b-start').addEventListener('change', calcB);
+  $('#b-days').addEventListener('input', calcB);
+
+  // ====== Init ======
+  function pad(n: number) { return String(n).padStart(2, '0'); }
+  function toISO(d: Date) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+  function init() {
+    const t = today();
+    // Prefills sensatos
+    ($('#a-start') as HTMLInputElement).value = toISO(t);
+    const endDefault = new Date(t.getFullYear(), t.getMonth() + 1, t.getDate());
+    ($('#a-end') as HTMLInputElement).value = toISO(endDefault);
+    ($('#b-start') as HTMLInputElement).value = toISO(t);
+
+    renderNextHoliday();
+    renderToday();
+    renderList();
+    calcA();
+    calcB();
+  }
+  init();
+</script>

@@ -1,0 +1,558 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Generador de Código QR — texto, URL, WiFi, vCard | Jcastillo.dev';
+const description = 'Crea códigos QR gratis para texto, enlaces, redes WiFi, tarjetas de contacto (vCard) y correo. Personaliza colores y tamaño, y descárgalo en PNG o SVG. Todo en tu navegador.';
+const canonical = 'https://jcastillo.dev/qr';
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full qr-scope">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-5xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 mb-5">
+          <LucideIcon name="QrCode" size={14} class="qr-accent-text" />
+          <span class="text-xs font-semibold qr-accent-text tracking-wider uppercase">Generador de QR</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Crea tu código<br><span class="qr-gradient-text">QR en segundos</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Genera códigos QR para texto, enlaces, redes WiFi, tarjetas de contacto y correo. Personaliza colores, tamaño y corrección de errores, y descárgalo en PNG o SVG. Todo ocurre en tu navegador: nada se sube a ningún servidor.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== GENERADOR ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-5xl mx-auto grid lg:grid-cols-[1fr_auto] gap-6 items-start">
+
+        <!-- ===== Panel de edición ===== -->
+        <div class="glass glow-card rounded-3xl p-6 lg:p-8" data-animate="fadeInLeft">
+          <!-- Tabs de tipo -->
+          <div role="tablist" aria-label="Tipo de contenido" class="flex flex-wrap gap-1 p-1 rounded-2xl bg-gray-100 dark:bg-white/5 mb-6" id="type-tabs">
+            <button role="tab" aria-selected="true" data-tab="text" class="qr-tab flex-1 min-w-20 inline-flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 rounded-xl transition-all">
+              <LucideIcon name="Type" size={15} /> Texto / URL
+            </button>
+            <button role="tab" aria-selected="false" data-tab="wifi" class="qr-tab flex-1 min-w-20 inline-flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 rounded-xl transition-all">
+              <span aria-hidden="true">📶</span> WiFi
+            </button>
+            <button role="tab" aria-selected="false" data-tab="vcard" class="qr-tab flex-1 min-w-20 inline-flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 rounded-xl transition-all">
+              <span aria-hidden="true">👤</span> vCard
+            </button>
+            <button role="tab" aria-selected="false" data-tab="email" class="qr-tab flex-1 min-w-20 inline-flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 rounded-xl transition-all">
+              <span aria-hidden="true">✉️</span> Email
+            </button>
+          </div>
+
+          <!-- Panel: Texto / URL -->
+          <div class="qr-panel" data-panel="text">
+            <label for="f-text" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Texto o enlace</label>
+            <textarea id="f-text" rows="4" placeholder="https://jcastillo.dev  ·  o cualquier texto…"
+              class="qr-field w-full px-5 py-4 rounded-2xl font-mono text-base resize-none"></textarea>
+          </div>
+
+          <!-- Panel: WiFi -->
+          <div class="qr-panel hidden" data-panel="wifi">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="sm:col-span-2">
+                <label for="w-ssid" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Nombre de red (SSID)</label>
+                <input id="w-ssid" type="text" autocomplete="off" placeholder="MiRedWiFi" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div>
+                <label for="w-pass" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Contraseña</label>
+                <input id="w-pass" type="text" autocomplete="off" placeholder="••••••••" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div>
+                <label for="w-type" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tipo de seguridad</label>
+                <select id="w-type" class="qr-field w-full px-5 py-3.5 rounded-2xl cursor-pointer">
+                  <option value="WPA">WPA / WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">Sin clave (abierta)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel: vCard -->
+          <div class="qr-panel hidden" data-panel="vcard">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="sm:col-span-2">
+                <label for="v-name" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Nombre completo</label>
+                <input id="v-name" type="text" autocomplete="off" placeholder="Jesús Castillo" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div>
+                <label for="v-phone" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Teléfono</label>
+                <input id="v-phone" type="tel" autocomplete="off" placeholder="+56 9 1234 5678" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div>
+                <label for="v-email" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email</label>
+                <input id="v-email" type="email" autocomplete="off" placeholder="hola@ejemplo.com" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div class="sm:col-span-2">
+                <label for="v-org" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Empresa</label>
+                <input id="v-org" type="text" autocomplete="off" placeholder="Jcastillo.dev" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel: Email -->
+          <div class="qr-panel hidden" data-panel="email">
+            <div class="grid gap-4">
+              <div>
+                <label for="e-to" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Destinatario</label>
+                <input id="e-to" type="email" autocomplete="off" placeholder="hola@ejemplo.com" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div>
+                <label for="e-subject" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Asunto</label>
+                <input id="e-subject" type="text" autocomplete="off" placeholder="Hola 👋" class="qr-field w-full px-5 py-3.5 rounded-2xl" />
+              </div>
+              <div>
+                <label for="e-body" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Mensaje</label>
+                <textarea id="e-body" rows="3" placeholder="Escribe tu mensaje…" class="qr-field w-full px-5 py-3.5 rounded-2xl resize-none"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Opciones ===== -->
+          <div class="mt-7 pt-6 border-t border-gray-100 dark:border-white/10">
+            <div class="flex items-center gap-2 mb-5">
+              <LucideIcon name="Settings" size={16} class="qr-accent-text" />
+              <h2 class="text-sm font-bold tracking-tight uppercase text-gray-500 dark:text-gray-400">Personalización</h2>
+            </div>
+
+            <!-- Tamaño -->
+            <div class="mb-5">
+              <div class="flex items-center justify-between mb-2">
+                <label for="o-size" class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tamaño</label>
+                <span id="size-label" class="text-sm font-mono font-bold qr-accent-text">256 px</span>
+              </div>
+              <input id="o-size" type="range" min="128" max="512" step="8" value="256" class="qr-range w-full cursor-pointer" />
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4">
+              <!-- Color frente -->
+              <div>
+                <label for="o-fg" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Primer plano</label>
+                <label class="qr-color-wrap flex items-center gap-3 px-3 py-2.5 rounded-2xl cursor-pointer">
+                  <input id="o-fg" type="color" value="#0f0f1a" class="qr-color cursor-pointer" />
+                  <span id="fg-label" class="text-sm font-mono">#0F0F1A</span>
+                </label>
+              </div>
+              <!-- Color fondo -->
+              <div>
+                <label for="o-bg" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Fondo</label>
+                <label class="qr-color-wrap flex items-center gap-3 px-3 py-2.5 rounded-2xl cursor-pointer">
+                  <input id="o-bg" type="color" value="#ffffff" class="qr-color cursor-pointer" />
+                  <span id="bg-label" class="text-sm font-mono">#FFFFFF</span>
+                </label>
+              </div>
+              <!-- Corrección de errores -->
+              <div>
+                <label for="o-ec" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Corrección</label>
+                <select id="o-ec" class="qr-field w-full px-4 py-3 rounded-2xl cursor-pointer text-sm">
+                  <option value="L">L — Baja (7%)</option>
+                  <option value="M" selected>M — Media (15%)</option>
+                  <option value="Q">Q — Alta (25%)</option>
+                  <option value="H">H — Máxima (30%)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Vista previa ===== -->
+        <div class="lg:w-90 glass rounded-3xl p-6 lg:p-7 flex flex-col items-center text-center lg:sticky lg:top-24" data-animate="fadeInRight">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 self-start">Vista previa</p>
+
+          <div id="preview-box" class="qr-preview relative w-full aspect-square max-w-75 rounded-3xl flex items-center justify-center overflow-hidden p-4">
+            <!-- Estado vacío -->
+            <div id="empty-state" class="flex flex-col items-center gap-3 text-gray-300 dark:text-gray-600 px-6">
+              <LucideIcon name="QrCode" size={56} class="opacity-60" />
+              <p class="text-sm font-medium text-gray-400">Escribe algo para generar tu código QR</p>
+            </div>
+            <!-- Canvas (oculto hasta tener contenido) -->
+            <canvas id="qr-canvas" class="hidden max-w-full h-auto rounded-xl" aria-label="Código QR generado"></canvas>
+          </div>
+
+          <!-- Descargas -->
+          <div class="grid grid-cols-2 gap-3 w-full mt-6">
+            <button id="dl-png" disabled aria-label="Descargar código QR en formato PNG"
+              class="qr-btn-primary inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-2xl py-3 transition-all">
+              <LucideIcon name="Download" size={16} /> PNG
+            </button>
+            <button id="dl-svg" disabled aria-label="Descargar código QR en formato SVG"
+              class="qr-btn-ghost inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-2xl py-3 transition-all">
+              <LucideIcon name="Download" size={16} /> SVG
+            </button>
+          </div>
+          <p class="text-xs text-gray-400 mt-4 flex items-center gap-1.5">
+            <LucideIcon name="Shield" size={13} /> 100% privado · se genera en tu navegador
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ===== Tema "playful / friendly": rose + pink ===== */
+  .qr-scope {
+    --qr-accent: #f43f5e;   /* rose-500 */
+    --qr-accent-2: #ec4899; /* pink-500 */
+  }
+  .qr-accent-text { color: var(--qr-accent); }
+  .qr-gradient-text {
+    background: linear-gradient(120deg, var(--qr-accent) 0%, var(--qr-accent-2) 60%, #fb7185 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Tabs */
+  .qr-tab { color: #6b7280; }
+  :global(.dark) .qr-tab { color: #9ca3af; }
+  .qr-tab[aria-selected="true"] {
+    background: #fff;
+    color: var(--qr-accent);
+    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.15);
+  }
+  :global(.dark) .qr-tab[aria-selected="true"] {
+    background: rgba(244, 63, 94, 0.16);
+    color: #fda4af;
+    box-shadow: none;
+  }
+  .qr-tab:hover:not([aria-selected="true"]) { color: var(--qr-accent); }
+
+  /* Campos */
+  .qr-field {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: inherit;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  :global(.dark) .qr-field {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .qr-field::placeholder { color: #9ca3af; }
+  .qr-field:focus {
+    outline: none;
+    border-color: var(--qr-accent);
+    box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.18);
+  }
+
+  /* Selector de color */
+  .qr-color-wrap {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  :global(.dark) .qr-color-wrap {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .qr-color-wrap:focus-within {
+    border-color: var(--qr-accent);
+    box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.18);
+  }
+  .qr-color {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 10px;
+    padding: 0;
+    background: none;
+  }
+  .qr-color::-webkit-color-swatch-wrapper { padding: 0; }
+  .qr-color::-webkit-color-swatch { border: 1px solid rgba(0,0,0,.1); border-radius: 10px; }
+  .qr-color::-moz-color-swatch { border: 1px solid rgba(0,0,0,.1); border-radius: 10px; }
+
+  /* Slider */
+  .qr-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--qr-accent), var(--qr-accent-2));
+    outline: none;
+  }
+  .qr-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #fff;
+    border: 3px solid var(--qr-accent);
+    box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  .qr-range::-webkit-slider-thumb:active { transform: scale(1.15); }
+  .qr-range::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: #fff;
+    border: 3px solid var(--qr-accent);
+    box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
+    cursor: pointer;
+  }
+
+  /* Vista previa */
+  .qr-preview {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(244, 63, 94, 0.08), transparent 60%),
+      radial-gradient(circle at 80% 90%, rgba(236, 72, 153, 0.08), transparent 60%),
+      #fff;
+    border: 1px solid #fde4ea;
+  }
+  :global(.dark) .qr-preview {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(244, 63, 94, 0.12), transparent 60%),
+      radial-gradient(circle at 80% 90%, rgba(236, 72, 153, 0.12), transparent 60%),
+      rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+  }
+  #qr-canvas { animation: qrPop .35s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes qrPop {
+    0% { transform: scale(.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Botones */
+  .qr-btn-primary {
+    background: linear-gradient(120deg, var(--qr-accent), var(--qr-accent-2));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
+  }
+  .qr-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(244, 63, 94, 0.4);
+  }
+  .qr-btn-ghost {
+    background: rgba(244, 63, 94, 0.08);
+    color: var(--qr-accent);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+  }
+  .qr-btn-ghost:hover:not(:disabled) {
+    background: rgba(244, 63, 94, 0.14);
+    transform: translateY(-2px);
+  }
+  :global(.dark) .qr-btn-ghost { color: #fda4af; }
+  .qr-btn-primary:disabled,
+  .qr-btn-ghost:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none;
+  }
+</style>
+
+<script>
+  import QRCode from 'qrcode';
+
+  type ECLevel = 'L' | 'M' | 'Q' | 'H';
+
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+
+  // ===== Elementos =====
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.qr-tab'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('.qr-panel'));
+  const canvas = $('#qr-canvas') as HTMLCanvasElement;
+  const emptyState = $('#empty-state');
+  const dlPng = $('#dl-png') as HTMLButtonElement;
+  const dlSvg = $('#dl-svg') as HTMLButtonElement;
+
+  const sizeInput = $('#o-size') as HTMLInputElement;
+  const sizeLabel = $('#size-label');
+  const fgInput = $('#o-fg') as HTMLInputElement;
+  const bgInput = $('#o-bg') as HTMLInputElement;
+  const fgLabel = $('#fg-label');
+  const bgLabel = $('#bg-label');
+  const ecInput = $('#o-ec') as HTMLSelectElement;
+
+  let activeTab = 'text';
+
+  // ===== Escapes =====
+  // WiFi: escapar  \ ; , : "
+  const escWifi = (s: string) => s.replace(/([\\;,:"])/g, '\\$1');
+  // vCard: escapar  \ ; , y saltos de línea
+  const escVcard = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+
+  // ===== Construcción del string codificado =====
+  function buildPayload(): string {
+    if (activeTab === 'text') {
+      return ($('#f-text') as HTMLTextAreaElement).value.trim();
+    }
+
+    if (activeTab === 'wifi') {
+      const ssid = ($('#w-ssid') as HTMLInputElement).value;
+      const pass = ($('#w-pass') as HTMLInputElement).value;
+      const type = ($('#w-type') as HTMLSelectElement).value; // WPA | WEP | nopass
+      if (!ssid.trim()) return '';
+      const t = type === 'nopass' ? 'nopass' : type;
+      let out = `WIFI:T:${t};S:${escWifi(ssid)};`;
+      if (type !== 'nopass' && pass) out += `P:${escWifi(pass)};`;
+      out += ';';
+      return out;
+    }
+
+    if (activeTab === 'vcard') {
+      const name = ($('#v-name') as HTMLInputElement).value.trim();
+      const phone = ($('#v-phone') as HTMLInputElement).value.trim();
+      const email = ($('#v-email') as HTMLInputElement).value.trim();
+      const org = ($('#v-org') as HTMLInputElement).value.trim();
+      if (!name && !phone && !email && !org) return '';
+      const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+      if (name) {
+        lines.push(`N:${escVcard(name)};;;;`);
+        lines.push(`FN:${escVcard(name)}`);
+      }
+      if (org) lines.push(`ORG:${escVcard(org)}`);
+      if (phone) lines.push(`TEL;TYPE=CELL:${escVcard(phone)}`);
+      if (email) lines.push(`EMAIL;TYPE=INTERNET:${escVcard(email)}`);
+      lines.push('END:VCARD');
+      return lines.join('\n');
+    }
+
+    if (activeTab === 'email') {
+      const to = ($('#e-to') as HTMLInputElement).value.trim();
+      const subject = ($('#e-subject') as HTMLInputElement).value;
+      const body = ($('#e-body') as HTMLTextAreaElement).value;
+      if (!to && !subject && !body) return '';
+      const params: string[] = [];
+      if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+      if (body) params.push(`body=${encodeURIComponent(body)}`);
+      return `mailto:${encodeURIComponent(to)}${params.length ? '?' + params.join('&') : ''}`;
+    }
+
+    return '';
+  }
+
+  // ===== Render del QR =====
+  let lastPayload = '';
+
+  async function render() {
+    const payload = buildPayload();
+    lastPayload = payload;
+
+    const size = parseInt(sizeInput.value, 10);
+    const fg = fgInput.value;
+    const bg = bgInput.value;
+    const ec = ecInput.value as ECLevel;
+
+    if (!payload) {
+      canvas.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      dlPng.disabled = true;
+      dlSvg.disabled = true;
+      return;
+    }
+
+    try {
+      await QRCode.toCanvas(canvas, payload, {
+        width: size,
+        margin: 1,
+        color: { dark: fg, light: bg },
+        errorCorrectionLevel: ec,
+      });
+      emptyState.classList.add('hidden');
+      canvas.classList.remove('hidden');
+      // re-trigger pop animation
+      canvas.style.animation = 'none';
+      void canvas.offsetWidth;
+      canvas.style.animation = '';
+      dlPng.disabled = false;
+      dlSvg.disabled = false;
+    } catch {
+      // contenido demasiado largo para el nivel de corrección, etc.
+      canvas.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      emptyState.querySelector('p')!.textContent = 'El contenido es demasiado largo. Prueba con menos texto o una corrección más baja.';
+      dlPng.disabled = true;
+      dlSvg.disabled = true;
+    }
+  }
+
+  // ===== Debounce =====
+  let timer: number | undefined;
+  function scheduleRender() {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(render, 180);
+  }
+
+  // ===== Tabs =====
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      activeTab = tab.dataset.tab!;
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+      panels.forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== activeTab));
+      render();
+    });
+  });
+
+  // ===== Inputs que disparan el render =====
+  document.querySelectorAll<HTMLElement>('.qr-panel input, .qr-panel textarea, .qr-panel select')
+    .forEach((el) => {
+      el.addEventListener('input', scheduleRender);
+      el.addEventListener('change', scheduleRender);
+    });
+
+  // Opciones
+  sizeInput.addEventListener('input', () => {
+    sizeLabel.textContent = `${sizeInput.value} px`;
+    scheduleRender();
+  });
+  ecInput.addEventListener('change', render);
+  fgInput.addEventListener('input', () => { fgLabel.textContent = fgInput.value.toUpperCase(); scheduleRender(); });
+  bgInput.addEventListener('input', () => { bgLabel.textContent = bgInput.value.toUpperCase(); scheduleRender(); });
+
+  // ===== Descargas =====
+  dlPng.addEventListener('click', () => {
+    if (!lastPayload) return;
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qr.png';
+    a.click();
+  });
+
+  dlSvg.addEventListener('click', async () => {
+    if (!lastPayload) return;
+    try {
+      const svg = await QRCode.toString(lastPayload, {
+        type: 'svg',
+        margin: 1,
+        color: { dark: fgInput.value, light: bgInput.value },
+        errorCorrectionLevel: ecInput.value as ECLevel,
+      });
+      const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'qr.svg';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {}
+  });
+
+  // ===== Estado inicial =====
+  fgLabel.textContent = fgInput.value.toUpperCase();
+  bgLabel.textContent = bgInput.value.toUpperCase();
+  render();
+</script>

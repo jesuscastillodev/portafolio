@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0b1a2c"/>
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g1)"/>
+  <!-- Logo -->
+  <g transform="translate(100, 180) scale(0.8)">
+    <polygon points="130,20 130,178 5,178" fill="#f5f7fc"/>
+    <polygon points="130,20 130,178 215,178" fill="#c8d0e4"/>
+    <line x1="130" y1="20" x2="130" y2="178" stroke="#0b1a2c" stroke-width="2"/>
+    <rect x="5" y="178" width="210" height="8" rx="2" fill="#1a4fc4"/>
+  </g>
+  <!-- Text -->
+  <text x="340" y="260" font-family="Inter, system-ui, sans-serif" font-size="72" font-weight="900" fill="#ffffff" letter-spacing="-2">Valkia</text>
+  <text x="340" y="320" font-family="Inter, system-ui, sans-serif" font-size="28" fill="#94a3b8" font-weight="500">Gestión empresarial simple y poderosa</text>
+  <text x="340" y="380" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#64748b">Ventas · Inventario · Clientes · Cotizaciones · Reportes</text>
+  <!-- CTA badge -->
+  <rect x="340" y="420" width="220" height="44" rx="22" fill="#6366f1"/>
+  <text x="388" y="449" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#ffffff">Empieza gratis →</text>
+  <!-- URL -->
+  <text x="100" y="580" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#475569">valkia.cl</text>
+</svg>

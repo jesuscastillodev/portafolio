@@ -1,0 +1,406 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Indicadores Económicos de Chile — UF, Dólar, UTM y más | Jcastillo.dev';
+const description = 'Valores económicos de Chile en tiempo real: UF, dólar, euro, UTM, IPC y Bitcoin. Conversor de pesos a UF y otras monedas, con gráficos históricos diarios. Datos del Banco Central vía mindicador.cl.';
+const canonical = 'https://jcastillo.dev/indicadores';
+
+// Tarjetas de indicadores que se mostrarán (se hidratan en el cliente)
+const cards = [
+  { key: 'uf', label: 'UF', icon: 'TrendingUp', tone: 'primary' },
+  { key: 'dolar', label: 'Dólar', icon: 'DollarSign', tone: 'emerald' },
+  { key: 'euro', label: 'Euro', icon: 'Euro', tone: 'blue' },
+  { key: 'utm', label: 'UTM', icon: 'Receipt', tone: 'violet' },
+  { key: 'ipc', label: 'IPC', icon: 'Percent', tone: 'amber' },
+  { key: 'tpm', label: 'TPM', icon: 'Landmark', tone: 'rose' },
+  { key: 'bitcoin', label: 'Bitcoin', icon: 'Bitcoin', tone: 'orange' },
+  { key: 'libra_cobre', label: 'Libra de cobre', icon: 'Pickaxe', tone: 'cyan' },
+];
+
+const toneClasses: Record<string, string> = {
+  primary: 'text-primary bg-primary/10',
+  emerald: 'text-emerald-500 bg-emerald-500/10',
+  blue: 'text-blue-500 bg-blue-500/10',
+  violet: 'text-violet-500 bg-violet-500/10',
+  amber: 'text-amber-500 bg-amber-500/10',
+  rose: 'text-rose-500 bg-rose-500/10',
+  orange: 'text-orange-500 bg-orange-500/10',
+  cyan: 'text-cyan-500 bg-cyan-500/10',
+};
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-12 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-6xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-5">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="text-xs font-semibold text-primary tracking-wider uppercase">Datos en vivo</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Indicadores<br><span class="gradient-text">Económicos de Chile</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Valores oficiales del día —UF, dólar, euro, UTM, IPC y más— con conversor de monedas y gráficos históricos. Fuente: Banco Central de Chile vía <a href="https://mindicador.cl" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-medium">mindicador.cl</a>.
+        </p>
+        <p id="last-update" class="mt-4 text-sm text-gray-400 dark:text-gray-500 font-mono"></p>
+      </div>
+    </section>
+
+    <!-- ===== CARDS ===== -->
+    <section class="px-6 pb-4">
+      <div class="max-w-6xl mx-auto">
+        <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-4" data-animate-stagger>
+          {cards.map((c) => (
+            <div class="glass rounded-2xl p-5 transition-all duration-500 hover:-translate-y-1" data-card={c.key}>
+              <div class="flex items-center justify-between mb-3">
+                <span class={`w-9 h-9 rounded-xl flex items-center justify-center ${toneClasses[c.tone]}`}>
+                  <LucideIcon name={c.icon} size={18} />
+                </span>
+                <span class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{c.label}</span>
+              </div>
+              <p class="value text-2xl font-black tracking-tight font-mono">
+                <span class="inline-block w-20 h-6 rounded bg-gray-200/70 dark:bg-white/5 animate-pulse"></span>
+              </p>
+              <p class="meta text-xs text-gray-400 dark:text-gray-500 mt-1.5">&nbsp;</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONVERSOR ===== -->
+    <section class="px-6 py-12">
+      <div class="max-w-6xl mx-auto">
+        <div class="glass glow-card rounded-3xl p-7 lg:p-10" data-animate="fadeInUp">
+          <div class="flex items-center gap-3 mb-7">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center text-primary bg-primary/10">
+              <LucideIcon name="ArrowLeftRight" size={20} />
+            </span>
+            <div>
+              <h2 class="text-xl font-bold tracking-tight">Conversor de monedas</h2>
+              <p class="text-sm text-gray-400 dark:text-gray-500">Convierte pesos chilenos a UF, dólar, euro o UTM —y viceversa— al valor de hoy.</p>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-5 items-end">
+            <!-- Pesos -->
+            <div>
+              <label for="clp" class="block text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">Pesos chilenos (CLP)</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-mono">$</span>
+                <input id="clp" type="text" inputmode="decimal" value="100.000"
+                  class="w-full pl-8 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all" />
+              </div>
+            </div>
+
+            <!-- Swap arrow -->
+            <div class="hidden md:flex items-center justify-center pb-3">
+              <span class="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 bg-gray-100 dark:bg-white/5">
+                <LucideIcon name="ArrowRightLeft" size={16} />
+              </span>
+            </div>
+
+            <!-- Unidad -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label for="unit-amount" class="block text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Equivalente</label>
+                <select id="unit-select"
+                  class="text-xs font-semibold rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer">
+                  <option value="uf">UF</option>
+                  <option value="dolar">Dólar (USD)</option>
+                  <option value="euro">Euro (EUR)</option>
+                  <option value="utm">UTM</option>
+                </select>
+              </div>
+              <div class="relative">
+                <span id="unit-prefix" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-mono text-sm">UF</span>
+                <input id="unit-amount" type="text" inputmode="decimal" value=""
+                  class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all" />
+              </div>
+            </div>
+          </div>
+          <p id="conv-rate" class="mt-4 text-sm text-gray-400 dark:text-gray-500 font-mono"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== GRÁFICO ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-6xl mx-auto">
+        <div class="glass rounded-3xl p-7 lg:p-10" data-animate="fadeInUp">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight">Evolución histórica</h2>
+              <p class="text-sm text-gray-400 dark:text-gray-500">Valores diarios del año en curso.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2" id="chart-controls">
+              <button data-ind="uf" class="chip px-3 py-1.5 rounded-lg text-sm font-semibold transition-all">UF</button>
+              <button data-ind="dolar" class="chip px-3 py-1.5 rounded-lg text-sm font-semibold transition-all">Dólar</button>
+              <button data-ind="euro" class="chip px-3 py-1.5 rounded-lg text-sm font-semibold transition-all">Euro</button>
+              <button data-ind="utm" class="chip px-3 py-1.5 rounded-lg text-sm font-semibold transition-all">UTM</button>
+              <button data-ind="bitcoin" class="chip px-3 py-1.5 rounded-lg text-sm font-semibold transition-all">Bitcoin</button>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-4 mb-6" id="chart-stats">
+            <div><p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Mínimo</p><p id="stat-min" class="text-lg font-bold font-mono">—</p></div>
+            <div><p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Promedio</p><p id="stat-avg" class="text-lg font-bold font-mono">—</p></div>
+            <div><p class="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Máximo</p><p id="stat-max" class="text-lg font-bold font-mono">—</p></div>
+          </div>
+
+          <!-- Chart -->
+          <div id="chart-wrap" class="relative w-full select-none" style="aspect-ratio: 16 / 6; min-height: 220px;">
+            <svg id="chart" viewBox="0 0 800 300" preserveAspectRatio="none" class="w-full h-full overflow-visible"></svg>
+            <div id="tooltip" class="pointer-events-none absolute z-10 hidden px-3 py-2 rounded-xl glass text-xs font-mono whitespace-nowrap shadow-lg"></div>
+          </div>
+          <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">Pasa el cursor sobre el gráfico para ver el valor de cada día.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .chip {
+    background: rgba(99, 102, 241, 0.06);
+    color: var(--color-text-muted);
+    border: 1px solid transparent;
+  }
+  :global(.dark) .chip { color: #9ca3af; }
+  .chip:hover { background: rgba(99, 102, 241, 0.12); }
+  .chip.active {
+    background: var(--color-primary);
+    color: #fff;
+  }
+</style>
+
+<script>
+  // ===== Helpers de formato (es-CL) =====
+  const fmtCLP = (n: number) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(n);
+  const fmtNum = (n: number, dec = 2) => new Intl.NumberFormat('es-CL', { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(n);
+  const parseNum = (s: string) => {
+    if (!s) return 0;
+    // Formato chileno: . miles, , decimales
+    const clean = s.replace(/\./g, '').replace(',', '.').replace(/[^0-9.]/g, '');
+    const v = parseFloat(clean);
+    return isNaN(v) ? 0 : v;
+  };
+  const fmtDate = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+  };
+
+  const API = 'https://mindicador.cl/api';
+
+  type Indicador = { codigo: string; nombre: string; unidad_medida: string; fecha: string; valor: number };
+  type Serie = { fecha: string; valor: number };
+
+  const state: { current: Record<string, Indicador>; series: Record<string, Serie[]> } = { current: {}, series: {} };
+
+  // ===== 1. Cargar valores actuales =====
+  async function loadCurrent() {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error('No se pudo obtener los indicadores');
+    const data = await res.json();
+    state.current = data;
+
+    const lu = document.getElementById('last-update');
+    if (lu && data.fecha) {
+      const d = new Date(data.fecha);
+      lu.textContent = 'Actualizado: ' + d.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-card]').forEach((card) => {
+      const key = card.dataset.card!;
+      const ind: Indicador = data[key];
+      const valEl = card.querySelector('.value')!;
+      const metaEl = card.querySelector('.meta')!;
+      if (!ind) { valEl.textContent = '—'; return; }
+      const unit = ind.unidad_medida;
+      let txt: string;
+      if (unit === 'Pesos') txt = '$' + fmtNum(ind.valor, 0);
+      else if (unit === 'Dólar' || unit === 'Dolar') txt = 'US$' + fmtNum(ind.valor, 0);
+      else if (unit === 'Porcentaje') txt = fmtNum(ind.valor, 1) + '%';
+      else txt = fmtNum(ind.valor, 2);
+      valEl.textContent = txt;
+      metaEl.textContent = ind.unidad_medida;
+    });
+
+    initConverter();
+  }
+
+  // ===== 2. Conversor =====
+  function initConverter() {
+    const clpInput = document.getElementById('clp') as HTMLInputElement;
+    const unitInput = document.getElementById('unit-amount') as HTMLInputElement;
+    const unitSelect = document.getElementById('unit-select') as HTMLSelectElement;
+    const unitPrefix = document.getElementById('unit-prefix')!;
+    const rateEl = document.getElementById('conv-rate')!;
+    if (!clpInput || !unitInput || !unitSelect) return;
+
+    const prefixes: Record<string, string> = { uf: 'UF', dolar: 'US$', euro: '€', utm: 'UTM' };
+    const rateOf = (k: string) => state.current[k]?.valor || 0;
+
+    function updateRateLabel() {
+      const k = unitSelect.value;
+      const r = rateOf(k);
+      unitPrefix.textContent = prefixes[k];
+      rateEl.textContent = r ? `1 ${prefixes[k]} = ${fmtCLP(r)} · al ${fmtDate(state.current[k].fecha)}` : '';
+    }
+
+    function clpToUnit() {
+      const r = rateOf(unitSelect.value);
+      if (!r) return;
+      const clp = parseNum(clpInput.value);
+      unitInput.value = fmtNum(clp / r, 4);
+    }
+    function unitToClp() {
+      const r = rateOf(unitSelect.value);
+      if (!r) return;
+      const u = parseNum(unitInput.value);
+      clpInput.value = fmtNum(u * r, 0);
+    }
+
+    clpInput.addEventListener('input', clpToUnit);
+    unitInput.addEventListener('input', unitToClp);
+    unitSelect.addEventListener('change', () => { updateRateLabel(); clpToUnit(); });
+    // Formateo en blur del campo CLP
+    clpInput.addEventListener('blur', () => { clpInput.value = fmtNum(parseNum(clpInput.value), 0); });
+
+    updateRateLabel();
+    clpToUnit();
+  }
+
+  // ===== 3. Gráfico =====
+  let chartData: Serie[] = [];
+  let chartUnit = '';
+
+  async function loadChart(key: string) {
+    document.querySelectorAll('#chart-controls .chip').forEach((b) =>
+      b.classList.toggle('active', (b as HTMLElement).dataset.ind === key));
+    try {
+      const res = await fetch(`${API}/${key}`);
+      const data = await res.json();
+      chartUnit = data.unidad_medida || '';
+      // serie viene más reciente primero; tomamos últimos 30 y orden cronológico
+      chartData = (data.serie as Serie[]).slice(0, 30).reverse();
+      drawChart();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function fmtChartVal(v: number) {
+    if (chartUnit === 'Pesos') return '$' + fmtNum(v, 0);
+    if (chartUnit === 'Dólar' || chartUnit === 'Dolar') return 'US$' + fmtNum(v, 0);
+    return fmtNum(v, 2);
+  }
+
+  function drawChart() {
+    const svg = document.getElementById('chart')!;
+    if (!chartData.length) return;
+    const W = 800, H = 300, pad = { t: 20, r: 10, b: 28, l: 10 };
+    const vals = chartData.map((d) => d.valor);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const span = max - min || 1;
+    const innerW = W - pad.l - pad.r, innerH = H - pad.t - pad.b;
+
+    const x = (i: number) => pad.l + (i / (chartData.length - 1)) * innerW;
+    const y = (v: number) => pad.t + innerH - ((v - min) / span) * innerH;
+
+    const linePts = chartData.map((d, i) => `${x(i).toFixed(1)},${y(d.valor).toFixed(1)}`).join(' ');
+    const areaPath = `M ${x(0).toFixed(1)},${(H - pad.b).toFixed(1)} L ` +
+      chartData.map((d, i) => `${x(i).toFixed(1)},${y(d.valor).toFixed(1)}`).join(' L ') +
+      ` L ${x(chartData.length - 1).toFixed(1)},${(H - pad.b).toFixed(1)} Z`;
+
+    // gridlines (4)
+    let grid = '';
+    for (let g = 0; g <= 3; g++) {
+      const gy = pad.t + (g / 3) * innerH;
+      grid += `<line x1="${pad.l}" y1="${gy.toFixed(1)}" x2="${W - pad.r}" y2="${gy.toFixed(1)}" stroke="currentColor" stroke-opacity="0.07" stroke-width="1"/>`;
+    }
+    // etiquetas de fecha (primera, media, última)
+    const idxs = [0, Math.floor((chartData.length - 1) / 2), chartData.length - 1];
+    let labels = '';
+    idxs.forEach((i) => {
+      labels += `<text x="${x(i).toFixed(1)}" y="${H - 8}" fill="currentColor" fill-opacity="0.4" font-size="11" text-anchor="${i === 0 ? 'start' : i === chartData.length - 1 ? 'end' : 'middle'}" font-family="ui-monospace,monospace">${fmtDate(chartData[i].fecha)}</text>`;
+    });
+
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#6366f1" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <g class="text-gray-900 dark:text-gray-100">${grid}</g>
+      <path d="${areaPath}" fill="url(#areaGrad)"/>
+      <polyline points="${linePts}" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <g class="text-gray-900 dark:text-gray-100">${labels}</g>
+      <line id="hover-line" x1="0" y1="${pad.t}" x2="0" y2="${H - pad.b}" stroke="#6366f1" stroke-width="1" stroke-dasharray="4 4" opacity="0"/>
+      <circle id="hover-dot" r="4.5" fill="#6366f1" stroke="#fff" stroke-width="2" opacity="0"/>
+    `;
+
+    // stats
+    document.getElementById('stat-min')!.textContent = fmtChartVal(min);
+    document.getElementById('stat-avg')!.textContent = fmtChartVal(avg);
+    document.getElementById('stat-max')!.textContent = fmtChartVal(max);
+
+    // interacción
+    const wrap = document.getElementById('chart-wrap')!;
+    const tooltip = document.getElementById('tooltip')!;
+    const hLine = svg.querySelector('#hover-line') as SVGLineElement;
+    const hDot = svg.querySelector('#hover-dot') as SVGCircleElement;
+
+    const onMove = (clientX: number) => {
+      const rect = wrap.getBoundingClientRect();
+      const relX = (clientX - rect.left) / rect.width; // 0..1
+      const idx = Math.max(0, Math.min(chartData.length - 1, Math.round(relX * (chartData.length - 1))));
+      const px = x(idx), py = y(chartData[idx].valor);
+      hLine.setAttribute('x1', String(px)); hLine.setAttribute('x2', String(px)); hLine.setAttribute('opacity', '0.5');
+      hDot.setAttribute('cx', String(px)); hDot.setAttribute('cy', String(py)); hDot.setAttribute('opacity', '1');
+      tooltip.classList.remove('hidden');
+      tooltip.innerHTML = `<span class="text-gray-400">${fmtDate(chartData[idx].fecha)}</span> · <span class="font-bold">${fmtChartVal(chartData[idx].valor)}</span>`;
+      const tx = (px / W) * rect.width;
+      const ty = (py / H) * rect.height;
+      tooltip.style.left = Math.min(rect.width - tooltip.offsetWidth - 4, Math.max(4, tx - tooltip.offsetWidth / 2)) + 'px';
+      tooltip.style.top = (ty - tooltip.offsetHeight - 12) + 'px';
+    };
+    wrap.onmousemove = (e) => onMove(e.clientX);
+    wrap.ontouchmove = (e) => { if (e.touches[0]) onMove(e.touches[0].clientX); };
+    wrap.onmouseleave = () => {
+      tooltip.classList.add('hidden');
+      hLine.setAttribute('opacity', '0');
+      hDot.setAttribute('opacity', '0');
+    };
+  }
+
+  // ===== Init =====
+  document.getElementById('chart-controls')!.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('[data-ind]') as HTMLElement | null;
+    if (btn) loadChart(btn.dataset.ind!);
+  });
+
+  loadCurrent().catch((err) => {
+    console.error(err);
+    const lu = document.getElementById('last-update');
+    if (lu) lu.textContent = '⚠ No se pudieron cargar los datos. Intenta recargar la página.';
+  });
+  loadChart('uf');
+</script>

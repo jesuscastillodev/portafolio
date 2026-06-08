@@ -1,0 +1,632 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Generador de Contraseñas Seguras — gratis y privado | Jcastillo.dev';
+const description = 'Genera contraseñas seguras y aleatorias o frases de paso (passphrases). Longitud, símbolos, números y medidor de fortaleza. Todo en tu navegador, nada se envía a ningún servidor.';
+const canonical = 'https://jcastillo.dev/contrasenas';
+---
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full cyber-badge mb-5">
+          <LucideIcon name="ShieldCheck" size={14} class="cyber-ink" />
+          <span class="text-xs font-semibold cyber-ink tracking-wider uppercase font-mono">Crypto seguro · 100% local</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Generador de<br><span class="cyber-text">contraseñas seguras</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Crea contraseñas aleatorias robustas o frases de paso fáciles de recordar. Mide su fortaleza en tiempo real con la entropía estimada.
+          <span class="cyber-ink font-medium">Todo ocurre en tu navegador</span> — nada se envía a ningún servidor.
+        </p>
+        <div class="mt-4 inline-flex items-center gap-2 text-xs text-gray-400 font-mono">
+          <LucideIcon name="Lock" size={13} class="cyber-ink" />
+          crypto.getRandomValues() · sin red · sin almacenamiento
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== GENERADOR PRINCIPAL ===== -->
+    <section class="px-6 pb-6">
+      <div class="max-w-4xl mx-auto cyber-panel glow-card rounded-3xl p-6 lg:p-10" data-animate="fadeInUp">
+
+        <!-- Tabs de modo -->
+        <div role="tablist" aria-label="Modo de generación" class="inline-flex p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 mb-7">
+          <button id="tab-password" role="tab" aria-selected="true" class="cyber-tab is-active px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all">
+            <LucideIcon name="KeyRound" size={16} /> Contraseña
+          </button>
+          <button id="tab-passphrase" role="tab" aria-selected="false" class="cyber-tab px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all">
+            <LucideIcon name="Type" size={16} /> Frase de paso
+          </button>
+        </div>
+
+        <!-- Display del resultado -->
+        <div class="cyber-display rounded-2xl p-5 mb-6 relative overflow-hidden">
+          <div class="absolute inset-0 cyber-display-grid opacity-[0.07] pointer-events-none"></div>
+          <label for="output" class="sr-only">Contraseña generada</label>
+          <output id="output" aria-live="polite"
+            class="block w-full font-mono text-xl sm:text-2xl lg:text-3xl font-semibold break-all select-all cyber-output leading-snug min-h-[2.2rem]"></output>
+          <div class="flex items-center gap-3 mt-5">
+            <button id="copy-btn" aria-label="Copiar al portapapeles"
+              class="cyber-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold flex-1 sm:flex-none justify-center transition-all">
+              <span class="copy-default flex items-center gap-2"><LucideIcon name="Copy" size={16} /> Copiar</span>
+              <span class="copy-done hidden items-center gap-2"><LucideIcon name="Check" size={16} /> ¡Copiado!</span>
+            </button>
+            <button id="regen-btn" aria-label="Generar de nuevo"
+              class="cyber-btn-ghost flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold justify-center transition-all">
+              <LucideIcon name="RefreshCw" size={16} class="regen-icon" /> Regenerar
+            </button>
+          </div>
+        </div>
+
+        <!-- Medidor de fortaleza -->
+        <div class="mb-2">
+          <div class="flex items-center justify-between mb-2 text-sm">
+            <span class="flex items-center gap-1.5 font-semibold text-gray-600 dark:text-gray-300">
+              <LucideIcon name="Gauge" size={15} class="cyber-ink" /> Fortaleza
+            </span>
+            <span class="flex items-center gap-2 font-mono text-xs text-gray-400">
+              <span id="entropy-bits">0</span> bits ·
+              <span id="strength-label" class="font-semibold">—</span>
+            </span>
+          </div>
+          <div class="h-2.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+            <div id="strength-bar" class="h-full rounded-full transition-all duration-500 ease-out" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== OPCIONES ===== -->
+    <section class="px-6 pb-12">
+      <div class="max-w-4xl mx-auto">
+
+        <!-- Panel: Contraseña -->
+        <div id="panel-password" class="cyber-panel glow-card rounded-3xl p-6 lg:p-8" data-animate="fadeInUp">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2 font-mono">
+            <LucideIcon name="Settings" size={15} class="cyber-ink" /> Opciones
+          </h2>
+
+          <!-- Longitud -->
+          <div class="mb-7">
+            <div class="flex items-center justify-between mb-3">
+              <label for="length" class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                <LucideIcon name="Ruler" size={15} class="cyber-ink" /> Longitud
+              </label>
+              <span id="length-value" class="font-mono text-lg font-bold cyber-ink tabular-nums">16</span>
+            </div>
+            <input id="length" type="range" min="4" max="64" value="16" step="1"
+              aria-label="Longitud de la contraseña"
+              class="cyber-range w-full" />
+            <div class="flex justify-between text-[11px] text-gray-400 font-mono mt-1.5">
+              <span>4</span><span>64</span>
+            </div>
+          </div>
+
+          <!-- Toggles -->
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Mayúsculas <span class="font-mono text-xs text-gray-400">A-Z</span></span>
+              <input id="opt-upper" type="checkbox" checked class="cyber-check" aria-label="Incluir mayúsculas" />
+            </label>
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Minúsculas <span class="font-mono text-xs text-gray-400">a-z</span></span>
+              <input id="opt-lower" type="checkbox" checked class="cyber-check" aria-label="Incluir minúsculas" />
+            </label>
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Números <span class="font-mono text-xs text-gray-400">0-9</span></span>
+              <input id="opt-numbers" type="checkbox" checked class="cyber-check" aria-label="Incluir números" />
+            </label>
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Símbolos <span class="font-mono text-xs text-gray-400">!@#$%</span></span>
+              <input id="opt-symbols" type="checkbox" checked class="cyber-check" aria-label="Incluir símbolos" />
+            </label>
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none sm:col-span-2">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                <LucideIcon name="EyeOff" size={15} class="cyber-ink" /> Evitar caracteres ambiguos
+                <span class="font-mono text-xs text-gray-400">O0oIl1|</span>
+              </span>
+              <input id="opt-ambiguous" type="checkbox" class="cyber-check" aria-label="Evitar caracteres ambiguos" />
+            </label>
+          </div>
+          <p id="pw-warning" class="hidden mt-4 text-sm text-amber-600 dark:text-amber-400 items-center gap-2">
+            <LucideIcon name="Info" size={15} /> Selecciona al menos un tipo de carácter.
+          </p>
+        </div>
+
+        <!-- Panel: Frase de paso -->
+        <div id="panel-passphrase" class="cyber-panel glow-card rounded-3xl p-6 lg:p-8 hidden" data-animate="fadeInUp">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-6 flex items-center gap-2 font-mono">
+            <LucideIcon name="Type" size={15} class="cyber-ink" /> Opciones de la frase
+          </h2>
+
+          <!-- Cantidad de palabras -->
+          <div class="mb-7">
+            <div class="flex items-center justify-between mb-3">
+              <label for="word-count" class="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                <LucideIcon name="Hash" size={15} class="cyber-ink" /> Palabras
+              </label>
+              <span id="word-count-value" class="font-mono text-lg font-bold cyber-ink tabular-nums">4</span>
+            </div>
+            <input id="word-count" type="range" min="3" max="8" value="4" step="1"
+              aria-label="Cantidad de palabras" class="cyber-range w-full" />
+            <div class="flex justify-between text-[11px] text-gray-400 font-mono mt-1.5">
+              <span>3</span><span>8</span>
+            </div>
+          </div>
+
+          <!-- Separador -->
+          <div class="mb-6">
+            <span class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
+              <LucideIcon name="Link" size={15} class="cyber-ink" /> Separador
+            </span>
+            <div role="radiogroup" aria-label="Separador" class="flex flex-wrap gap-2">
+              <button class="sep-btn is-active px-4 py-2 rounded-xl text-sm font-mono font-semibold transition-all" data-sep="-">guion -</button>
+              <button class="sep-btn px-4 py-2 rounded-xl text-sm font-mono font-semibold transition-all" data-sep=".">punto .</button>
+              <button class="sep-btn px-4 py-2 rounded-xl text-sm font-mono font-semibold transition-all" data-sep="_">guion bajo _</button>
+              <button class="sep-btn px-4 py-2 rounded-xl text-sm font-mono font-semibold transition-all" data-sep=" ">espacio</button>
+            </div>
+          </div>
+
+          <!-- Toggles frase -->
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Capitalizar palabras</span>
+              <input id="opt-capitalize" type="checkbox" checked class="cyber-check" aria-label="Capitalizar cada palabra" />
+            </label>
+            <label class="cyber-toggle-row flex items-center justify-between gap-3 px-4 py-3 rounded-xl cursor-pointer select-none">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Añadir número al final</span>
+              <input id="opt-append-num" type="checkbox" checked class="cyber-check" aria-label="Añadir número al final" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Nota informativa -->
+        <div class="max-w-4xl mx-auto mt-6 text-sm text-gray-400 flex items-start gap-2 px-1" data-animate="fadeInUp">
+          <LucideIcon name="Info" size={16} class="mt-0.5 shrink-0 cyber-ink" />
+          <p>La fortaleza se estima con la entropía <span class="font-mono">≈ longitud × log₂(tamaño del conjunto)</span>. A mayor cantidad de bits, más difícil de adivinar. Una contraseña de 80+ bits se considera muy segura.</p>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  /* ===== Tema "Cyber / terminal": lime + emerald glow ===== */
+  #panel-password, #panel-passphrase, .cyber-panel { margin-bottom: 1.5rem; }
+
+  :root {
+    --cyber: #65a30d;        /* lime-700 (legible en claro) */
+    --cyber-glow: #84cc16;   /* lime-500 */
+    --cyber-emerald: #059669;/* emerald-600 */
+  }
+  :global(.dark) {
+    --cyber: #a3e635;        /* lime-400 */
+    --cyber-glow: #84cc16;
+    --cyber-emerald: #10b981;/* emerald-500 */
+  }
+
+  .cyber-ink { color: var(--cyber); }
+  .cyber-text {
+    background: linear-gradient(120deg, var(--cyber-glow) 0%, var(--cyber-emerald) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+
+  .cyber-badge {
+    background: color-mix(in srgb, var(--cyber-glow) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cyber-glow) 25%, transparent);
+  }
+
+  .cyber-panel {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(0,0,0,0.06);
+    backdrop-filter: blur(16px);
+  }
+  :global(.dark) .cyber-panel {
+    background: rgba(10,16,10,0.6);
+    border: 1px solid color-mix(in srgb, var(--cyber-emerald) 18%, transparent);
+  }
+
+  /* Display de la contraseña con neon glow */
+  .cyber-display {
+    background: linear-gradient(135deg, rgba(132,204,22,0.06), rgba(16,185,129,0.04));
+    border: 1px solid color-mix(in srgb, var(--cyber-glow) 28%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--cyber-glow) 8%, transparent),
+                0 8px 30px -12px color-mix(in srgb, var(--cyber-emerald) 35%, transparent);
+  }
+  :global(.dark) .cyber-display {
+    background: linear-gradient(135deg, rgba(10,20,12,0.9), rgba(6,16,12,0.9));
+    box-shadow: 0 0 18px -4px color-mix(in srgb, var(--cyber-glow) 40%, transparent),
+                inset 0 0 30px -18px var(--cyber-glow);
+  }
+  .cyber-display-grid {
+    background-image:
+      linear-gradient(var(--cyber-glow) 1px, transparent 1px),
+      linear-gradient(90deg, var(--cyber-glow) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .cyber-output { color: #1a2e05; }
+  :global(.dark) .cyber-output {
+    color: var(--cyber);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--cyber-glow) 55%, transparent);
+  }
+
+  /* Botones */
+  .cyber-btn {
+    background: linear-gradient(120deg, var(--cyber-glow), var(--cyber-emerald));
+    color: #07140a;
+    box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--cyber-emerald) 70%, transparent);
+  }
+  .cyber-btn:hover { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--cyber-glow) 80%, transparent); }
+  .cyber-btn:active { transform: translateY(0); }
+  .cyber-btn.is-copied { background: linear-gradient(120deg, var(--cyber-emerald), var(--cyber-emerald)); }
+
+  .cyber-btn-ghost {
+    background: transparent;
+    color: var(--cyber);
+    border: 1px solid color-mix(in srgb, var(--cyber-glow) 40%, transparent);
+  }
+  .cyber-btn-ghost:hover { background: color-mix(in srgb, var(--cyber-glow) 12%, transparent); transform: translateY(-1px); }
+  .regen-icon { transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+  .cyber-btn-ghost:hover .regen-icon { transform: rotate(180deg); }
+  .regen-icon.spinning { animation: spin360 0.5s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes spin360 { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+  /* Tabs */
+  .cyber-tab { color: #6b7280; background: transparent; }
+  :global(.dark) .cyber-tab { color: #9ca3af; }
+  .cyber-tab.is-active {
+    background: linear-gradient(120deg, var(--cyber-glow), var(--cyber-emerald));
+    color: #07140a;
+    box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--cyber-emerald) 70%, transparent);
+  }
+
+  /* Separadores */
+  .sep-btn {
+    background: rgba(0,0,0,0.04);
+    color: #6b7280;
+    border: 1px solid transparent;
+  }
+  :global(.dark) .sep-btn { background: rgba(255,255,255,0.05); color: #9ca3af; }
+  .sep-btn:hover { border-color: color-mix(in srgb, var(--cyber-glow) 40%, transparent); }
+  .sep-btn.is-active {
+    background: color-mix(in srgb, var(--cyber-glow) 16%, transparent);
+    color: var(--cyber);
+    border-color: color-mix(in srgb, var(--cyber-glow) 50%, transparent);
+  }
+
+  /* Filas de toggle */
+  .cyber-toggle-row {
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  :global(.dark) .cyber-toggle-row { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.06); }
+  .cyber-toggle-row:hover { border-color: color-mix(in srgb, var(--cyber-glow) 45%, transparent); }
+
+  /* Checkbox custom */
+  .cyber-check {
+    appearance: none; -webkit-appearance: none;
+    width: 2.6rem; height: 1.45rem; border-radius: 9999px;
+    background: rgba(0,0,0,0.18); position: relative; cursor: pointer;
+    transition: background 0.25s; flex-shrink: 0;
+  }
+  :global(.dark) .cyber-check { background: rgba(255,255,255,0.15); }
+  .cyber-check::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 1.05rem; height: 1.05rem; border-radius: 9999px;
+    background: #fff; transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .cyber-check:checked {
+    background: linear-gradient(120deg, var(--cyber-glow), var(--cyber-emerald));
+    box-shadow: 0 0 10px -2px color-mix(in srgb, var(--cyber-glow) 70%, transparent);
+  }
+  .cyber-check:checked::after { transform: translateX(1.15rem); }
+  .cyber-check:focus-visible { outline: 2px solid var(--cyber); outline-offset: 2px; }
+
+  /* Range slider */
+  .cyber-range {
+    appearance: none; -webkit-appearance: none;
+    height: 6px; border-radius: 9999px; cursor: pointer;
+    background: rgba(0,0,0,0.12);
+  }
+  :global(.dark) .cyber-range { background: rgba(255,255,255,0.12); }
+  .cyber-range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 20px; height: 20px; border-radius: 9999px;
+    background: linear-gradient(120deg, var(--cyber-glow), var(--cyber-emerald));
+    border: 2px solid #fff; cursor: pointer;
+    box-shadow: 0 0 12px -2px color-mix(in srgb, var(--cyber-glow) 80%, transparent);
+    transition: transform 0.15s;
+  }
+  .cyber-range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .cyber-range::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 9999px;
+    background: linear-gradient(120deg, var(--cyber-glow), var(--cyber-emerald));
+    border: 2px solid #fff; cursor: pointer;
+    box-shadow: 0 0 12px -2px color-mix(in srgb, var(--cyber-glow) 80%, transparent);
+  }
+  .cyber-range:focus-visible { outline: 2px solid var(--cyber); outline-offset: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .regen-icon, .cyber-btn, .cyber-btn-ghost, .cyber-check::after { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<script>
+  // ============================================================
+  // Generador de Contraseñas — 100% cliente, crypto seguro
+  // ============================================================
+
+  // --- Conjuntos de caracteres ---
+  const SETS = {
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    numbers: '0123456789',
+    symbols: '!@#$%^&*()-_=+[]{};:,.<>?/',
+  };
+  const AMBIGUOUS = new Set(['O', '0', 'o', 'I', 'l', '1', '|']);
+
+  // ~120 palabras cortas en español (sustantivos / adjetivos comunes)
+  const WORDS = [
+    'sol','luna','mar','rio','cielo','nube','viento','fuego','agua','tierra',
+    'arbol','flor','hoja','raiz','rama','fruta','grano','campo','monte','valle',
+    'roca','arena','playa','lago','isla','bosque','selva','desierto','nieve','lluvia',
+    'gato','perro','lobo','zorro','oso','leon','tigre','aguila','buho','cuervo',
+    'pez','rana','abeja','mosca','araña','hormiga','pajaro','ciervo','toro','caballo',
+    'rojo','azul','verde','negro','blanco','gris','dorado','plata','rosa','violeta',
+    'alto','bajo','largo','corto','ancho','rapido','lento','fuerte','suave','duro',
+    'frio','calido','nuevo','viejo','claro','oscuro','limpio','sucio','lleno','vacio',
+    'casa','puerta','techo','muro','mesa','silla','cama','libro','lapiz','papel',
+    'reloj','llave','barco','tren','auto','rueda','puente','torre','faro','muelle',
+    'pan','queso','miel','vino','cafe','azucar','sal','huevo','carne','sopa',
+    'mano','dedo','ojo','boca','nariz','pelo','brazo','pierna','cara','corazon',
+    'dia','noche','hora','mes','año','tarde','manana','siglo','tiempo','reloj',
+    'idea','suerte','calma','fuerza','brillo','sombra','chispa','trueno','rayo','aurora',
+  ];
+
+  // --- RNG sin sesgo de módulo usando crypto.getRandomValues ---
+  function secureRandomInt(max: number): number {
+    // Devuelve un entero uniforme en [0, max)
+    if (max <= 0) return 0;
+    const maxUint32 = 0xffffffff;
+    const limit = maxUint32 - (maxUint32 % max); // umbral de rechazo
+    const buf = new Uint32Array(1);
+    let x = 0;
+    do {
+      crypto.getRandomValues(buf);
+      x = buf[0];
+    } while (x >= limit);
+    return x % max;
+  }
+
+  function pick<T>(arr: T[] | string): T | string {
+    return (arr as any)[secureRandomInt(arr.length)];
+  }
+
+  // --- Estado de modo ---
+  let mode: 'password' | 'passphrase' = 'password';
+  let separator = '-';
+
+  // --- Elementos del DOM ---
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+
+  const output = $('output');
+  const copyBtn = $('copy-btn');
+  const regenBtn = $('regen-btn');
+  const regenIcon = document.querySelector('.regen-icon') as HTMLElement | null;
+
+  const lengthInput = $<HTMLInputElement>('length');
+  const lengthValue = $('length-value');
+  const optUpper = $<HTMLInputElement>('opt-upper');
+  const optLower = $<HTMLInputElement>('opt-lower');
+  const optNumbers = $<HTMLInputElement>('opt-numbers');
+  const optSymbols = $<HTMLInputElement>('opt-symbols');
+  const optAmbiguous = $<HTMLInputElement>('opt-ambiguous');
+  const pwWarning = $('pw-warning');
+
+  const wordCount = $<HTMLInputElement>('word-count');
+  const wordCountValue = $('word-count-value');
+  const optCapitalize = $<HTMLInputElement>('opt-capitalize');
+  const optAppendNum = $<HTMLInputElement>('opt-append-num');
+
+  const strengthBar = $('strength-bar');
+  const strengthLabel = $('strength-label');
+  const entropyBits = $('entropy-bits');
+
+  const tabPassword = $('tab-password');
+  const tabPassphrase = $('tab-passphrase');
+  const panelPassword = $('panel-password');
+  const panelPassphrase = $('panel-passphrase');
+
+  // --- Construir el pool de caracteres según las opciones ---
+  function buildPool(): string {
+    let pool = '';
+    if (optUpper.checked) pool += SETS.upper;
+    if (optLower.checked) pool += SETS.lower;
+    if (optNumbers.checked) pool += SETS.numbers;
+    if (optSymbols.checked) pool += SETS.symbols;
+    if (optAmbiguous.checked) {
+      pool = [...pool].filter((c) => !AMBIGUOUS.has(c)).join('');
+    }
+    return pool;
+  }
+
+  // --- Generar contraseña ---
+  function generatePassword(): { value: string; poolSize: number } {
+    const pool = buildPool();
+    if (pool.length === 0) return { value: '', poolSize: 0 };
+    const len = parseInt(lengthInput.value, 10);
+    let out = '';
+    for (let i = 0; i < len; i++) {
+      out += pool[secureRandomInt(pool.length)];
+    }
+    return { value: out, poolSize: pool.length };
+  }
+
+  // --- Generar frase de paso ---
+  function generatePassphrase(): { value: string; entropy: number } {
+    const n = parseInt(wordCount.value, 10);
+    const words: string[] = [];
+    for (let i = 0; i < n; i++) {
+      let w = WORDS[secureRandomInt(WORDS.length)];
+      if (optCapitalize.checked) w = w.charAt(0).toUpperCase() + w.slice(1);
+      words.push(w);
+    }
+    let phrase = words.join(separator);
+    // entropía base: n palabras de una lista de WORDS.length opciones
+    let entropy = n * Math.log2(WORDS.length);
+    if (optAppendNum.checked) {
+      const num = secureRandomInt(100); // 00-99
+      phrase += separator + String(num).padStart(2, '0');
+      entropy += Math.log2(100);
+    }
+    return { value: phrase, entropy };
+  }
+
+  // --- Medidor de fortaleza ---
+  function renderStrength(bits: number) {
+    const rounded = Math.round(bits);
+    entropyBits.textContent = String(rounded);
+
+    let pct = Math.min(100, (bits / 120) * 100);
+    let label = 'Débil';
+    let color = '#ef4444'; // rojo
+
+    if (bits >= 100) { label = 'Excelente'; color = '#10b981'; }      // emerald
+    else if (bits >= 70) { label = 'Fuerte'; color = '#84cc16'; }     // lime
+    else if (bits >= 45) { label = 'Media'; color = '#f59e0b'; }      // amber
+    else { label = 'Débil'; color = '#ef4444'; }
+
+    if (bits <= 0) { pct = 0; label = '—'; }
+
+    strengthBar.style.width = pct + '%';
+    strengthBar.style.background = bits > 0
+      ? `linear-gradient(90deg, ${color}, ${color})`
+      : 'transparent';
+    strengthBar.style.boxShadow = bits > 0 ? `0 0 12px -2px ${color}` : 'none';
+    strengthLabel.textContent = label;
+    strengthLabel.style.color = bits > 0 ? color : '';
+  }
+
+  // --- Orquestador de generación ---
+  function generate() {
+    if (mode === 'password') {
+      const valid = optUpper.checked || optLower.checked || optNumbers.checked || optSymbols.checked;
+      pwWarning.classList.toggle('hidden', valid);
+      pwWarning.classList.toggle('flex', !valid);
+      if (!valid) {
+        output.textContent = '';
+        renderStrength(0);
+        return;
+      }
+      const { value, poolSize } = generatePassword();
+      output.textContent = value;
+      const entropy = value.length * Math.log2(poolSize);
+      renderStrength(entropy);
+    } else {
+      const { value, entropy } = generatePassphrase();
+      output.textContent = value;
+      renderStrength(entropy);
+    }
+  }
+
+  // --- Feedback de copia ---
+  let copyTimer: number | undefined;
+  function copyToClipboard() {
+    const text = output.textContent || '';
+    if (!text) return;
+    const done = () => {
+      const def = copyBtn.querySelector('.copy-default') as HTMLElement;
+      const ok = copyBtn.querySelector('.copy-done') as HTMLElement;
+      def.classList.add('hidden');
+      ok.classList.remove('hidden');
+      ok.classList.add('flex');
+      copyBtn.classList.add('is-copied');
+      window.clearTimeout(copyTimer);
+      copyTimer = window.setTimeout(() => {
+        def.classList.remove('hidden');
+        ok.classList.add('hidden');
+        ok.classList.remove('flex');
+        copyBtn.classList.remove('is-copied');
+      }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+    function fallbackCopy() {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { /* noop */ }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // --- Cambio de modo (tabs) ---
+  function setMode(next: 'password' | 'passphrase') {
+    mode = next;
+    const isPw = next === 'password';
+    tabPassword.classList.toggle('is-active', isPw);
+    tabPassphrase.classList.toggle('is-active', !isPw);
+    tabPassword.setAttribute('aria-selected', String(isPw));
+    tabPassphrase.setAttribute('aria-selected', String(!isPw));
+    panelPassword.classList.toggle('hidden', !isPw);
+    panelPassphrase.classList.toggle('hidden', isPw);
+    generate();
+  }
+
+  // --- Eventos ---
+  copyBtn.addEventListener('click', copyToClipboard);
+  regenBtn.addEventListener('click', () => {
+    regenIcon?.classList.remove('spinning');
+    void regenIcon?.offsetWidth; // reinicia la animación
+    regenIcon?.classList.add('spinning');
+    generate();
+  });
+
+  tabPassword.addEventListener('click', () => setMode('password'));
+  tabPassphrase.addEventListener('click', () => setMode('passphrase'));
+
+  lengthInput.addEventListener('input', () => {
+    lengthValue.textContent = lengthInput.value;
+    generate();
+  });
+  wordCount.addEventListener('input', () => {
+    wordCountValue.textContent = wordCount.value;
+    generate();
+  });
+
+  [optUpper, optLower, optNumbers, optSymbols, optAmbiguous, optCapitalize, optAppendNum]
+    .forEach((el) => el.addEventListener('change', generate));
+
+  document.querySelectorAll('.sep-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sep-btn').forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      separator = (btn as HTMLElement).dataset.sep ?? '-';
+      generate();
+    });
+  });
+
+  // --- Generación inicial al cargar ---
+  generate();
+</script>

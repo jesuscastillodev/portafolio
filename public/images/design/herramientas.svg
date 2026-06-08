@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="100%" stop-color="#12121a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.8" cy="0.35" r="0.7">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- grid de íconos de herramientas -->
+  <g transform="translate(700 120)">
+    <!-- fila 1 -->
+    <g transform="translate(0 0)"><rect width="120" height="120" rx="28" fill="#6366f1" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">📈</text></g>
+    <g transform="translate(140 0)"><rect width="120" height="120" rx="28" fill="#10b981" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">🪪</text></g>
+    <g transform="translate(280 0)"><rect width="120" height="120" rx="28" fill="#84cc16" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">🔑</text></g>
+    <g transform="translate(420 0)"><rect width="120" height="120" rx="28" fill="#f43f5e" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">📱</text></g>
+    <!-- fila 2 -->
+    <g transform="translate(0 140)"><rect width="120" height="120" rx="28" fill="#06b6d4" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">⌨️</text></g>
+    <g transform="translate(140 140)"><rect width="120" height="120" rx="28" fill="#f59e0b" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">📐</text></g>
+    <g transform="translate(280 140)"><rect width="120" height="120" rx="28" fill="#3b82f6" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">📅</text></g>
+    <g transform="translate(420 140)"><rect width="120" height="120" rx="28" fill="#a855f7" fill-opacity="0.18"/><text x="60" y="78" font-size="52" text-anchor="middle">🎯</text></g>
+  </g>
+
+  <!-- Texto -->
+  <text x="80" y="250" fill="#ffffff" font-family="'Space Grotesk', Inter, sans-serif" font-size="72" font-weight="800">Herramientas</text>
+  <text x="80" y="334" fill="#818cf8" font-family="'Space Grotesk', Inter, sans-serif" font-size="72" font-weight="800">web gratuitas</text>
+  <text x="80" y="396" fill="#9ca3af" font-family="Inter, sans-serif" font-size="26" font-weight="500">9 utilidades para Chile y desarrolladores · 100% privadas</text>
+
+  <g font-family="'JetBrains Mono', monospace" font-size="22" font-weight="600">
+    <rect x="80" y="446" width="190" height="44" rx="12" fill="#6366f1" fill-opacity="0.15"/>
+    <text x="100" y="475" fill="#818cf8">sin registro</text>
+    <rect x="288" y="446" width="170" height="44" rx="12" fill="#10b981" fill-opacity="0.15"/>
+    <text x="308" y="475" fill="#34d399">en tu navegador</text>
+  </g>
+</svg>

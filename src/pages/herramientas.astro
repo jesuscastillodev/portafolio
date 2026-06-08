@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Herramientas web gratuitas — utilidades para Chile y desarrolladores | Jcastillo.dev';
+const description = 'Suite de herramientas gratuitas: indicadores económicos, validador de RUT, sueldo líquido, generador de contraseñas y QR, conversor de unidades, feriados de Chile, dev tools y ruleta de sorteos. Todo en tu navegador.';
+const canonical = 'https://jcastillo.dev/herramientas';
+
+const tools = [
+  { url: '/indicadores', icon: 'TrendingUp', title: 'Indicadores Económicos', desc: 'UF, dólar, euro, UTM e IPC del día, conversor y gráficos históricos.', grad: 'from-indigo-500 to-violet-500' },
+  { url: '/rut', icon: 'Fingerprint', title: 'Validador de RUT', desc: 'Valida, formatea y calcula el dígito verificador. Por lote y generador.', grad: 'from-emerald-500 to-teal-500' },
+  { url: '/sueldo-liquido', icon: 'Wallet', title: 'Sueldo Líquido', desc: 'Estima tu líquido desde el bruto: AFP, salud, cesantía e impuesto.', grad: 'from-green-500 to-emerald-600' },
+  { url: '/contrasenas', icon: 'KeyRound', title: 'Generador de Contraseñas', desc: 'Contraseñas seguras y frases de paso con medidor de fortaleza.', grad: 'from-lime-500 to-emerald-500' },
+  { url: '/qr', icon: 'QrCode', title: 'Generador de QR', desc: 'Códigos QR para texto, URL, WiFi y vCard. Descarga PNG o SVG.', grad: 'from-rose-500 to-pink-500' },
+  { url: '/dev-tools', icon: 'Code', title: 'Dev Toolkit', desc: 'Formatea JSON, codifica Base64/URL y decodifica tokens JWT.', grad: 'from-cyan-500 to-sky-500' },
+  { url: '/conversor-unidades', icon: 'Ruler', title: 'Conversor de Unidades', desc: 'Longitud, masa, temperatura, volumen, velocidad, datos y más.', grad: 'from-amber-500 to-orange-500' },
+  { url: '/feriados', icon: 'CalendarDays', title: 'Feriados de Chile', desc: 'Feriados 2026 y calculadora de días hábiles entre fechas.', grad: 'from-blue-500 to-red-500' },
+  { url: '/sorteos', icon: 'Sparkles', title: 'Ruleta de Sorteos', desc: 'Sortea ganadores desde Excel, CSV o JSON con ruleta animada.', grad: 'from-violet-500 to-fuchsia-500' },
+];
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full">
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-6xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 mb-5">
+          <LucideIcon name="Wrench" size={14} class="text-primary" />
+          <span class="text-xs font-semibold text-primary tracking-wider uppercase">Gratis · sin registro · privadas</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Herramientas<br><span class="gradient-text">web gratuitas</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          Un set de utilidades rápidas para Chile y para desarrolladores. Todas funcionan 100% en tu navegador —tus datos nunca salen de tu equipo.
+        </p>
+      </div>
+    </section>
+
+    <section class="px-6 pb-24">
+      <div class="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-5" data-animate-stagger>
+        {tools.map((t) => (
+          <a href={t.url} class="group glass glow-card rounded-3xl p-6 transition-all duration-500 hover:-translate-y-1">
+            <div class={`w-12 h-12 rounded-2xl bg-gradient-to-br ${t.grad} flex items-center justify-center text-white shadow-lg mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3`}>
+              <LucideIcon name={t.icon} size={22} />
+            </div>
+            <h2 class="text-lg font-bold tracking-tight mb-1.5">{t.title}</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{t.desc}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+              Abrir →
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

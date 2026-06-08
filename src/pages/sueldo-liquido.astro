@@ -1,0 +1,487 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import LucideIcon from '../components/LucideIcon.astro';
+
+const title = 'Calculadora de Sueldo Líquido Chile — estimación con AFP, salud e impuesto | Jcastillo.dev';
+const description = 'Calcula tu sueldo líquido en Chile a partir del bruto imponible: descuentos de AFP, salud, seguro de cesantía e impuesto único. Parámetros editables. Estimación referencial.';
+const canonical = 'https://jcastillo.dev/sueldo-liquido';
+
+const afps = [
+  { name: 'Capital', pct: 11.44 },
+  { name: 'Cuprum', pct: 11.44 },
+  { name: 'Habitat', pct: 11.27 },
+  { name: 'Modelo', pct: 10.58 },
+  { name: 'PlanVital', pct: 11.16 },
+  { name: 'ProVida', pct: 11.45 },
+  { name: 'Uno', pct: 10.49 },
+];
+---
+
+<Layout title={title} description={description} canonical={canonical}>
+  <Header />
+  <div class="h-16"></div>
+
+  <main class="flex flex-col w-full sl-scope">
+    <!-- ===== HERO ===== -->
+    <section class="relative pt-16 pb-10 lg:pt-20 px-6 overflow-hidden mesh-gradient">
+      <div class="absolute inset-0 dot-pattern opacity-40"></div>
+      <div class="relative max-w-4xl mx-auto" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full sl-badge mb-5">
+          <LucideIcon name="Wallet" size={14} />
+          <span class="text-xs font-semibold tracking-wider uppercase">Finanzas · Chile</span>
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
+          Calculadora de<br><span class="sl-gradient-text">sueldo líquido</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light mb-5">
+          A partir de tu sueldo bruto imponible estimamos los descuentos legales (AFP, salud, seguro de cesantía e impuesto único de segunda categoría) para mostrarte tu líquido aproximado. Todo el cálculo ocurre en tu navegador.
+        </p>
+        <div class="flex items-start gap-3 p-4 rounded-2xl sl-disclaimer">
+          <LucideIcon name="Info" size={18} class="shrink-0 mt-0.5" />
+          <p class="text-sm leading-relaxed">
+            <strong>Estimación referencial.</strong> Los parámetros (AFP, UTM, topes) cambian periódicamente — edítalos según el valor vigente. No reemplaza el cálculo oficial de tu liquidación.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CALCULADORA ===== -->
+    <section class="px-6 pb-20">
+      <div class="max-w-5xl mx-auto grid lg:grid-cols-5 gap-6">
+
+        <!-- ENTRADA + PARÁMETROS -->
+        <div class="lg:col-span-3 flex flex-col gap-6">
+
+          <!-- Sueldo bruto -->
+          <div class="glass glow-card rounded-3xl p-6 lg:p-8" data-animate="fadeInLeft">
+            <label for="bruto" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Sueldo bruto imponible (CLP)</label>
+            <div class="relative">
+              <span class="absolute left-5 top-1/2 -translate-y-1/2 text-2xl font-bold text-gray-400 pointer-events-none">$</span>
+              <input id="bruto" type="text" inputmode="numeric" autocomplete="off" value="1.000.000"
+                class="w-full pl-10 pr-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono text-2xl font-bold tracking-tight focus:outline-none focus:ring-2 sl-focus transition-all" />
+            </div>
+            <input id="bruto-range" type="range" min="0" max="6000000" step="50000" value="1000000"
+              class="w-full mt-4 sl-range cursor-pointer" aria-label="Ajustar sueldo bruto" />
+            <p class="mt-2 text-xs text-gray-400">Arrastra el control o escribe el monto directamente.</p>
+          </div>
+
+          <!-- Parámetros / Ajustes -->
+          <div class="glass rounded-3xl p-6 lg:p-8" data-animate="fadeInLeft">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-9 h-9 rounded-xl flex items-center justify-center sl-icon-box"><LucideIcon name="Settings" size={18} /></span>
+              <div>
+                <h2 class="text-lg font-bold tracking-tight">Ajustes / parámetros</h2>
+                <p class="text-xs text-gray-400">Edítalos según los valores vigentes.</p>
+              </div>
+            </div>
+
+            <!-- AFP -->
+            <div class="mb-6">
+              <label for="afp-select" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">AFP — tasa total (10% + comisión)</label>
+              <div class="grid sm:grid-cols-[1fr_auto] gap-3">
+                <select id="afp-select"
+                  class="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-semibold focus:outline-none focus:ring-2 sl-focus transition-all cursor-pointer">
+                  {afps.map((a) => (
+                    <option value={a.pct} selected={a.name === 'Modelo'}>{a.name} — {a.pct.toFixed(2)}%</option>
+                  ))}
+                  <option value="custom">Personalizado…</option>
+                </select>
+                <div class="relative">
+                  <input id="afp-pct" type="number" step="0.01" min="0" max="30" value="10.58"
+                    class="w-full sm:w-28 pl-4 pr-8 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" aria-label="Porcentaje AFP" />
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Salud -->
+            <div class="mb-6">
+              <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Salud</span>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-white/5" role="radiogroup" aria-label="Tipo de salud">
+                  <button id="salud-fonasa" data-salud="fonasa" type="button" class="salud-tab text-sm font-semibold px-4 py-2 rounded-lg transition-all" role="radio" aria-checked="true">Fonasa (7%)</button>
+                  <button id="salud-isapre" data-salud="isapre" type="button" class="salud-tab text-sm font-semibold px-4 py-2 rounded-lg transition-all" role="radio" aria-checked="false">Isapre</button>
+                </div>
+                <div id="isapre-pct-wrap" class="relative hidden">
+                  <input id="salud-pct" type="number" step="0.1" min="0" max="30" value="8.0"
+                    class="w-28 pl-4 pr-8 py-2.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" aria-label="Porcentaje Isapre" />
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">%</span>
+                </div>
+              </div>
+              <p class="mt-2 text-xs text-gray-400">Fonasa descuenta el 7%. En Isapre el plan suele ser igual o mayor al 7%.</p>
+            </div>
+
+            <!-- Cesantía -->
+            <div class="mb-6">
+              <label for="cesantia-pct" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Seguro de cesantía — aporte trabajador</label>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative">
+                  <input id="cesantia-pct" type="number" step="0.1" min="0" max="5" value="0.6"
+                    class="w-28 pl-4 pr-8 py-2.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" aria-label="Porcentaje seguro de cesantía" />
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">%</span>
+                </div>
+                <label class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 cursor-pointer select-none">
+                  <input id="plazo-fijo" type="checkbox" class="w-4 h-4 rounded sl-accent cursor-pointer" />
+                  Contrato a plazo fijo (0% trabajador)
+                </label>
+              </div>
+              <p class="mt-2 text-xs text-gray-400">Contrato indefinido: 0,6% trabajador. A plazo fijo: lo paga el empleador.</p>
+            </div>
+
+            <!-- Tope y UTM -->
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="tope" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tope imponible (CLP)</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">$</span>
+                  <input id="tope" type="text" inputmode="numeric" value="3.000.000"
+                    class="w-full pl-8 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" />
+                </div>
+              </div>
+              <div>
+                <label for="utm" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Valor UTM (CLP)</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">$</span>
+                  <input id="utm" type="text" inputmode="numeric" value="68.000"
+                    class="w-full pl-8 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" />
+                </div>
+              </div>
+            </div>
+            <p class="mt-3 text-xs text-gray-400 flex items-start gap-1.5">
+              <LucideIcon name="Info" size={13} class="shrink-0 mt-0.5" />
+              Valores por defecto aproximados (placeholder). Reemplázalos por los oficiales vigentes para mayor precisión.
+            </p>
+          </div>
+        </div>
+
+        <!-- RESULTADO -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+          <!-- Líquido grande -->
+          <div class="glass glow-card rounded-3xl p-6 lg:p-8 sticky top-24" data-animate="fadeInRight">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-2">
+              <LucideIcon name="Banknote" size={15} class="sl-text-accent" /> Sueldo líquido estimado
+            </p>
+            <p id="liquido" class="sl-gradient-text text-4xl lg:text-[2.75rem] font-black tracking-tight leading-none my-2">$0</p>
+            <p id="liquido-pct" class="text-sm text-gray-400 mb-6">— del bruto imponible</p>
+
+            <!-- Breakdown -->
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Desglose</p>
+            <div class="flex flex-col gap-2.5" id="breakdown">
+              <!-- Bruto -->
+              <div class="flex items-center justify-between text-sm pb-2.5 border-b border-gray-100 dark:border-white/5">
+                <span class="text-gray-500 dark:text-gray-400">Bruto imponible</span>
+                <span id="r-bruto" class="font-mono font-bold">$0</span>
+              </div>
+
+              <div class="bk-row" data-key="afp">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>AFP <span id="p-afp" class="text-xs text-gray-400"></span></span>
+                  <span id="r-afp" class="font-mono font-semibold text-rose-500">−$0</span>
+                </div>
+                <div class="sl-bar mt-1"><div id="bar-afp" class="sl-bar-fill bg-emerald-500"></div></div>
+              </div>
+
+              <div class="bk-row" data-key="salud">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>Salud <span id="p-salud" class="text-xs text-gray-400"></span></span>
+                  <span id="r-salud" class="font-mono font-semibold text-rose-500">−$0</span>
+                </div>
+                <div class="sl-bar mt-1"><div id="bar-salud" class="sl-bar-fill bg-teal-500"></div></div>
+              </div>
+
+              <div class="bk-row" data-key="cesantia">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>Cesantía <span id="p-cesantia" class="text-xs text-gray-400"></span></span>
+                  <span id="r-cesantia" class="font-mono font-semibold text-rose-500">−$0</span>
+                </div>
+                <div class="sl-bar mt-1"><div id="bar-cesantia" class="sl-bar-fill bg-cyan-500"></div></div>
+              </div>
+
+              <div class="bk-row" data-key="impuesto">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>Impuesto único <span id="p-impuesto" class="text-xs text-gray-400"></span></span>
+                  <span id="r-impuesto" class="font-mono font-semibold text-rose-500">−$0</span>
+                </div>
+                <div class="sl-bar mt-1"><div id="bar-impuesto" class="sl-bar-fill bg-amber-500"></div></div>
+              </div>
+
+              <!-- Base tributable -->
+              <div class="flex items-center justify-between text-sm pt-2.5 mt-1 border-t border-gray-100 dark:border-white/5">
+                <span class="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                  Base tributable
+                  <span class="sl-tip" title="Bruto imponible menos AFP, salud y cesantía. Sobre esta base se calcula el impuesto."><LucideIcon name="Info" size={12} /></span>
+                </span>
+                <span id="r-base-trib" class="font-mono font-semibold">$0</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500 dark:text-gray-400">Total descuentos</span>
+                <span id="r-total-desc" class="font-mono font-bold text-rose-500">−$0</span>
+              </div>
+            </div>
+
+            <p class="mt-5 text-xs text-gray-400 leading-relaxed">
+              No incluye asignaciones no imponibles (colación, movilización) ni gratificación. Solo el tránsito imponible → líquido.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ===== Tema fintech: emerald + teal ===== */
+  .sl-scope {
+    --sl-from: #059669;
+    --sl-to: #14b8a6;
+  }
+  .sl-gradient-text {
+    background: linear-gradient(120deg, var(--sl-from), var(--sl-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .sl-text-accent { color: #059669; }
+  :global(.dark) .sl-text-accent { color: #14b8a6; }
+
+  .sl-badge {
+    background: rgba(5, 150, 105, 0.06);
+    border: 1px solid rgba(5, 150, 105, 0.18);
+    color: #059669;
+  }
+  :global(.dark) .sl-badge {
+    background: rgba(20, 184, 166, 0.10);
+    border-color: rgba(20, 184, 166, 0.25);
+    color: #2dd4bf;
+  }
+
+  .sl-disclaimer {
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.20);
+    color: #b45309;
+  }
+  :global(.dark) .sl-disclaimer { color: #fcd34d; }
+
+  .sl-icon-box {
+    background: rgba(5, 150, 105, 0.10);
+    color: #059669;
+  }
+  :global(.dark) .sl-icon-box { color: #2dd4bf; }
+
+  /* foco emerald (sobreescribe el ring indigo por defecto) */
+  .sl-focus:focus {
+    --tw-ring-color: rgba(5, 150, 105, 0.4);
+    border-color: #059669 !important;
+  }
+  .sl-accent { accent-color: #059669; }
+
+  /* tabs salud */
+  .salud-tab { color: #6b7280; }
+  :global(.dark) .salud-tab { color: #9ca3af; }
+  .salud-tab.active {
+    background: #fff;
+    color: #059669;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  :global(.dark) .salud-tab.active {
+    background: rgba(20, 184, 166, 0.15);
+    color: #2dd4bf;
+  }
+
+  /* range slider emerald */
+  .sl-range { accent-color: #059669; height: 6px; }
+
+  /* barras del desglose */
+  .sl-bar {
+    height: 6px;
+    width: 100%;
+    border-radius: 999px;
+    background: rgba(120, 120, 130, 0.12);
+    overflow: hidden;
+  }
+  :global(.dark) .sl-bar { background: rgba(255, 255, 255, 0.07); }
+  .sl-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sl-tip { color: #9ca3af; cursor: help; display: inline-flex; }
+  .bk-row { transition: opacity 0.3s; }
+  .bk-row.is-zero { opacity: 0.45; }
+</style>
+
+<script>
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+
+  const fmt = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
+  const money = (n: number) => fmt.format(Math.round(n));
+
+  // ===== Brackets del impuesto único de 2ª categoría (mensual, en UTM) =====
+  // [límite superior en UTM (Infinity = último), factor, rebaja en UTM]
+  const TRAMOS: [number, number, number][] = [
+    [13.5, 0, 0],
+    [30, 0.04, 0.54],
+    [50, 0.08, 1.74],
+    [70, 0.135, 4.49],
+    [90, 0.23, 11.14],
+    [120, 0.304, 17.80],
+    [310, 0.35, 23.32],
+    [Infinity, 0.40, 38.82],
+  ];
+
+  function impuestoUnicoUTM(baseUTM: number): number {
+    let factor = 0, rebaja = 0;
+    for (const [lim, f, r] of TRAMOS) {
+      if (baseUTM <= lim) { factor = f; rebaja = r; break; }
+    }
+    return Math.max(0, baseUTM * factor - rebaja);
+  }
+
+  // ===== Parseo de inputs numéricos con separadores ====
+  const parseNum = (raw: string): number => {
+    const n = parseInt((raw || '').replace(/[^0-9]/g, ''), 10);
+    return isNaN(n) ? 0 : n;
+  };
+  const groupMiles = (n: number): string => n.toLocaleString('es-CL');
+
+  // ===== Elementos =====
+  const brutoIn = $('#bruto') as HTMLInputElement;
+  const brutoRange = $('#bruto-range') as HTMLInputElement;
+  const afpSelect = $('#afp-select') as HTMLSelectElement;
+  const afpPct = $('#afp-pct') as HTMLInputElement;
+  const saludPct = $('#salud-pct') as HTMLInputElement;
+  const isapreWrap = $('#isapre-pct-wrap');
+  const cesantiaPct = $('#cesantia-pct') as HTMLInputElement;
+  const plazoFijo = $('#plazo-fijo') as HTMLInputElement;
+  const topeIn = $('#tope') as HTMLInputElement;
+  const utmIn = $('#utm') as HTMLInputElement;
+  const saludTabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.salud-tab'));
+
+  let saludMode: 'fonasa' | 'isapre' = 'fonasa';
+  let cesantiaBackup = '0.6';
+
+  function calc() {
+    const bruto = parseNum(brutoIn.value);
+    const tope = Math.max(0, parseNum(topeIn.value)) || Infinity;
+    const utm = Math.max(1, parseNum(utmIn.value));
+    const pAfp = parseFloat(afpPct.value) || 0;
+    const pSalud = saludMode === 'fonasa' ? 7 : (parseFloat(saludPct.value) || 0);
+    const pCes = plazoFijo.checked ? 0 : (parseFloat(cesantiaPct.value) || 0);
+
+    const base = Math.min(bruto, tope);
+    const dAfp = base * pAfp / 100;
+    const dSalud = base * pSalud / 100;
+    const dCes = base * pCes / 100;
+
+    const baseTrib = bruto - (dAfp + dSalud + dCes);
+    const baseTribUTM = baseTrib / utm;
+    const impUTM = impuestoUnicoUTM(Math.max(0, baseTribUTM));
+    const dImp = Math.round(impUTM * utm);
+
+    const liquido = bruto - dAfp - dSalud - dCes - dImp;
+    const totalDesc = dAfp + dSalud + dCes + dImp;
+
+    // ===== Render =====
+    $('#liquido').textContent = money(liquido);
+    const pctLiq = bruto > 0 ? Math.round((liquido / bruto) * 100) : 0;
+    $('#liquido-pct').textContent = `${pctLiq}% del bruto imponible`;
+
+    $('#r-bruto').textContent = money(bruto);
+    $('#r-base-trib').textContent = money(baseTrib);
+    $('#r-total-desc').textContent = '−' + money(totalDesc);
+
+    const items: [string, number, number][] = [
+      ['afp', dAfp, pAfp],
+      ['salud', dSalud, pSalud],
+      ['cesantia', dCes, pCes],
+      ['impuesto', dImp, bruto > 0 ? (dImp / bruto) * 100 : 0],
+    ];
+    const maxDesc = Math.max(dAfp, dSalud, dCes, dImp, 1);
+    for (const [key, val, pct] of items) {
+      $(`#r-${key}`).textContent = '−' + money(val);
+      $(`#p-${key}`).textContent = pct ? `(${pct.toFixed(key === 'impuesto' ? 1 : 2)}%)` : '';
+      ($(`#bar-${key}`) as HTMLElement).style.width = `${(val / maxDesc) * 100}%`;
+      const row = document.querySelector(`.bk-row[data-key="${key}"]`);
+      if (row) row.classList.toggle('is-zero', val <= 0);
+    }
+  }
+
+  // ===== Sincronización input texto <-> range =====
+  function setBruto(n: number, fromRange = false) {
+    if (!fromRange) {
+      const caretEnd = brutoIn.selectionStart === brutoIn.value.length;
+      brutoIn.value = n > 0 ? groupMiles(n) : '';
+      if (caretEnd) brutoIn.setSelectionRange(brutoIn.value.length, brutoIn.value.length);
+    } else {
+      brutoIn.value = groupMiles(n);
+    }
+    brutoRange.value = String(Math.min(n, Number(brutoRange.max)));
+    calc();
+  }
+
+  brutoIn.addEventListener('input', () => setBruto(parseNum(brutoIn.value)));
+  brutoRange.addEventListener('input', () => setBruto(parseNum(brutoRange.value), true));
+
+  // formato miles para tope/UTM
+  [topeIn, utmIn].forEach((el) => {
+    el.addEventListener('input', () => {
+      const n = parseNum(el.value);
+      el.value = n > 0 ? groupMiles(n) : '';
+      calc();
+    });
+  });
+
+  // ===== AFP select <-> pct custom =====
+  afpSelect.addEventListener('change', () => {
+    if (afpSelect.value !== 'custom') {
+      afpPct.value = afpSelect.value;
+    }
+    calc();
+  });
+  afpPct.addEventListener('input', () => {
+    // si el usuario edita a mano, marca "personalizado" salvo que coincida con una opción
+    const match = Array.from(afpSelect.options).find((o) => o.value === afpPct.value);
+    afpSelect.value = match ? match.value : 'custom';
+    calc();
+  });
+
+  // ===== Salud tabs =====
+  function setSalud(mode: 'fonasa' | 'isapre') {
+    saludMode = mode;
+    saludTabs.forEach((t) => {
+      const active = t.dataset.salud === mode;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-checked', String(active));
+    });
+    isapreWrap.classList.toggle('hidden', mode !== 'isapre');
+    calc();
+  }
+  saludTabs.forEach((t) => t.addEventListener('click', () => setSalud(t.dataset.salud as 'fonasa' | 'isapre')));
+  saludPct.addEventListener('input', calc);
+
+  // ===== Cesantía / plazo fijo =====
+  plazoFijo.addEventListener('change', () => {
+    if (plazoFijo.checked) {
+      cesantiaBackup = cesantiaPct.value || '0.6';
+      cesantiaPct.value = '0';
+      cesantiaPct.disabled = true;
+    } else {
+      cesantiaPct.value = cesantiaBackup;
+      cesantiaPct.disabled = false;
+    }
+    calc();
+  });
+  cesantiaPct.addEventListener('input', calc);
+
+  // ===== Init =====
+  setSalud('fonasa');
+  setBruto(1000000, true);
+  calc();
+</script>
