@@ -21,9 +21,11 @@ const description = apiSettings?.site_description || 'Jesús Castillo, programad
 ---
 
 <Layout title={title} description={description}>
+  <!-- Marca "hay JS": permite ocultar elementos animables sin parpadeo. Sin JS todo queda visible. -->
+  <script is:inline>document.documentElement.classList.add('home-js');</script>
   <Header ctaText={apiSettings?.cta_text} ctaUrl={apiSettings?.cta_url} />
   <div class="h-16"></div>
-  <main class="flex flex-col w-full">
+  <main class="flex flex-col w-full overflow-x-clip">
     <AboutMe data={apiAbout} />
     <Experience works={apiWorks} />
     <Gallery projects={apiProjects} />
@@ -31,3 +33,7 @@ const description = apiSettings?.site_description || 'Jesús Castillo, programad
   </main>
   <Footer socials={apiSocials} />
 </Layout>
+
+<script>
+  import '../scripts/home-animations';
+</script>

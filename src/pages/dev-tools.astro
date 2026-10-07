@@ -16,7 +16,7 @@ const tabs = [
 ];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} keywords="formatear JSON, validador JSON, base64, decodificar JWT, URL encode, herramientas para desarrolladores" schema="tool" toolName="Dev Toolkit">
   <Header />
   <div class="h-16"></div>
 
@@ -301,7 +301,7 @@ const tabs = [
 </style>
 
 <script>
-  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+  import { $ } from '../lib/dom';
   const $$ = (s: string) => Array.from(document.querySelectorAll(s));
 
   // ===== Tabs =====

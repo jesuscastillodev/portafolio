@@ -9,7 +9,7 @@ const description = 'Lista de feriados de Chile y calculadora de días hábiles:
 const canonical = 'https://jcastillo.dev/feriados';
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} keywords="feriados chile, feriados 2026, feriados 2027, días hábiles, calculadora de días hábiles, próximo feriado, feriados irrenunciables" schema="tool" toolName="Feriados de Chile y Días Hábiles">
   <Header />
   <div class="h-16"></div>
 
@@ -20,7 +20,7 @@ const canonical = 'https://jcastillo.dev/feriados';
       <div class="relative max-w-4xl mx-auto" data-animate="fadeInUp">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cl-blue/5 dark:bg-cl-blue/10 border border-cl-blue/15 dark:border-cl-blue/25 mb-5">
           <LucideIcon name="CalendarDays" size={14} class="cl-blue-text" />
-          <span class="text-xs font-semibold cl-blue-text tracking-wider uppercase">Feriados de Chile · 2026</span>
+          <span class="text-xs font-semibold cl-blue-text tracking-wider uppercase">Feriados de Chile · <span id="hero-years"></span></span>
         </div>
         <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
           Feriados y <br><span class="cl-gradient-text">días hábiles</span>
@@ -96,6 +96,7 @@ const canonical = 'https://jcastillo.dev/feriados';
               <input id="a-end" type="date" class="cl-date w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-cl-blue/40 focus:border-cl-blue transition-all" />
             </div>
           </div>
+          <p id="a-warn" class="is-hidden text-sm cl-red-text mb-4 flex items-start gap-2" role="alert"><LucideIcon name="Info" size={15} /> <span></span></p>
           <p id="a-error" class="is-hidden text-sm cl-red-text mb-4 flex items-center gap-2"><LucideIcon name="Info" size={15} /> <span></span></p>
           <div id="a-results" class="is-hidden grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="stat-card"><p class="stat-num" id="a-total">0</p><p class="stat-label">Días totales</p></div>
@@ -119,6 +120,7 @@ const canonical = 'https://jcastillo.dev/feriados';
             </div>
           </div>
           <p class="text-xs text-gray-400 mb-4">Tip: usa un número negativo para retroceder días hábiles.</p>
+          <p id="b-warn" class="is-hidden text-sm cl-red-text mb-4 flex items-start gap-2" role="alert"><LucideIcon name="Info" size={15} /> <span></span></p>
           <p id="b-error" class="is-hidden text-sm cl-red-text mb-4 flex items-center gap-2"><LucideIcon name="Info" size={15} /> <span></span></p>
           <div id="b-results" class="is-hidden">
             <div class="cl-result-card">
@@ -132,13 +134,13 @@ const canonical = 'https://jcastillo.dev/feriados';
       </div>
     </section>
 
-    <!-- ===== LISTA DE FERIADOS 2026 ===== -->
+    <!-- ===== LISTA DE FERIADOS ===== -->
     <section class="px-6 pb-20">
       <div class="max-w-4xl mx-auto" data-animate="fadeInUp">
         <div class="flex items-center justify-between gap-3 mb-5">
           <div class="flex items-center gap-3">
             <span class="w-10 h-10 rounded-xl flex items-center justify-center cl-red-text bg-cl-red/10"><LucideIcon name="Calendar" size={20} /></span>
-            <h2 class="text-xl font-bold tracking-tight">Feriados de Chile 2026</h2>
+            <h2 class="text-xl font-bold tracking-tight">Feriados de Chile</h2>
           </div>
           <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cl-red/10 cl-red-text text-xs font-semibold">
             <span class="w-2 h-2 rounded-full bg-cl-red"></span> Irrenunciable
@@ -258,28 +260,54 @@ const canonical = 'https://jcastillo.dev/feriados';
 </style>
 
 <script>
-  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+  import { $ } from '../lib/dom';
 
-  // ====== Datos: Feriados Chile 2026 ======
+  // ====== Datos: feriados nacionales de Chile, por año ======
+  // 2026 y 2027: calendario oficial (Semana Santa 26-27 mar; San Pedro y San Pablo
+  // trasladado al lunes 28 jun; Encuentro de Dos Mundos trasladado al lunes 11 oct; Pueblos Indígenas 20 jun por solsticio).
+  // Fuentes: feriados.cl, calendariochile.com. No incluye feriados regionales (7 jun Arica, 20 ago Ñuble).
+  // Para agregar un año nuevo, basta con añadir una clave a este mapa.
   interface Feriado { fecha: string; nombre: string; irrenunciable: boolean; }
-  const FERIADOS: Feriado[] = [
-    { fecha: '2026-01-01', nombre: 'Año Nuevo', irrenunciable: true },
-    { fecha: '2026-04-03', nombre: 'Viernes Santo', irrenunciable: false },
-    { fecha: '2026-04-04', nombre: 'Sábado Santo', irrenunciable: false },
-    { fecha: '2026-05-01', nombre: 'Día del Trabajo', irrenunciable: true },
-    { fecha: '2026-05-21', nombre: 'Día de las Glorias Navales', irrenunciable: false },
-    { fecha: '2026-06-21', nombre: 'Día de los Pueblos Indígenas', irrenunciable: false },
-    { fecha: '2026-06-29', nombre: 'San Pedro y San Pablo', irrenunciable: false },
-    { fecha: '2026-07-16', nombre: 'Virgen del Carmen', irrenunciable: false },
-    { fecha: '2026-08-15', nombre: 'Asunción de la Virgen', irrenunciable: false },
-    { fecha: '2026-09-18', nombre: 'Independencia Nacional', irrenunciable: true },
-    { fecha: '2026-09-19', nombre: 'Día de las Glorias del Ejército', irrenunciable: true },
-    { fecha: '2026-10-12', nombre: 'Encuentro de Dos Mundos', irrenunciable: false },
-    { fecha: '2026-10-31', nombre: 'Día de las Iglesias Evangélicas', irrenunciable: false },
-    { fecha: '2026-11-01', nombre: 'Día de Todos los Santos', irrenunciable: false },
-    { fecha: '2026-12-08', nombre: 'Inmaculada Concepción', irrenunciable: false },
-    { fecha: '2026-12-25', nombre: 'Navidad', irrenunciable: true },
-  ];
+  const FERIADOS_POR_ANIO: Record<number, Feriado[]> = {
+    2026: [
+      { fecha: '2026-01-01', nombre: 'Año Nuevo', irrenunciable: true },
+      { fecha: '2026-04-03', nombre: 'Viernes Santo', irrenunciable: false },
+      { fecha: '2026-04-04', nombre: 'Sábado Santo', irrenunciable: false },
+      { fecha: '2026-05-01', nombre: 'Día del Trabajo', irrenunciable: true },
+      { fecha: '2026-05-21', nombre: 'Día de las Glorias Navales', irrenunciable: false },
+      { fecha: '2026-06-21', nombre: 'Día de los Pueblos Indígenas', irrenunciable: false },
+      { fecha: '2026-06-29', nombre: 'San Pedro y San Pablo', irrenunciable: false },
+      { fecha: '2026-07-16', nombre: 'Virgen del Carmen', irrenunciable: false },
+      { fecha: '2026-08-15', nombre: 'Asunción de la Virgen', irrenunciable: false },
+      { fecha: '2026-09-18', nombre: 'Independencia Nacional', irrenunciable: true },
+      { fecha: '2026-09-19', nombre: 'Día de las Glorias del Ejército', irrenunciable: true },
+      { fecha: '2026-10-12', nombre: 'Encuentro de Dos Mundos', irrenunciable: false },
+      { fecha: '2026-10-31', nombre: 'Día de las Iglesias Evangélicas', irrenunciable: false },
+      { fecha: '2026-11-01', nombre: 'Día de Todos los Santos', irrenunciable: false },
+      { fecha: '2026-12-08', nombre: 'Inmaculada Concepción', irrenunciable: false },
+      { fecha: '2026-12-25', nombre: 'Navidad', irrenunciable: true },
+    ],
+    2027: [
+      { fecha: '2027-01-01', nombre: 'Año Nuevo', irrenunciable: true },
+      { fecha: '2027-03-26', nombre: 'Viernes Santo', irrenunciable: false },
+      { fecha: '2027-03-27', nombre: 'Sábado Santo', irrenunciable: false },
+      { fecha: '2027-05-01', nombre: 'Día del Trabajo', irrenunciable: true },
+      { fecha: '2027-05-21', nombre: 'Día de las Glorias Navales', irrenunciable: false },
+      { fecha: '2027-06-20', nombre: 'Día de los Pueblos Indígenas', irrenunciable: false },
+      { fecha: '2027-06-28', nombre: 'San Pedro y San Pablo', irrenunciable: false },
+      { fecha: '2027-07-16', nombre: 'Virgen del Carmen', irrenunciable: false },
+      { fecha: '2027-08-15', nombre: 'Asunción de la Virgen', irrenunciable: false },
+      { fecha: '2027-09-18', nombre: 'Independencia Nacional', irrenunciable: true },
+      { fecha: '2027-09-19', nombre: 'Día de las Glorias del Ejército', irrenunciable: true },
+      { fecha: '2027-10-11', nombre: 'Encuentro de Dos Mundos', irrenunciable: false },
+      { fecha: '2027-10-31', nombre: 'Día de las Iglesias Evangélicas', irrenunciable: false },
+      { fecha: '2027-11-01', nombre: 'Día de Todos los Santos', irrenunciable: false },
+      { fecha: '2027-12-08', nombre: 'Inmaculada Concepción', irrenunciable: false },
+      { fecha: '2027-12-25', nombre: 'Navidad', irrenunciable: true },
+    ],
+  };
+  const ANIOS_CON_DATOS = Object.keys(FERIADOS_POR_ANIO).map(Number).sort((a, b) => a - b);
+  const FERIADOS: Feriado[] = ANIOS_CON_DATOS.flatMap((y) => FERIADOS_POR_ANIO[y]);
 
   // ====== Helpers de fecha (SIEMPRE en hora local) ======
   // Construye un Date local a partir de un ISO 'YYYY-MM-DD' (evita el off-by-one de UTC).
@@ -316,6 +344,21 @@ const canonical = 'https://jcastillo.dev/feriados';
     return !isWeekend(d) && !isHoliday(d);
   }
 
+  // Años sin datos de feriados dentro de un rango de años (inclusive).
+  function aniosSinDatos(desde: number, hasta: number): number[] {
+    const out: number[] = [];
+    for (let y = Math.min(desde, hasta); y <= Math.max(desde, hasta); y++) {
+      if (!FERIADOS_POR_ANIO[y]) out.push(y);
+    }
+    return out;
+  }
+  function setWarn(id: string, years: number[]) {
+    const el = $(id);
+    if (years.length === 0) { el.classList.add('is-hidden'); return; }
+    el.querySelector('span')!.textContent = `No hay feriados cargados para ${years.join(', ')}: el resultado no descuenta feriados de ese año. Años con datos: ${ANIOS_CON_DATOS.join(', ')}.`;
+    el.classList.remove('is-hidden');
+  }
+
   const DOW = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   const DOW_SHORT = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
   const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -335,8 +378,8 @@ const canonical = 'https://jcastillo.dev/feriados';
 
     const body = $('#next-holiday-body');
     if (upcoming.length === 0) {
-      body.innerHTML = `<p class="text-lg font-bold">No quedan feriados registrados en 2026.</p>
-        <p class="text-sm text-gray-400 mt-1">Revisa <a href="https://www.feriados.cl" target="_blank" rel="noopener noreferrer" class="cl-blue-text font-semibold underline">feriados.cl</a> para el próximo año.</p>`;
+      body.innerHTML = `<p class="text-lg font-bold">No quedan feriados registrados.</p>
+        <p class="text-sm text-gray-400 mt-1">Revisa <a href="https://www.feriados.cl" target="_blank" rel="noopener noreferrer" class="cl-blue-text font-semibold underline">feriados.cl</a> para los próximos años.</p>`;
       return;
     }
     const next = upcoming[0];
@@ -384,20 +427,26 @@ const canonical = 'https://jcastillo.dev/feriados';
           <p class="text-sm text-gray-400">${reason}</p>
         </div>
       </div>
-      <p class="text-xs text-gray-400 mt-3">${cap(fmtLong(t))}</p>`;
+      <p class="text-xs text-gray-400 mt-3">${cap(fmtLong(t))}</p>
+      ${FERIADOS_POR_ANIO[t.getFullYear()] ? '' : `<p class="text-xs cl-red-text mt-2" role="alert">Sin datos de feriados para ${t.getFullYear()}: solo se considera fin de semana.</p>`}`;
   }
 
   // ====== Lista de feriados ======
   function renderList() {
     const t = today();
     const list = $('#holiday-list');
+    let lastYear = 0;
     list.innerHTML = FERIADOS.map((f) => {
       const d = localDate(f.fecha);
+      const yearHead = d.getFullYear() !== lastYear
+        ? `<h3 class="sm:col-span-2 text-sm font-bold text-gray-400 uppercase tracking-wider ${lastYear ? 'mt-4' : ''}">${d.getFullYear()}</h3>`
+        : '';
+      lastYear = d.getFullYear();
       const past = daysBetween(t, d) < 0;
       const irrenBadge = f.irrenunciable
         ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cl-red/10 cl-red-text text-[11px] font-semibold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-cl-red"></span>Irrenunciable</span>`
         : '';
-      return `<div class="holiday-row flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 ${past ? 'holiday-past' : ''}">
+      return `${yearHead}<div class="holiday-row flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 ${past ? 'holiday-past' : ''}">
         <div class="day-chip ${f.irrenunciable ? 'irren' : ''}">
           <span class="text-base font-black">${d.getDate()}</span>
           <span class="text-[10px] font-bold tracking-wide">${MONTHS_SHORT[d.getMonth()]}</span>
@@ -435,7 +484,7 @@ const canonical = 'https://jcastillo.dev/feriados';
     const hint = $('#a-hint');
 
     if (!startVal || !endVal) {
-      err.classList.add('is-hidden'); results.classList.add('is-hidden'); hint.classList.remove('is-hidden');
+      err.classList.add('is-hidden'); results.classList.add('is-hidden'); hint.classList.remove('is-hidden'); $('#a-warn').classList.add('is-hidden');
       return;
     }
     let start = localDate(startVal);
@@ -454,6 +503,7 @@ const canonical = 'https://jcastillo.dev/feriados';
       cur.setDate(cur.getDate() + 1);
     }
 
+    setWarn('#a-warn', aniosSinDatos(start.getFullYear(), end.getFullYear()));
     err.classList.add('is-hidden');
     hint.classList.add('is-hidden');
     results.classList.remove('is-hidden');
@@ -475,7 +525,7 @@ const canonical = 'https://jcastillo.dev/feriados';
     const hint = $('#b-hint');
 
     if (!startVal || daysVal === '') {
-      err.classList.add('is-hidden'); results.classList.add('is-hidden'); hint.classList.remove('is-hidden');
+      err.classList.add('is-hidden'); results.classList.add('is-hidden'); hint.classList.remove('is-hidden'); $('#b-warn').classList.add('is-hidden');
       return;
     }
     const n = parseInt(daysVal, 10);
@@ -499,6 +549,7 @@ const canonical = 'https://jcastillo.dev/feriados';
       if (isBusinessDay(cur)) remaining--;
     }
 
+    setWarn('#b-warn', aniosSinDatos(start.getFullYear(), cur.getFullYear()));
     err.classList.add('is-hidden');
     hint.classList.add('is-hidden');
     results.classList.remove('is-hidden');
@@ -519,6 +570,9 @@ const canonical = 'https://jcastillo.dev/feriados';
     const endDefault = new Date(t.getFullYear(), t.getMonth() + 1, t.getDate());
     ($('#a-end') as HTMLInputElement).value = toISO(endDefault);
     ($('#b-start') as HTMLInputElement).value = toISO(t);
+
+    const heroYears = $('#hero-years');
+    heroYears.textContent = ANIOS_CON_DATOS.length > 1 ? `${ANIOS_CON_DATOS[0]}–${ANIOS_CON_DATOS[ANIOS_CON_DATOS.length - 1]}` : String(ANIOS_CON_DATOS[0]);
 
     renderNextHoliday();
     renderToday();

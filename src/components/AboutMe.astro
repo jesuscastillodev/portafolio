@@ -10,40 +10,46 @@ const { data } = Astro.props;
 const yearsExp = new Date().getFullYear() - 2014;
 ---
 
-<section class="relative min-h-[90vh] flex items-center py-20 lg:py-24 px-6 overflow-hidden mesh-gradient">
+<section class="relative min-h-[90vh] flex items-center py-20 lg:py-24 px-6 overflow-hidden mesh-gradient" data-hero>
   <div class="absolute inset-0 dot-pattern opacity-40"></div>
+  <!-- Dots que se iluminan cerca del cursor (solo puntero fino) -->
+  <div class="hero-dots-hot absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+  <div class="hero-spot absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
   <div class="relative max-w-6xl mx-auto w-full">
-    <div class="flex flex-col items-center" data-animate="fadeInUp">
+    <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-14 lg:gap-12 items-center">
       <!-- Content -->
-      <div class="flex-1 text-center lg:text-left">
-        <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6">
+      <div class="text-center lg:text-left">
+        <p class="font-mono text-sm text-gray-400 dark:text-gray-500 mb-5" data-reveal="hero" data-type-line>
+          <span class="text-emerald-500 dark:text-emerald-400">~</span> <span class="text-primary">$</span> whoami
+        </p>
+        <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6" data-reveal="hero">
           Hola, soy<br>
-          <span class="gradient-text">Jesús Castillo</span>
+          <span class="gradient-text"><span class="inline-block whitespace-nowrap" data-scramble>Jesús</span> <span class="inline-block whitespace-nowrap" data-scramble>Castillo</span></span>
         </h1>
 
-        <p class="text-lg lg:text-xl text-gray-500 dark:text-gray-400 max-w-xl mb-10 leading-relaxed font-light">
+        <p class="text-lg lg:text-xl text-gray-500 dark:text-gray-400 max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed font-light" data-reveal="hero">
           Creo soluciones digitales robustas y escalables. Desde APIs de alto rendimiento hasta interfaces intuitivas que generan impacto real.
         </p>
 
         <!-- Stats -->
-        <div class="flex flex-wrap gap-10 justify-center lg:justify-start mb-10">
-          <div>
-            <p class="text-4xl font-black tracking-tight gradient-text">{yearsExp}+</p>
+        <div class="flex flex-wrap gap-x-10 gap-y-6 justify-center lg:justify-start mb-10">
+          <div data-reveal="hero">
+            <p class="text-4xl font-black tracking-tight gradient-text tabular-nums" data-count={yearsExp}>{yearsExp}+</p>
             <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Años</p>
           </div>
-          <div>
+          <div data-reveal="hero">
             <p class="text-4xl font-black tracking-tight gradient-text">Full Stack</p>
             <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Especialidad</p>
           </div>
-          <div>
-            <p class="text-4xl font-black tracking-tight gradient-text">3+</p>
+          <div data-reveal="hero">
+            <p class="text-4xl font-black tracking-tight gradient-text tabular-nums" data-count="3">3+</p>
             <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Empresas</p>
           </div>
         </div>
 
         <!-- CTA buttons -->
-        <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+        <div class="flex flex-wrap gap-4 justify-center lg:justify-start" data-reveal="hero">
           <a
             href="mailto:contacto@jcastillo.dev"
             class="group/btn inline-flex items-center gap-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-2xl px-7 py-3.5 transition-all duration-300 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5"
@@ -60,7 +66,38 @@ const yearsExp = new Date().getFullYear() - 2014;
             GitHub
           </a>
         </div>
+      </div>
 
+      <!-- Editor / terminal card. El texto final esta en el HTML; el JS solo lo revela. -->
+      <div class="relative w-full max-w-[34rem] mx-auto lg:mx-0 lg:ml-auto" data-reveal="hero" data-editor>
+        <div class="editor-glow absolute -inset-px rounded-[1.4rem] pointer-events-none" aria-hidden="true"></div>
+        <div class="editor relative rounded-2xl overflow-hidden font-mono text-[11.5px] sm:text-[13px] leading-[1.75]">
+          <div class="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.03]">
+            <span class="flex gap-1.5" aria-hidden="true">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-400/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></span>
+            </span>
+            <span class="ml-2 text-[11px] text-gray-400 px-2.5 py-0.5 rounded-md bg-white/[0.05]">jesus.ts</span>
+            <span class="ml-auto text-[10px] text-gray-500 hidden sm:inline" aria-hidden="true">TypeScript</span>
+          </div>
+
+          <div class="code px-4 py-4 sm:px-5 overflow-hidden" data-code>
+            <div class="code-line"><span class="tok-k">const</span> <span class="tok-v">jesus</span> <span class="tok-o">=</span> <span class="tok-p">{'{'}</span></div>
+            <div class="code-line">  <span class="tok-prop">rol</span><span class="tok-p">:</span> <span class="tok-s">'Full Stack'</span><span class="tok-p">,</span></div>
+            <div class="code-line">  <span class="tok-prop">stack</span><span class="tok-p">:</span> <span class="tok-p">[</span><span class="tok-s">'React'</span><span class="tok-p">,</span> <span class="tok-s">'Laravel'</span><span class="tok-p">,</span> <span class="tok-s">'Node'</span><span class="tok-p">],</span></div>
+            <div class="code-line">  <span class="tok-prop">años</span><span class="tok-p">:</span> <span class="tok-n">{yearsExp}</span><span class="tok-p">,</span></div>
+            <div class="code-line">  <span class="tok-prop">pais</span><span class="tok-p">:</span> <span class="tok-s">'Chile'</span><span class="tok-p">,</span></div>
+            <div class="code-line"><span class="tok-p">{'}'}</span><span class="tok-p">;</span></div>
+          </div>
+
+          <div class="term px-4 py-4 sm:px-5 border-t border-white/[0.06] bg-black/20 overflow-hidden" data-term>
+            <div class="term-line"><span class="tok-ok">$</span> npm run build</div>
+            <div class="term-line text-gray-400"><span class="tok-ok">✓</span> {yearsExp}+ años · 3 empresas</div>
+            <div class="term-line text-gray-400"><span class="tok-ok">✓</span> 0 errores · 0 warnings</div>
+            <div class="term-line text-gray-300"><span class="tok-hot">●</span> listo para producción</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -9,7 +9,7 @@ const description = 'Herramienta gratuita de sorteos al azar: carga participante
 const canonical = 'https://jcastillo.dev/sorteos';
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} keywords="ruleta de sorteos, sorteo online, sortear desde excel, sorteo al azar, ruleta aleatoria, sortear ganadores" schema="tool" toolName="Ruleta de Sorteos">
   <Header />
   <div class="h-16"></div>
 
@@ -178,7 +178,7 @@ const canonical = 'https://jcastillo.dev/sorteos';
     display: inline-flex; align-items: center; gap: 4px;
     font-size: 12px; padding: 3px 8px; border-radius: 8px;
     background: rgba(99,102,241,.08); color: var(--color-text-muted);
-    font-family: 'JetBrains Mono', monospace; max-width: 100%;
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace; max-width: 100%;
   }
   :global(.dark) .chip-item { color: #cbd5e1; }
   .chip-item button { color: #9ca3af; line-height: 1; }
@@ -190,6 +190,7 @@ const canonical = 'https://jcastillo.dev/sorteos';
 
 <script>
   import confetti from 'canvas-confetti';
+  import { randomInt } from '../lib/random';
 
   // ====== Estado ======
   let participants: string[] = [];
@@ -201,7 +202,7 @@ const canonical = 'https://jcastillo.dev/sorteos';
   let targetWinners = 1;
   let roundsDone = 0;
 
-  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+  import { $ } from '../lib/dom';
   const palette = ['#6366f1','#8b5cf6','#06b6d4','#f59e0b','#ec4899','#10b981','#3b82f6','#f43f5e','#a855f7','#14b8a6'];
 
   // ====== Tabs ======
@@ -421,7 +422,7 @@ const canonical = 'https://jcastillo.dev/sorteos';
     const norm = (x: number) => ((x % TAU) + TAU) % TAU;
     const n = pool.length;
     const seg = TAU / n;
-    const k = Math.floor(Math.random() * n);              // ganador uniforme
+    const k = randomInt(n);                               // ganador uniforme (CSPRNG, sin sesgo)
     const jitter = (Math.random() - 0.5) * seg * 0.7;     // dentro del segmento k
     const spins = 6 + Math.floor(Math.random() * 3);
     // queremos rotación final Rf tal que el centro del segmento k quede bajo el puntero (ángulo POINTER)

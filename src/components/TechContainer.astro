@@ -24,7 +24,7 @@ const titleLower = title.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, 
 
 <div
   class="flip-card cursor-pointer"
-  data-animate="fadeInUp"
+  data-reveal="tech"
   data-flipped="false"
 >
   <div class="flip-card-inner">
@@ -42,7 +42,8 @@ const titleLower = title.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, 
           <span class="hidden sm:inline">Click para terminal</span>
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-2" data-animate-stagger>
+      <p class="font-mono text-[11px] text-gray-400 dark:text-gray-500 -mt-3 mb-4 truncate" data-type-line aria-hidden="true"><span class="text-purple-500 dark:text-purple-400">import</span> tools <span class="text-purple-500 dark:text-purple-400">from</span> <span class="text-amber-600 dark:text-amber-400">"~/{titleLower}"</span></p>
+      <div class="grid grid-cols-3 gap-2" data-tools>
         {tools.map((tool) =>
           tool.learning ? (
             <ToolLearning name={tool.name} iconSlug={tool.iconSlug} />

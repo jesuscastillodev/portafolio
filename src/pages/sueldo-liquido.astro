@@ -8,6 +8,11 @@ const title = 'Calculadora de Sueldo Líquido Chile — estimación con AFP, sal
 const description = 'Calcula tu sueldo líquido en Chile a partir del bruto imponible: descuentos de AFP, salud, seguro de cesantía e impuesto único. Parámetros editables. Estimación referencial.';
 const canonical = 'https://jcastillo.dev/sueldo-liquido';
 
+// Comisiones AFP (10% obligatorio + comisión de administración), en % de la remuneración imponible.
+// Fuente: Superintendencia de Pensiones (spensiones.cl), tabla de comisiones por depósito de cotizaciones
+// (vigentes desde octubre 2025; AFP Uno ajustó de 0,46% a 0,49%, ver afphabitat.cl/por-que-habitat/comisiones-habitat).
+// Al cambiar estos valores, actualiza también `comisionesVigencia`.
+const comisionesVigencia = 'octubre 2025 (consulta oct. 2026)';
 const afps = [
   { name: 'Capital', pct: 11.44 },
   { name: 'Cuprum', pct: 11.44 },
@@ -19,7 +24,7 @@ const afps = [
 ];
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} keywords="sueldo líquido chile, calculadora sueldo líquido, descuentos AFP, impuesto único segunda categoría, seguro de cesantía, tope imponible" schema="tool" toolName="Calculadora de Sueldo Líquido">
   <Header />
   <div class="h-16"></div>
 
@@ -96,13 +101,15 @@ const afps = [
               </div>
             </div>
 
+            <p class="-mt-3 mb-6 text-xs text-gray-400">Comisiones AFP vigentes desde {comisionesVigencia}. Fuente: <a href="https://www.spensiones.cl" target="_blank" rel="noopener noreferrer" class="underline">spensiones.cl</a>.</p>
+
             <!-- Salud -->
             <div class="mb-6">
               <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Salud</span>
               <div class="flex flex-wrap items-center gap-3">
-                <div class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-white/5" role="radiogroup" aria-label="Tipo de salud">
-                  <button id="salud-fonasa" data-salud="fonasa" type="button" class="salud-tab text-sm font-semibold px-4 py-2 rounded-lg transition-all" role="radio" aria-checked="true">Fonasa (7%)</button>
-                  <button id="salud-isapre" data-salud="isapre" type="button" class="salud-tab text-sm font-semibold px-4 py-2 rounded-lg transition-all" role="radio" aria-checked="false">Isapre</button>
+                <div id="salud-group" class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-white/5" role="radiogroup" aria-label="Tipo de salud">
+                  <button id="salud-fonasa" data-salud="fonasa" type="button" class="salud-tab text-sm font-semibold px-4 py-2 rounded-lg transition-all" role="radio" aria-checked="true" tabindex="0">Fonasa (7%)</button>
+                  <button id="salud-isapre" data-salud="isapre" type="button" class="salud-tab text-sm font-semibold px-4 py-2 rounded-lg transition-all" role="radio" aria-checked="false" tabindex="-1">Isapre</button>
                 </div>
                 <div id="isapre-pct-wrap" class="relative hidden">
                   <input id="salud-pct" type="number" step="0.1" min="0" max="30" value="8.0"
@@ -130,13 +137,13 @@ const afps = [
               <p class="mt-2 text-xs text-gray-400">Contrato indefinido: 0,6% trabajador. A plazo fijo: lo paga el empleador.</p>
             </div>
 
-            <!-- Tope y UTM -->
+            <!-- UF / UTM -->
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
-                <label for="tope" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tope imponible (CLP)</label>
+                <label for="uf" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Valor UF (CLP)</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">$</span>
-                  <input id="tope" type="text" inputmode="numeric" value="3.000.000"
+                  <input id="uf" type="text" inputmode="decimal" autocomplete="off" value="39.800"
                     class="w-full pl-8 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" />
                 </div>
               </div>
@@ -144,14 +151,38 @@ const afps = [
                 <label for="utm" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Valor UTM (CLP)</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">$</span>
-                  <input id="utm" type="text" inputmode="numeric" value="68.000"
+                  <input id="utm" type="text" inputmode="decimal" autocomplete="off" value="71.000"
                     class="w-full pl-8 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" />
+                </div>
+              </div>
+            </div>
+            <p id="indic-note" class="mt-3 text-xs text-gray-400 flex items-start gap-1.5" aria-live="polite">
+              <LucideIcon name="Info" size={13} class="shrink-0 mt-0.5" />
+              <span>Cargando UF y UTM del día…</span>
+            </p>
+
+            <!-- Topes en UF -->
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <div>
+                <label for="tope-afp" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tope AFP y salud (UF)</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">UF</span>
+                  <input id="tope-afp" type="text" inputmode="decimal" autocomplete="off" value="90,0"
+                    class="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" />
+                </div>
+              </div>
+              <div>
+                <label for="tope-ces" class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tope seguro de cesantía (UF)</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">UF</span>
+                  <input id="tope-ces" type="text" inputmode="decimal" autocomplete="off" value="135,2"
+                    class="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 font-mono font-bold text-sm focus:outline-none focus:ring-2 sl-focus transition-all" />
                 </div>
               </div>
             </div>
             <p class="mt-3 text-xs text-gray-400 flex items-start gap-1.5">
               <LucideIcon name="Info" size={13} class="shrink-0 mt-0.5" />
-              Valores por defecto aproximados (placeholder). Reemplázalos por los oficiales vigentes para mayor precisión.
+              <span>Topes imponibles 2026 según la Superintendencia de Pensiones: 90 UF (AFP, salud y mutual) y 135,2 UF (seguro de cesantía). Se reajustan cada enero; son editables. <span id="tope-clp" class="font-mono"></span></span>
             </p>
           </div>
         </div>
@@ -318,10 +349,10 @@ const afps = [
 </style>
 
 <script>
-  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+  import { $ } from '../lib/dom';
+  import { fmtCLP, fmtNum, parseNum, parseIntDigits, groupMiles } from '../lib/format';
 
-  const fmt = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
-  const money = (n: number) => fmt.format(Math.round(n));
+  const money = (n: number) => fmtCLP(Math.round(n));
 
   // ===== Brackets del impuesto único de 2ª categoría (mensual, en UTM) =====
   // [límite superior en UTM (Infinity = último), factor, rebaja en UTM]
@@ -344,13 +375,6 @@ const afps = [
     return Math.max(0, baseUTM * factor - rebaja);
   }
 
-  // ===== Parseo de inputs numéricos con separadores ====
-  const parseNum = (raw: string): number => {
-    const n = parseInt((raw || '').replace(/[^0-9]/g, ''), 10);
-    return isNaN(n) ? 0 : n;
-  };
-  const groupMiles = (n: number): string => n.toLocaleString('es-CL');
-
   // ===== Elementos =====
   const brutoIn = $('#bruto') as HTMLInputElement;
   const brutoRange = $('#bruto-range') as HTMLInputElement;
@@ -360,25 +384,34 @@ const afps = [
   const isapreWrap = $('#isapre-pct-wrap');
   const cesantiaPct = $('#cesantia-pct') as HTMLInputElement;
   const plazoFijo = $('#plazo-fijo') as HTMLInputElement;
-  const topeIn = $('#tope') as HTMLInputElement;
+  const ufIn = $('#uf') as HTMLInputElement;
   const utmIn = $('#utm') as HTMLInputElement;
+  const topeAfpIn = $('#tope-afp') as HTMLInputElement;
+  const topeCesIn = $('#tope-ces') as HTMLInputElement;
   const saludTabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.salud-tab'));
 
   let saludMode: 'fonasa' | 'isapre' = 'fonasa';
   let cesantiaBackup = '0.6';
 
   function calc() {
-    const bruto = parseNum(brutoIn.value);
-    const tope = Math.max(0, parseNum(topeIn.value)) || Infinity;
+    const bruto = parseIntDigits(brutoIn.value);
+    const uf = Math.max(1, parseNum(ufIn.value));
+    // Topes expresados en UF → CLP. Si el campo queda vacío o en 0 se interpreta como "sin tope".
+    const topeAfpUF = parseNum(topeAfpIn.value);
+    const topeCesUF = parseNum(topeCesIn.value);
+    const topeAfp = topeAfpUF > 0 ? topeAfpUF * uf : Infinity;
+    const topeCes = topeCesUF > 0 ? topeCesUF * uf : Infinity;
+    $('#tope-clp').textContent = `(≈ ${topeAfpUF > 0 ? money(topeAfp) : 'sin tope'} y ${topeCesUF > 0 ? money(topeCes) : 'sin tope'})`;
     const utm = Math.max(1, parseNum(utmIn.value));
     const pAfp = parseFloat(afpPct.value) || 0;
     const pSalud = saludMode === 'fonasa' ? 7 : (parseFloat(saludPct.value) || 0);
     const pCes = plazoFijo.checked ? 0 : (parseFloat(cesantiaPct.value) || 0);
 
-    const base = Math.min(bruto, tope);
+    const base = Math.min(bruto, topeAfp);        // AFP y salud
+    const baseCes = Math.min(bruto, topeCes);     // seguro de cesantía (tope propio, más alto)
     const dAfp = base * pAfp / 100;
     const dSalud = base * pSalud / 100;
-    const dCes = base * pCes / 100;
+    const dCes = baseCes * pCes / 100;
 
     const baseTrib = bruto - (dAfp + dSalud + dCes);
     const baseTribUTM = baseTrib / utm;
@@ -426,17 +459,49 @@ const afps = [
     calc();
   }
 
-  brutoIn.addEventListener('input', () => setBruto(parseNum(brutoIn.value)));
-  brutoRange.addEventListener('input', () => setBruto(parseNum(brutoRange.value), true));
+  brutoIn.addEventListener('input', () => setBruto(parseIntDigits(brutoIn.value)));
+  brutoRange.addEventListener('input', () => setBruto(parseIntDigits(brutoRange.value), true));
 
-  // formato miles para tope/UTM
-  [topeIn, utmIn].forEach((el) => {
-    el.addEventListener('input', () => {
-      const n = parseNum(el.value);
-      el.value = n > 0 ? groupMiles(n) : '';
-      calc();
-    });
+  // UF / UTM / topes: decimales con coma; se formatean al salir del campo para no pelear con el cursor
+  let indicadoresEditados = false;
+  [ufIn, utmIn].forEach((el) => {
+    el.addEventListener('input', () => { indicadoresEditados = true; calc(); });
+    el.addEventListener('blur', () => { const n = parseNum(el.value); if (n > 0) el.value = fmtNum(n, el === ufIn ? 2 : 0); });
   });
+  [topeAfpIn, topeCesIn].forEach((el) => el.addEventListener('input', calc));
+
+  // ===== UF y UTM del día (mindicador.cl, mismo origen de datos que /indicadores) =====
+  const fmtFecha = (iso: string) => {
+    const d = new Date(iso);
+    const p = (n: number) => String(n).padStart(2, '0');
+    // las fechas de mindicador vienen en UTC a medianoche; usamos getUTC* para no correr el día
+    return `${p(d.getUTCDate())}-${p(d.getUTCMonth() + 1)}-${d.getUTCFullYear()}`;
+  };
+  async function cargarIndicadores() {
+    const note = $('#indic-note').querySelector('span')!;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 6000);
+    try {
+      const res = await fetch('https://mindicador.cl/api', { signal: ctrl.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const uf = data?.uf, utm = data?.utm;
+      if (!uf || !(uf.valor > 0) || !utm || !(utm.valor > 0)) throw new Error('Respuesta incompleta');
+      if (!indicadoresEditados) {
+        ufIn.value = fmtNum(uf.valor, 2);
+        utmIn.value = fmtNum(utm.valor, 0);
+        calc();
+        note.textContent = `UF ${fmtCLP(uf.valor)} al ${fmtFecha(uf.fecha)} · UTM ${fmtCLP(utm.valor)} (${fmtFecha(utm.fecha)}) · fuente mindicador.cl. Puedes editarlos.`;
+      } else {
+        note.textContent = 'Usando los valores de UF y UTM que ingresaste (el valor del día no se aplicó para no pisar tu edición).';
+      }
+    } catch (e) {
+      console.error(e);
+      note.textContent = 'Valores aproximados de UF y UTM (no se pudo consultar mindicador.cl). Ingresa los vigentes para mayor precisión.';
+    } finally {
+      clearTimeout(timer);
+    }
+  }
 
   // ===== AFP select <-> pct custom =====
   afpSelect.addEventListener('change', () => {
@@ -459,11 +524,26 @@ const afps = [
       const active = t.dataset.salud === mode;
       t.classList.toggle('active', active);
       t.setAttribute('aria-checked', String(active));
+      t.tabIndex = active ? 0 : -1;
     });
     isapreWrap.classList.toggle('hidden', mode !== 'isapre');
     calc();
   }
   saludTabs.forEach((t) => t.addEventListener('click', () => setSalud(t.dataset.salud as 'fonasa' | 'isapre')));
+  // Radiogroup accesible: roving tabindex + flechas (Home/End incluidos)
+  saludTabs.forEach((t, i) => {
+    t.addEventListener('keydown', (e) => {
+      let next = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % saludTabs.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + saludTabs.length) % saludTabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = saludTabs.length - 1;
+      if (next < 0) return;
+      e.preventDefault();
+      setSalud(saludTabs[next].dataset.salud as 'fonasa' | 'isapre');
+      saludTabs[next].focus();
+    });
+  });
   saludPct.addEventListener('input', calc);
 
   // ===== Cesantía / plazo fijo =====
@@ -484,4 +564,5 @@ const afps = [
   setSalud('fonasa');
   setBruto(1000000, true);
   calc();
+  cargarIndicadores();
 </script>

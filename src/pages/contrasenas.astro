@@ -8,7 +8,7 @@ const title = 'Generador de Contraseñas Seguras — gratis y privado | Jcastill
 const description = 'Genera contraseñas seguras y aleatorias o frases de paso (passphrases). Longitud, símbolos, números y medidor de fortaleza. Todo en tu navegador, nada se envía a ningún servidor.';
 const canonical = 'https://jcastillo.dev/contrasenas';
 ---
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} keywords="generador de contraseñas, contraseña segura, passphrase, generar contraseña aleatoria, medidor de fortaleza" schema="tool" toolName="Generador de Contraseñas">
   <Header />
   <div class="h-16"></div>
 
@@ -367,6 +367,7 @@ const canonical = 'https://jcastillo.dev/contrasenas';
 </style>
 
 <script>
+  import { randomInt } from '../lib/random';
   // ============================================================
   // Generador de Contraseñas — 100% cliente, crypto seguro
   // ============================================================
@@ -398,20 +399,8 @@ const canonical = 'https://jcastillo.dev/contrasenas';
     'idea','suerte','calma','fuerza','brillo','sombra','chispa','trueno','rayo','aurora',
   ];
 
-  // --- RNG sin sesgo de módulo usando crypto.getRandomValues ---
-  function secureRandomInt(max: number): number {
-    // Devuelve un entero uniforme en [0, max)
-    if (max <= 0) return 0;
-    const maxUint32 = 0xffffffff;
-    const limit = maxUint32 - (maxUint32 % max); // umbral de rechazo
-    const buf = new Uint32Array(1);
-    let x = 0;
-    do {
-      crypto.getRandomValues(buf);
-      x = buf[0];
-    } while (x >= limit);
-    return x % max;
-  }
+  // RNG sin sesgo de módulo (crypto.getRandomValues) en src/lib/random.ts
+  const secureRandomInt = randomInt;
 
   function pick<T>(arr: T[] | string): T | string {
     return (arr as any)[secureRandomInt(arr.length)];

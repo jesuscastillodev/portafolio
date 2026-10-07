@@ -1,8 +1,18 @@
 ---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/jetbrains-mono';
+
 interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  /** Keywords propias de la página (si se omiten, se usan las del portafolio). */
+  keywords?: string;
+  /** 'home' = Person + ProfessionalService; 'tool' = WebApplication; 'page' = solo WebSite. */
+  schema?: 'home' | 'tool' | 'page';
+  /** Nombre de la herramienta para el JSON-LD WebApplication (schema='tool'). */
+  toolName?: string;
 }
 
 const siteUrl = 'https://jcastillo.dev';
@@ -11,10 +21,14 @@ const ogImage = `${siteUrl}/og-image.png`;
 const {
   title = "Jesús Castillo — Programador Full Stack | Desarrollador de Software",
   description = "Jesús Castillo, programador y desarrollador de software full stack con +10 años de experiencia. Especializado en React, Laravel, Node.js, Docker y arquitectura de soluciones escalables. Portfolio profesional.",
-  canonical = siteUrl
+  canonical = siteUrl,
+  keywords: keywordsProp,
+  schema = 'home',
+  toolName,
 } = Astro.props;
 
-const keywords = "programador, desarrollador de software, full stack, developer, React, Laravel, Node.js, Docker, PHP, JavaScript, TypeScript, portfolio, Jesús Castillo, jcastillo, programador web, desarrollador web, backend, frontend, API, arquitectura de software";
+const defaultKeywords = "programador, desarrollador de software, full stack, developer, React, Laravel, Node.js, Docker, PHP, JavaScript, TypeScript, portfolio, Jesús Castillo, jcastillo, programador web, desarrollador web, backend, frontend, API, arquitectura de software";
+const keywords = keywordsProp ?? defaultKeywords;
 ---
 
 <!doctype html>
@@ -34,17 +48,12 @@ const keywords = "programador, desarrollador de software, full stack, developer,
     <link rel="alternate" hreflang="x-default" href={canonical} />
     <link rel="sitemap" href="/sitemap.xml" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale" content="es_CL" />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -64,7 +73,22 @@ const keywords = "programador, desarrollador de software, full stack, developer,
 
     <title>{title}</title>
 
-    <!-- JSON-LD: Person -->
+    {schema === 'tool' && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": toolName ?? title,
+        "description": description,
+        "url": canonical,
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CLP" },
+        "inLanguage": "es-CL",
+        "author": { "@type": "Person", "name": "Jesús Castillo", "url": siteUrl }
+      })} />
+    )}
+
+    {schema === 'home' && (
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Person",
@@ -79,6 +103,7 @@ const keywords = "programador, desarrollador de software, full stack, developer,
         "https://t.me/Jcastillo_dev"
       ]
     })} />
+    )}
 
     <!-- JSON-LD: WebSite -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -93,7 +118,7 @@ const keywords = "programador, desarrollador de software, full stack, developer,
       }
     })} />
 
-    <!-- JSON-LD: ProfessionalService -->
+    {schema === 'home' && (
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
@@ -107,6 +132,7 @@ const keywords = "programador, desarrollador de software, full stack, developer,
         "name": "Jesús Castillo"
       }
     })} />
+    )}
   </head>
   <body class="bg-white text-[#0f0f1a] dark:bg-[#0a0a0f] dark:text-[#f0f0f5] transition-colors duration-700">
     <div class="relative w-full overflow-x-hidden min-h-screen">

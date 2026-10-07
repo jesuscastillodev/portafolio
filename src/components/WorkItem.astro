@@ -14,14 +14,24 @@ interface Props {
 
 const { title, description, role, img, imgLight, display = 'ltr', index = 0, technologies = [] } = Astro.props;
 const isRtl = display === 'rtl';
+// Hash estilo git, determinista a partir del titulo
+let h = 2166136261;
+for (const ch of `${title}:${role}`) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+const hash = h.toString(16).padStart(8, '0').slice(0, 7);
 ---
 
+<div class="commit relative" data-commit>
+  <span class="commit-node" aria-hidden="true" data-commit-node></span>
+  <div class="commit-meta font-mono text-[11px] flex items-center gap-2 mb-3" aria-hidden="true" data-commit-meta>
+    <span class="commit-hash">{hash}</span>
+    {index === 0 && <span class="commit-head">HEAD -&gt; main</span>}
+  </div>
+<div data-commit-card={isRtl ? "left" : "right"}>
 <div
   class:list={[
     "group glow-card glass rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1 flex flex-col lg:flex-row items-stretch",
     isRtl && "lg:flex-row-reverse"
   ]}
-  data-animate={isRtl ? "fadeInLeft" : "fadeInRight"}
 >
   <!-- Image -->
   <div class="lg:w-2/5 bg-gray-50 dark:bg-white/[0.03] flex items-center justify-center p-10">
@@ -59,4 +69,6 @@ const isRtl = display === 'rtl';
       </div>
     )}
   </div>
+</div>
+</div>
 </div>

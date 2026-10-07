@@ -9,7 +9,7 @@ const description = 'Crea códigos QR gratis para texto, enlaces, redes WiFi, ta
 const canonical = 'https://jcastillo.dev/qr';
 ---
 
-<Layout title={title} description={description} canonical={canonical}>
+<Layout title={title} description={description} canonical={canonical} keywords="generador de código QR, crear QR, QR wifi, QR vCard, QR gratis, código QR PNG SVG" schema="tool" toolName="Generador de Código QR">
   <Header />
   <div class="h-16"></div>
 
@@ -180,7 +180,7 @@ const canonical = 'https://jcastillo.dev/qr';
               <p class="text-sm font-medium text-gray-400">Escribe algo para generar tu código QR</p>
             </div>
             <!-- Canvas (oculto hasta tener contenido) -->
-            <canvas id="qr-canvas" class="hidden max-w-full h-auto rounded-xl" aria-label="Código QR generado"></canvas>
+            <canvas id="qr-canvas" class="hidden max-w-full h-auto rounded-xl" role="img" aria-label="Código QR generado"></canvas>
           </div>
 
           <!-- Descargas -->
@@ -368,7 +368,7 @@ const canonical = 'https://jcastillo.dev/qr';
 
   type ECLevel = 'L' | 'M' | 'Q' | 'H';
 
-  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
+  import { $ } from '../lib/dom';
 
   // ===== Elementos =====
   const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.qr-tab'));
